@@ -27,7 +27,9 @@ const LEVEL_WIDTH = 20;
 const LEVEL_HEIGHT = 10;
 
 const canvas = document.getElementById('gameCanvas');
+const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
 const ctx = canvas.getContext('2d');
+const backgroundCtx = backgroundCanvas.getContext('2d');
 
 // Orientation constants
 const ORIENTATION_UP = 0;
@@ -47,6 +49,7 @@ const COLOR_SETS = {
 const DEFAULT_TILE_COLORS = {
   arrow: COLOR_SETS.blueGreenSet,
   block: COLOR_SETS.blueGreenSet,
+  character: ['#000', '#e42c37', '#c07548', '#fdcbb0'],
   crate: COLOR_SETS.crateSet,
   lock: COLOR_SETS.greenSet,
   key: COLOR_SETS.greenSet,
@@ -58,7 +61,7 @@ const DEFAULT_TILE_COLORS = {
 };
 
 // Level data with specific tile color variations
-const levelData = [
+let levelData = [
   { tile: 'arrow', x: 4, y: 7 },
   { tile: 'arrow', x: 4, y: 6, orientation: ORIENTATION_LEFT },
   { tile: 'arrow', x: 2, y: 4, orientation: ORIENTATION_LEFT },

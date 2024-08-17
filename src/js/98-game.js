@@ -5,7 +5,19 @@ function setZoomFactor() {
   );
   canvas.width = LEVEL_WIDTH * TILE_SIZE * zoomFactor;
   canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;
+
+  // background canvas has same ratio than canvas but cover window size
+  if (window.innerWidth / window.innerHeight > LEVEL_WIDTH / LEVEL_HEIGHT) {
+    backgroundCanvas.width = window.innerWidth;
+    backgroundCanvas.height = window.innerWidth * (LEVEL_HEIGHT / LEVEL_WIDTH);
+  } else {
+    backgroundCanvas.height = window.innerHeight;
+    backgroundCanvas.width = window.innerHeight * (LEVEL_WIDTH / LEVEL_HEIGHT);
+  }
+
   initLevel();
+  drawCharacter();
+  drawStepCounter();
 }
 
 function initGame() {
@@ -21,6 +33,13 @@ function initLevel() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawLevel('sand', 'rock');
   drawLevelElements(levelData);
+  backgroundCtx.drawImage(
+    canvas,
+    0,
+    0,
+    backgroundCanvas.width,
+    backgroundCanvas.height,
+  );
 }
 
 initGame();

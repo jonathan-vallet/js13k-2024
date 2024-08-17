@@ -1,6 +1,42 @@
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>13 steps to death</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+
+      #game {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+      }
+
+      #gameBackgroundCanvas {
+        position: absolute;
+        top: -5%;
+        left: -5%;
+        width: 110%;
+        height: 110%;
+        z-index: -1; /* Behind the main canvas */
+        object-fit: cover;
+        filter: blur(15px) brightness(50%); /* Apply blur and darken the background */
+      }
+
+      #gameCanvas {
+        margin: auto;
+        position: relative;
+        z-index: 1;
+      }
+    </style>
   </head>
   <body style="overflow: hidden">
     <!-- <label for="boy">Boy</label>
@@ -19,8 +55,10 @@
     <input type="color" id="redColor" value="#e42c37">
     
     <div id="canvasContainer" style="margin-top: 280px; margin-left: 120px;"></div> -->
-
-    <canvas id="gameCanvas"></canvas>
+    <div id="game">
+      <canvas id="gameBackgroundCanvas"></canvas>
+      <canvas id="gameCanvas"></canvas>
+    </div>
     <script src="bundle.js" inline></script>
   </body>
 </html>
