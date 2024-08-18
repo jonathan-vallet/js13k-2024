@@ -16,6 +16,13 @@ function handleKeyUp(event) {
       keyStack.splice(index, 1); // Remove the key from the stack
     }
   }
+
+  // R to reset the level
+  if (event.key === 'r') {
+    resetLevel();
+  }
+
+  hasPlayedWallSoundDuringKeyHold = false;
 }
 
 // Map keys to movement directions

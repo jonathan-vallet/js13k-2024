@@ -39,18 +39,20 @@ function removeTile(tileName, x = null, y = null) {
  * @returns {boolean} - True if the crate was moved, false otherwise
  */
 
-function moveCrate(x, y, dx, dy) {
+function tryMoveCrate(x, y, dx, dy) {
   const newX = x + dx;
   const newY = y + dy;
 
   // Check if the tile where the crate should move is free and does not contain another crate
   const tileAtNewPosition = getTileAt(newX, newY);
-  if (tileAtNewPosition === null || ['arrow'].includes(tileAtNewPosition)) {
+  if (
+    isInBounds(newX, newX) &&
+    (tileAtNewPosition === null || ['arrow'].includes(tileAtNewPosition))
+  ) {
     // Update the crate's position in levelData
     for (const element of levelData) {
       if (element.x === x && element.y === y && element.tile === 'crate') {
-        element.x = newX;
-        element.y = newY;
+        startCrateAnimation(element, dx, dy);
         playActionSound('crate');
         return true;
       }
@@ -58,6 +60,22 @@ function moveCrate(x, y, dx, dy) {
   }
 
   return false;
+}
+
+/**
+ * Start the animation of a crate moving from one position to another
+ * @param {number} crateX - The x-coordinate of the crate
+ * @param {number} crateY - The y-coordinate of the crate
+ * @param {number} dx - The x-direction of movement
+ * @param {number} dy - The y-direction of movement
+ */
+function startCrateAnimation(crate, dx, dy) {
+  movingCrate = crate;
+  crateMoveStartX = crate.x;
+  crateMoveStartY = crate.y;
+  crateMoveTargetX = crateMoveStartX + dx;
+  crateMoveTargetY = crateMoveStartY + dy;
+  crateMoveElapsedTime = 0;
 }
 
 /**

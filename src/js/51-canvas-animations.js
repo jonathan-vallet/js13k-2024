@@ -80,8 +80,11 @@ function updateAnimations(deltaTime) {
 
   // Handle character movement animation
   if (isCharacterMoving) {
-    console.log('Character is moving');
     playCharacterAnimation(deltaTime);
+  }
+
+  if (movingCrate) {
+    animateCrate(deltaTime);
   }
 }
 
@@ -150,5 +153,25 @@ function returnCharacterToSpawn() {
     isReturningToSpawn = false;
     characterX = initialX;
     characterY = initialY;
+  }
+}
+
+/**
+ * Start the animation of a crate moving from one position to another
+ * @param {number} deltaTime - The time elapsed since the last frame
+ */
+function animateCrate(deltaTime) {
+  crateMoveElapsedTime += deltaTime;
+  const progress = Math.min(crateMoveElapsedTime / CRATE_MOVE_DURATION, 1);
+  movingCrate.x =
+    crateMoveStartX + (crateMoveTargetX - crateMoveStartX) * progress;
+  movingCrate.y =
+    crateMoveStartY + (crateMoveTargetY - crateMoveStartY) * progress;
+
+  if (progress >= 1) {
+    movingCrate.x = crateMoveTargetX;
+    movingCrate.y = crateMoveTargetY;
+    crateMoveElapsedTime = 0;
+    movingCrate = null;
   }
 }

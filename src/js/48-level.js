@@ -24,7 +24,7 @@ function resetLevel() {
   characterScale = 1;
 
   // Reset the step counter
-  stepsPerformed = MAX_STEPS_ALLOWED;
+  stepsPerformed = 0;
 
   // Redraw the entire level, character, and step counter
 }

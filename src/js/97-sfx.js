@@ -1,6 +1,7 @@
 /**
  * @module sfx
  */
+let hasPlayedWallSoundDuringKeyHold = false;
 
 /**
  * Play the action sound effect
@@ -41,7 +42,10 @@ function playActionSound(tile) {
       zzfx(...[, 0, 1320, , 0.1, 0.3, 1, 1.82, , , 880, 0.05]);
       break;
     case 'wall':
-      zzfx(...[, 0, 440, 0.15, 0.01, 0.12, 1, 1.59, -6.98, 4.97]);
+      if (!hasPlayedWallSoundDuringKeyHold) {
+        hasPlayedWallSoundDuringKeyHold = true;
+        zzfx(...[, 0, 440, 0.15, 0.01, 0.12, 1, 1.59, -6.98, 4.97]);
+      }
       break;
     default:
       console.warn(`No sound effect for tile: ${tile}`);
