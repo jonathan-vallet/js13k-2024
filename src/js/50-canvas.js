@@ -68,37 +68,47 @@ function drawLevelElements(levelData) {
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
 
-    drawTile(frame, colors, x, y, orientation, scale);
+    drawTile(frame, colors, x, y, { orientation, scale });
   });
 }
 
 /**
- * Draw a tile on the canvas at the specified position, color, and orientation
- * @param {number[][]} tile - The tile to draw
- * @param {string[]} colors - The colors for the tile
- * @param {number} x - The x-coordinate of the tile
- * @param {number} y - The y-coordinate of the tile
- * @param {number} [orientation=ORIENTATION_UP] - The orientation of the tile
+ * Draw a tile on the canvas at the specified position, color, and optional transformations
+ * @param {number[][]} tile - The tile to draw (required)
+ * @param {string[]} colors - The colors for the tile (required)
+ * @param {number} x - The x-coordinate of the tile (required)
+ * @param {number} y - The y-coordinate of the tile (required)
+ * @param {Object} [options={}] - Optional parameters: orientation, scale, context, flipHorizontally
+ * @param {number} [options.orientation=ORIENTATION_UP] - The orientation of the tile
+ * @param {number} [options.scale=1] - The scale to apply to the tile
+ * @param {CanvasRenderingContext2D} [options.context=ctx] - The canvas context to draw on
+ * @param {boolean} [options.flipHorizontally=false] - Whether to flip the tile horizontally
  */
-function drawTile(
-  tile,
-  colors,
-  x,
-  y,
-  orientation = ORIENTATION_UP,
-  scale = 1,
-  context = ctx,
-) {
+function drawTile(tile, colors, x, y, options = {}) {
+  const {
+    orientation = ORIENTATION_UP,
+    scale = 1,
+    context = ctx,
+    flipHorizontally = false,
+  } = options;
+
   context.save();
 
   const halfTileSize = (TILE_SIZE * zoomFactor) / 2;
+  context.translate(
+    (x + 0.5) * TILE_SIZE * zoomFactor,
+    (y + 0.5) * TILE_SIZE * zoomFactor,
+  );
 
-  const tilePosition = (coordinate) =>
-    (coordinate + 0.5) * TILE_SIZE * zoomFactor; // Add 0.5 to center the tile to be able to rotate it
-  context.translate(tilePosition(x), tilePosition(y));
-  context.rotate((orientation * Math.PI) / 2);
-  ctx.scale(scale, scale); // Apply scaling
-  context.translate(-halfTileSize, -halfTileSize);
+  // Apply horizontal flip if necessary
+  let scaleDirection = 1;
+  if (flipHorizontally) {
+    scaleDirection = -1;
+  }
+
+  context.scale(scale * scaleDirection, scale); // Apply scaling
+  context.rotate((orientation * Math.PI) / 2); // Apply rotation
+  context.translate(-halfTileSize, -halfTileSize); // Move to the top-left corner of the tile
 
   // Draw the tile by iterating over the pixels
   for (let tileY = 0; tileY < tile.length; tileY++) {

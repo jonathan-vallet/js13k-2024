@@ -8,26 +8,32 @@
 let characterX = 9;
 let characterY = 7;
 let characterScale = 1;
+let characterDirection = ORIENTATION_DOWN; // Track the current direction
 let initialX = characterX; // Store the initial position for reset
 let initialY = characterY;
+let isCharacterMoving = false;
+let characterMoveStartX = characterX;
+let characterMoveStartY = characterY;
+let characterMoveTargetX = characterX;
+let characterMoveTargetY = characterY;
+let characterMoveFrame = 0;
+const CHARACTER_MOVE_DURATION = 300;
+let characterMoveElapsedTime = 0;
 
 // Initialize the step counter (13 steps)
-let stepsRemaining = 13;
+let stepsRemaining = MAX_STEPS_ALLOWED;
 
 /**
  * Draw the character sprite on the canvas
  */
 function drawCharacter() {
-  const characterTile = GAME_SPRITES['characters'].tiles[0];
+  const characterTile = GAME_SPRITES['characters'].tiles[characterMoveFrame]; // Use the current frame
   const characterColors = DEFAULT_TILE_COLORS['character'];
-  drawTile(
-    characterTile,
-    characterColors,
-    characterX,
-    characterY,
-    ORIENTATION_UP,
-    characterScale,
-  );
+
+  drawTile(characterTile, characterColors, characterX, characterY, {
+    scale: characterScale,
+    flipHorizontally: characterDirection === ORIENTATION_RIGHT,
+  });
 }
 
 /**
@@ -133,19 +139,25 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
  * @param {number} dx - The x-direction of movement
  * @param {number} dy - The y-direction of movement
  */
-function moveCharacter(dx, dy) {
-  if (isReturningToSpawn) {
+function moveCharacter(dx, dy, direction) {
+  if (isReturningToSpawn || isCharacterMoving) {
     return; // Prevent movement while returning to spawn
   }
 
   const newX = characterX + dx;
   const newY = characterY + dy;
+  setCharacterDirection(direction);
 
   // Check if the character can move to the new position
   if (canMoveTo(newX, newY, dx, dy)) {
-    // Update the position
-    characterX = newX;
-    characterY = newY;
+    // Start the movement animation
+    isCharacterMoving = true;
+    characterMoveStartX = characterX;
+    characterMoveStartY = characterY;
+    characterMoveTargetX = newX;
+    characterMoveTargetY = newY;
+    characterMoveElapsedTime = 0;
+
     stepsRemaining--; // Decrement the step counter on successful move
 
     // Check if the character has run out of steps
@@ -154,37 +166,24 @@ function moveCharacter(dx, dy) {
       returnStartX = characterX;
       returnStartY = characterY;
       characterReturnStartTime = performance.now();
-      stepsRemaining = 13;
+      stepsRemaining = MAX_STEPS_ALLOWED;
     }
   }
 }
 
-// Handle keyboard input for character movement
-function handleKeyPress(event) {
-  switch (event.key) {
-    case 'ArrowUp':
-    case 'z': // Z for ZQSD
-    case 'w': // W for WASD
-      moveCharacter(0, -1); // Move up
-      break;
-    case 'ArrowDown':
-    case 's': // S for ZQSD and WASD
-      moveCharacter(0, 1); // Move down
-      break;
-    case 'ArrowLeft':
-    case 'q': // Q for ZQSD
-    case 'a': // A for WASD
-      moveCharacter(-1, 0); // Move left
-      break;
-    case 'ArrowRight':
-    case 'd': // D for ZQSD and WASD
-      moveCharacter(1, 0); // Move right
-      break;
-    case 'r': // R for Hard Reset
-      resetLevel(); // Perform a hard reset of the level
-      break;
-  }
+function setCharacterDirection(direction) {
+  characterDirection = direction;
+  characterMoveFrame = getMoveFrameFromDirection(characterDirection);
 }
 
-// Add an event listener to detect key presses
-window.addEventListener('keydown', handleKeyPress);
+function getMoveFrameFromDirection(direction) {
+  switch (direction) {
+    case ORIENTATION_UP:
+      return 2;
+    case ORIENTATION_RIGHT:
+    case ORIENTATION_LEFT:
+      return 1;
+    case ORIENTATION_DOWN:
+      return 0;
+  }
+}

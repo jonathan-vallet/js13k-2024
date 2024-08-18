@@ -57,6 +57,77 @@ function updateAnimations(deltaTime) {
       }
     }
   });
+
+  // Handle character movement if no other animation is in progress
+  if (!isCharacterMoving && !isReturningToSpawn && keyStack.length > 0) {
+    const direction = keyStack[keyStack.length - 1]; // Get the most recent key pressed
+
+    switch (direction) {
+      case 'up':
+        moveCharacter(0, -1, ORIENTATION_UP);
+        break;
+      case 'down':
+        moveCharacter(0, 1, ORIENTATION_DOWN);
+        break;
+      case 'left':
+        moveCharacter(-1, 0, ORIENTATION_LEFT);
+        break;
+      case 'right':
+        moveCharacter(1, 0, ORIENTATION_RIGHT);
+        break;
+    }
+  }
+
+  // Handle character movement animation
+  if (isCharacterMoving) {
+    console.log('Character is moving');
+    playCharacterAnimation(deltaTime);
+  }
+}
+
+/**
+ * Move the character to the specified position with animation
+ * @param {number} deltaTime - The time elapsed since the last frame
+ */
+function playCharacterAnimation(deltaTime) {
+  characterMoveElapsedTime += deltaTime;
+  const progress = Math.min(
+    characterMoveElapsedTime / CHARACTER_MOVE_DURATION,
+    1,
+  );
+
+  // Interpolate the character's position
+  characterX =
+    characterMoveStartX +
+    (characterMoveTargetX - characterMoveStartX) * progress;
+  characterY =
+    characterMoveStartY +
+    (characterMoveTargetY - characterMoveStartY) * progress;
+
+  // Determine the character's movement direction
+  let characterFrameDirection = getMoveFrameFromDirection(characterDirection);
+
+  // Determine which frame to show based on the progress
+  const phase = Math.floor(progress * 3); // Divide the animation into 4 phases (0 to 3)
+  switch (phase) {
+    case 0:
+      characterMoveFrame = characterFrameDirection + 3; // Second frame (3, 4, 5)
+      break;
+    case 1:
+      characterMoveFrame = characterFrameDirection; // First frame (0, 1, 2 depending on direction)
+      break;
+    case 2:
+      characterMoveFrame = characterFrameDirection + 6; // Final frame (6, 7, 8)
+      break;
+  }
+
+  if (progress >= 1) {
+    isCharacterMoving = false;
+    characterX = characterMoveTargetX;
+    characterY = characterMoveTargetY;
+    characterMoveElapsedTime = 0;
+    characterMoveFrame = characterFrameDirection; // Reset to the default frame
+  }
 }
 
 function returnCharacterToSpawn() {
