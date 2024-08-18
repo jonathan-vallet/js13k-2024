@@ -3,6 +3,10 @@
  * @module 51-canvas-animations
  */
 let lastFrameTime = 0;
+let isReturningToSpawn = false; // Flag to track if the character is returning to spawn
+let characterReturnStartTime = 0; // Start time for the character return animation
+const CHARACTER_RETURN_DURATION = 250; // Duration of the character return animation in ms
+let returnStartX, returnStartY; // Start position for the character return
 
 /**
  * Main animation loop
@@ -12,6 +16,11 @@ function animate(timestamp) {
   const deltaTime = timestamp - lastFrameTime;
 
   updateAnimations(deltaTime);
+
+  if (isReturningToSpawn) {
+    returnCharacterToSpawn();
+  }
+
   refreshCanvas();
   lastFrameTime = timestamp;
 
@@ -48,4 +57,27 @@ function updateAnimations(deltaTime) {
       }
     }
   });
+}
+
+function returnCharacterToSpawn() {
+  // Handle character return to spawn animation
+  const elapsedTime = performance.now() - characterReturnStartTime;
+  const progress = Math.min(elapsedTime / CHARACTER_RETURN_DURATION, 1);
+
+  // Calculate the character's current position based on progress
+  characterX = returnStartX + (initialX - returnStartX) * progress;
+  characterY = returnStartY + (initialY - returnStartY) * progress;
+
+  // Calculate the scale: scale down during the first half, then scale up
+  const CHARACTER_SCALE_REDUCTION = 0.4;
+  characterScale =
+    progress < 0.5
+      ? 1 - progress * 2 * (1 - CHARACTER_SCALE_REDUCTION)
+      : 1 - (1 - progress) * 2 * (1 - CHARACTER_SCALE_REDUCTION);
+  // End the animation when the progress reaches 1
+  if (progress >= 1) {
+    isReturningToSpawn = false;
+    characterX = initialX;
+    characterY = initialY;
+  }
 }

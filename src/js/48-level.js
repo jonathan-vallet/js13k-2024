@@ -18,9 +18,10 @@ function resetLevel() {
     tile.scale = 1;
   });
 
-  // Reset the player's position
-  playerX = initialX;
-  playerY = initialY;
+  // Reset the character's position
+  characterX = initialX;
+  characterY = initialY;
+  characterScale = 1;
 
   // Reset the step counter
   stepsRemaining = 13;
