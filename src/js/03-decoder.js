@@ -11,7 +11,7 @@ let pixelList = [];
  */
 function decodeRLE(rleString) {
   const START_CHAR_CODE = 'A'.charCodeAt(0); // First character code in the RLE string
-  const MAX_CHAR_PER_GROUP = 12; // 12 colors per group
+  const MAX_CHAR_PER_GROUP = 12; // colors per group
   const pixels = [];
 
   const imageWidth = parseInt(rleString.match(/^\d+/)[0], 10); // Extract the image width

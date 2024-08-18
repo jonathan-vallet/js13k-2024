@@ -60,14 +60,15 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
  */
 function drawLevelElements(levelData) {
   levelData.forEach((element) => {
-    const tileName = element.tile;
-    const tile = GAME_SPRITES[tileName].tiles[0]; // Display the first tile only
-    const colors = element.color || DEFAULT_TILE_COLORS[tileName];
+    const tile = GAME_SPRITES[element.tile];
+    const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
+    const colors = element.color || DEFAULT_TILE_COLORS[element.tile];
     const x = element.x;
     const y = element.y;
     const orientation = element.orientation || ORIENTATION_UP;
+    const scale = element.scale || 1;
 
-    drawTile(tile, colors, x, y, orientation);
+    drawTile(frame, colors, x, y, orientation, scale);
   });
 }
 
@@ -85,6 +86,7 @@ function drawTile(
   x,
   y,
   orientation = ORIENTATION_UP,
+  scale = 1,
   context = ctx,
 ) {
   context.save();
@@ -95,6 +97,7 @@ function drawTile(
     (coordinate + 0.5) * TILE_SIZE * zoomFactor; // Add 0.5 to center the tile to be able to rotate it
   context.translate(tilePosition(x), tilePosition(y));
   context.rotate((orientation * Math.PI) / 2);
+  ctx.scale(scale, scale); // Apply scaling
   context.translate(-halfTileSize, -halfTileSize);
 
   // Draw the tile by iterating over the pixels

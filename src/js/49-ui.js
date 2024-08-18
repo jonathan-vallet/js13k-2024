@@ -18,7 +18,7 @@ function drawUI() {
   // Draw the key icon and count
   const keyTile = GAME_SPRITES['key'].tiles[0];
   const keyColors = DEFAULT_TILE_COLORS['key'];
-  drawTile(keyTile, keyColors, 4.5, 0.75, ORIENTATION_UP, uiCtx);
+  drawTile(keyTile, keyColors, 4.5, 0.75, ORIENTATION_UP, 1, uiCtx);
   uiCtx.fillText(`x${collectedKeysNumber}`, uiCanvas.width * 0.28, y);
 
   // Draw controls (Reset, Undo)

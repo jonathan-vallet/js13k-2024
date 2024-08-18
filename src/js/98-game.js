@@ -16,16 +16,21 @@ function setZoomFactor() {
     backgroundCanvas.height = window.innerHeight;
     backgroundCanvas.width = window.innerHeight * (LEVEL_WIDTH / LEVEL_HEIGHT);
   }
-
-  refreshCanvas();
 }
 
 function initGame() {
   // Disable image smoothing for sharp pixelated look
   ctx.imageSmoothingEnabled = false;
+
+  levelData.forEach((element) => {
+    element.animationFrame = 0; // Start at the first frame
+  });
+
   window.addEventListener('resize', setZoomFactor);
   // Adjust the canvas size to fit the level size
   setZoomFactor();
+
+  requestAnimationFrame(animate);
 }
 
 initGame();

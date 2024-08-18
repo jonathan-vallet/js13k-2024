@@ -33,6 +33,7 @@ function drawCharacter() {
 function canMoveTo(x, y, dx = 0, dy = 0) {
   // Check grid boundaries (excluding the border)
   if (x < 1 || x >= LEVEL_WIDTH - 1 || y < 1 || y >= LEVEL_HEIGHT - 1) {
+    playActionSound('wall');
     return false;
   }
 
@@ -47,66 +48,73 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
     return false;
   }
 
-  // If the tile is a crate, try to push it
-  if (tileAtTarget === 'crate') {
-    if (moveCrate(x, y, dx, dy)) {
-      stepsRemaining--; // Decrement steps on successful action
-      refreshCanvas();
-    }
-  }
-  // If the tile is a key, collect it
-  if (tileAtTarget === 'key') {
-    stepsRemaining--;
-    removeTile('key');
-    collectedKeysNumber++;
-    refreshCanvas();
-  }
-  // If the tile is a lock, check if the player has keys to unlock it
-  if (tileAtTarget === 'lock') {
-    if (collectedKeysNumber > 0) {
-      stepsRemaining--;
-      animateTileRemoval('lock', x, y, () => {
-        collectedKeysNumber--;
-      });
-    }
-  }
+  let hasPerformedAction = false;
+  switch (tileAtTarget) {
+    case 'crate':
+      if (moveCrate(x, y, dx, dy)) {
+        hasPerformedAction = true;
+      }
+      break;
+    case 'key':
+      hasPerformedAction = true;
+      removeTile('key');
+      collectedKeysNumber++;
+      break;
+    case 'lock':
+      if (collectedKeysNumber > 0) {
+        hasPerformedAction = true;
+        animateTileRemoval('lock', x, y, () => {
+          collectedKeysNumber--;
+        });
+      }
+      break;
+    case 'flag':
+      resetLevel(); // Reset the level on reaching the flag
+      return false; // Prevent further movement
+      break;
+    case 'block':
+      const blockElement = levelData.find(
+        (element) =>
+          element.x === x && element.y === y && element.tile === 'block',
+      );
+      if (blockElement) {
+        const blockOrientation = blockElement.orientation || ORIENTATION_UP; // Default orientation is up
 
-  // If the tile is a block, check if it can be removed
-  if (tileAtTarget === 'block') {
-    const blockElement = levelData.find(
-      (element) =>
-        element.x === x && element.y === y && element.tile === 'block',
-    );
-    if (blockElement) {
-      const blockOrientation = blockElement.orientation || ORIENTATION_UP; // Default orientation is up
-      const blockColor = blockElement.color || DEFAULT_TILE_COLORS['block'];
-
-      // Check if the block is of green color and if the player is pushing it in the correct direction
-      if (blockColor === COLOR_SETS.greenSet) {
-        if (
-          (blockOrientation === ORIENTATION_LEFT && dx === -1) ||
-          (blockOrientation === ORIENTATION_RIGHT && dx === 1) ||
-          (blockOrientation === ORIENTATION_UP && dy === -1) ||
-          (blockOrientation === ORIENTATION_DOWN && dy === 1)
-        ) {
-          // Remove the block and start removing connected blocks recursively
-          removeConnectedBlocks(x, y, dx, dy);
-          stepsRemaining--;
-          refreshCanvas();
+        // Check if the block is of green color and if the player is pushing it in the correct direction
+        if (blockElement.isPushable) {
+          if (
+            (blockOrientation === ORIENTATION_LEFT && dx === -1) ||
+            (blockOrientation === ORIENTATION_RIGHT && dx === 1) ||
+            (blockOrientation === ORIENTATION_UP && dy === -1) ||
+            (blockOrientation === ORIENTATION_DOWN && dy === 1)
+          ) {
+            // Remove the block and start removing connected blocks recursively
+            removeConnectedBlocks(x, y, dx, dy);
+            hasPerformedAction = true;
+          }
         }
       }
-    }
+      break;
+    case 'gong-trigger':
+      if (!tileElement.triggered) {
+        tileElement.triggered = true;
+        hasPerformedAction = true;
+        animateTileRemoval('gong');
+      }
+      break;
   }
 
-  // If the player moves onto a gong-trigger, remove the gong
-  if (tileAtTarget === 'gong-trigger' && !tileElement.triggered) {
-    tileElement.triggered = true;
-    stepsRemaining--;
-    animateTileRemoval('gong');
+  if (hasPerformedAction) {
+    playActionSound(tileAtTarget);
   }
 
   // If the tile is a not a free space, return false
-  if (![null, 'arrow', 'key', 'key-holder'].includes(tileAtTarget)) {
+  if (![null, 'arrow', 'key', 'key-holder', 'flag'].includes(tileAtTarget)) {
+    if (hasPerformedAction) {
+      --stepsRemaining;
+    } else {
+      playActionSound('wall');
+    }
     return false;
   }
 
@@ -129,9 +137,6 @@ function moveCharacter(dx, dy) {
     playerY = newY;
     stepsRemaining--; // Decrement the step counter on successful move
 
-    // Redraw the level, character, and step counter
-    refreshCanvas();
-
     // Check if the player has run out of steps
     if (stepsRemaining <= 0) {
       resetPlayer(); // Reset the player and step counter
@@ -149,10 +154,6 @@ function resetPlayer() {
   playerX = initialX;
   playerY = initialY;
   stepsRemaining = 13;
-  console.log('Player reset after 13 steps');
-
-  // Redraw the level, character, and step counter
-  refreshCanvas();
 }
 
 // Handle keyboard input for character movement

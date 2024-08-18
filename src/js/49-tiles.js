@@ -51,6 +51,7 @@ function moveCrate(x, y, dx, dy) {
       if (element.x === x && element.y === y && element.tile === 'crate') {
         element.x = newX;
         element.y = newY;
+        playActionSound('crate');
         return true;
       }
     }
@@ -66,11 +67,9 @@ function moveCrate(x, y, dx, dy) {
  * @param {number} dx - The x-direction of movement (based on block orientation)
  * @param {number} dy - The y-direction of movement (based on block orientation)
  */
-
 function removeConnectedBlocks(x, y, dx, dy) {
   // Remove the current block
   animateTileRemoval('block', x, y);
-  refreshCanvas();
 
   // Calculate the position of the next block in the same direction
   const nextX = x + dx;
@@ -122,7 +121,7 @@ function animateTileRemoval(
   x = null,
   y = null,
   callback,
-  duration = 225,
+  duration = DEFAULT_REMOVAL_DURATION,
 ) {
   // Find all matching tiles in levelData
   const tilesToAnimate = levelData.filter((element) => {
@@ -132,69 +131,12 @@ function animateTileRemoval(
     );
   });
 
-  // Mark all tiles as being removed
+  // Mark all tiles as being removed and initialize animation properties
   tilesToAnimate.forEach((tile) => {
     tile.isBeingRemoved = true;
-  });
-
-  // Animate each tile
-  tilesToAnimate.forEach((tile) => {
-    const startTime = performance.now();
-
-    function animate(time) {
-      const elapsedTime = time - startTime;
-      const progress = Math.min(elapsedTime / duration, 1); // Clamp progress between 0 and 1
-      const scale = 1 - progress; // Scale down from 1 to 0
-
-      ctx.clearRect(
-        tile.x * TILE_SIZE * zoomFactor,
-        tile.y * TILE_SIZE * zoomFactor,
-        TILE_SIZE * zoomFactor,
-        TILE_SIZE * zoomFactor,
-      );
-
-      // Redraw the background tile
-      const backgroundTile = GAME_SPRITES['sand'].tiles[0];
-      const backgroundColors = DEFAULT_TILE_COLORS['sand'];
-      drawTile(backgroundTile, backgroundColors, tile.x, tile.y);
-
-      // Redraw the tile with scaling
-      const tileSprite = GAME_SPRITES[tile.tile].tiles[0];
-      const colors = tile.color || DEFAULT_TILE_COLORS[tile.tile];
-
-      ctx.save();
-      ctx.translate(
-        (tile.x + 0.5) * TILE_SIZE * zoomFactor,
-        (tile.y + 0.5) * TILE_SIZE * zoomFactor,
-      ); // Move to the center of the tile
-      ctx.scale(scale, scale); // Scale down the tile
-      ctx.translate(
-        -(tile.x + 0.5) * TILE_SIZE * zoomFactor,
-        -(tile.y + 0.5) * TILE_SIZE * zoomFactor,
-      ); // Move back
-
-      drawTile(
-        tileSprite,
-        colors,
-        tile.x,
-        tile.y,
-        tile.orientation || ORIENTATION_UP,
-      );
-      ctx.restore();
-
-      // Continue the animation or finish and remove the tile
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        // Once the animation is done, remove the tile from levelData
-        removeTile(tile.tile, tile.x, tile.y);
-        if (callback) {
-          callback();
-        }
-        refreshCanvas();
-      }
-    }
-
-    requestAnimationFrame(animate);
+    tile.scale = 1; // Initial scale
+    tile.elapsed = 0; // Reset elapsed time for removal animation
+    tile.removalDuration = duration; // Set removal duration
+    tile.removeCallback = callback; // Store the callback
   });
 }
