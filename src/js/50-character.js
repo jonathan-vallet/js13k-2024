@@ -1,8 +1,14 @@
+/**
+ * Character
+ * This file contains the logic for moving the character on the grid and performing actions
+ * @module 50-character
+ */
+
 // Initialize the character on the grid at the start of the game
 let playerX = 9;
 let playerY = 7;
-const initialX = playerX; // Store the initial position for reset
-const initialY = playerY;
+let initialX = playerX; // Store the initial position for reset
+let initialY = playerY;
 
 // Initialize the step counter (13 steps)
 let stepsRemaining = 13;
@@ -14,16 +20,6 @@ function drawCharacter() {
   const characterTile = GAME_SPRITES['characters'].tiles[0];
   const characterColors = DEFAULT_TILE_COLORS['character'];
   drawTile(characterTile, characterColors, playerX, playerY);
-}
-
-/**
- * Draw the step counter in the top-left corner of the canvas
- */
-function drawStepCounter() {
-  ctx.font = '20px Arial';
-  ctx.fillStyle = 'white';
-  ctx.clearRect(0, 0, 150, 30); // Clear the area for the counter
-  ctx.fillText(`Steps: ${stepsRemaining}`, 10, 25);
 }
 
 /**
@@ -41,30 +37,76 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
   }
 
   const tileAtTarget = getTileAt(x, y);
+  const tileElement = levelData.find(
+    (element) => element.x === x && element.y === y,
+  );
 
-  // If the tile is a crate, try to move it
+  // Block movement if the tile is being removed
+  if (tileElement && tileElement.isBeingRemoved) {
+    console.log('Tile is being removed:', tileElement);
+    return false;
+  }
+
+  // If the tile is a crate, try to push it
   if (tileAtTarget === 'crate') {
     if (moveCrate(x, y, dx, dy)) {
       stepsRemaining--; // Decrement steps on successful action
-      initLevel();
-      drawCharacter();
-      drawStepCounter();
-      return false;
+      refreshCanvas();
+    }
+  }
+  // If the tile is a key, collect it
+  if (tileAtTarget === 'key') {
+    stepsRemaining--;
+    removeTile('key');
+    collectedKeysNumber++;
+    refreshCanvas();
+  }
+  // If the tile is a lock, check if the player has keys to unlock it
+  if (tileAtTarget === 'lock') {
+    if (collectedKeysNumber > 0) {
+      stepsRemaining--;
+      animateTileRemoval('lock', x, y, () => {
+        collectedKeysNumber--;
+      });
+    }
+  }
+
+  // If the tile is a block, check if it can be removed
+  if (tileAtTarget === 'block') {
+    const blockElement = levelData.find(
+      (element) =>
+        element.x === x && element.y === y && element.tile === 'block',
+    );
+    if (blockElement) {
+      const blockOrientation = blockElement.orientation || ORIENTATION_UP; // Default orientation is up
+      const blockColor = blockElement.color || DEFAULT_TILE_COLORS['block'];
+
+      // Check if the block is of green color and if the player is pushing it in the correct direction
+      if (blockColor === COLOR_SETS.greenSet) {
+        if (
+          (blockOrientation === ORIENTATION_LEFT && dx === -1) ||
+          (blockOrientation === ORIENTATION_RIGHT && dx === 1) ||
+          (blockOrientation === ORIENTATION_UP && dy === -1) ||
+          (blockOrientation === ORIENTATION_DOWN && dy === 1)
+        ) {
+          // Remove the block and start removing connected blocks recursively
+          removeConnectedBlocks(x, y, dx, dy);
+          stepsRemaining--;
+          refreshCanvas();
+        }
+      }
     }
   }
 
   // If the player moves onto a gong-trigger, remove the gong
-  if (tileAtTarget === 'gong-trigger') {
-    removeTile('gong'); // Remove the gong from the level
-    stepsRemaining--; // Decrement steps on successful action
-    initLevel();
-    drawCharacter();
-    drawStepCounter();
-    return false;
+  if (tileAtTarget === 'gong-trigger' && !tileElement.triggered) {
+    tileElement.triggered = true;
+    stepsRemaining--;
+    animateTileRemoval('gong');
   }
 
-  // If the tile is a block, rock, or lock, block movement
-  if (![null, 'arrow', 'key'].includes(tileAtTarget)) {
+  // If the tile is a not a free space, return false
+  if (![null, 'arrow', 'key', 'key-holder'].includes(tileAtTarget)) {
     return false;
   }
 
@@ -88,9 +130,7 @@ function moveCharacter(dx, dy) {
     stepsRemaining--; // Decrement the step counter on successful move
 
     // Redraw the level, character, and step counter
-    initLevel();
-    drawCharacter();
-    drawStepCounter();
+    refreshCanvas();
 
     // Check if the player has run out of steps
     if (stepsRemaining <= 0) {
@@ -112,9 +152,7 @@ function resetPlayer() {
   console.log('Player reset after 13 steps');
 
   // Redraw the level, character, and step counter
-  initLevel();
-  drawCharacter();
-  drawStepCounter();
+  refreshCanvas();
 }
 
 // Handle keyboard input for character movement
@@ -146,7 +184,3 @@ function handleKeyPress(event) {
 
 // Add an event listener to detect key presses
 window.addEventListener('keydown', handleKeyPress);
-
-// Initialize the character on the grid at the start
-drawCharacter();
-drawStepCounter();

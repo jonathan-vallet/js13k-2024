@@ -1,26 +1,42 @@
+/**
+ * This file contains the functions to decode the RLE string and process the sprites
+ * @module 03-decoder
+ */
+let pixelList = [];
+
+/**
+ * Decode the RLE string into an array of pixel values
+ * @param {string} rleString - The RLE string to decode
+ * @returns {object} - An object containing the pixel values and image width
+ */
 function decodeRLE(rleString) {
-  const START_CHAR_CODE = 'A'.charCodeAt(0); // Premier caractère de la plage
-  const MAX_CHAR_PER_GROUP = 12; // 12 couleurs par groupe (A à L pour transparent, M à X pour noir, etc.)
+  const START_CHAR_CODE = 'A'.charCodeAt(0); // First character code in the RLE string
+  const MAX_CHAR_PER_GROUP = 12; // 12 colors per group
   const pixels = [];
 
-  const imageWidth = parseInt(rleString.match(/^\d+/)[0], 10); // Extraire et convertir les chiffres en entier
-  rleString = rleString.replace(/^\d+/, ''); // Supprimer la largeur de la chaîne RLE
+  const imageWidth = parseInt(rleString.match(/^\d+/)[0], 10); // Extract the image width
+  rleString = rleString.replace(/^\d+/, '');
 
   for (let i = 0; i < rleString.length; ++i) {
     const char = rleString[i];
     const charCodeOffset = char.charCodeAt(0) - START_CHAR_CODE;
 
-    // Déterminer la couleur (index) et la longueur (nombre de pixels)
-    const colorIndex = Math.floor(charCodeOffset / MAX_CHAR_PER_GROUP); // Calcul de l'index de la couleur
-    const runLength = (charCodeOffset % MAX_CHAR_PER_GROUP) + 1; // Longueur du run
+    // Calculating the color index and run length
+    const colorIndex = Math.floor(charCodeOffset / MAX_CHAR_PER_GROUP);
+    const runLength = (charCodeOffset % MAX_CHAR_PER_GROUP) + 1;
 
-    // Ajouter les pixels décodés à la liste des pixels
     pixels.push(...Array(runLength).fill(colorIndex));
   }
 
   return { pixels, imageWidth };
 }
 
+/**
+ * Convert a 1D array of pixels into a 2D array, given the image width
+ * @param {number[]} pixels - The 1D array of pixel values
+ * @param {number} imageWidth - The width of the image
+ * @returns {number[][]} - A 2D array of pixel values
+ */
 function convertTo2DArray(pixels, imageWidth) {
   const rows = [];
   for (let i = 0; i < pixels.length; i += imageWidth) {
@@ -29,6 +45,13 @@ function convertTo2DArray(pixels, imageWidth) {
   return rows;
 }
 
+/**
+ * Slice the 2D image array into 16x16 tiles
+ * @param {number[][]} image2DArray - The 2D array of pixel values
+ * @param {number} tileWidth - The width of the tile
+ * @param {number} tileHeight - The height of the tile
+ * @returns {number[][][]} - An array of 16x16 tiles
+ */
 function sliceIntoTiles(image2DArray, tileWidth, tileHeight) {
   const tiles = [];
   const numRows = image2DArray.length;
@@ -46,8 +69,11 @@ function sliceIntoTiles(image2DArray, tileWidth, tileHeight) {
   return tiles;
 }
 
-let pixelList = [];
-// Decoding and processing the sprite
+/**
+ * Process a sprite image and return the tiles
+ * @param {string} imageKey - The key of the image in the IMAGE_LIST
+ * @returns {object} - An object containing the tiles of the sprite
+ */
 function processSprite(imageKey) {
   const rleString = IMAGE_LIST[imageKey];
   const pixels = decodeRLE(rleString);

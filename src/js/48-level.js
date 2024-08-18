@@ -16,7 +16,5 @@ function resetLevel() {
   stepsRemaining = 13;
 
   // Redraw the entire level, character, and step counter
-  initLevel();
-  drawCharacter();
-  drawStepCounter();
+  refreshCanvas();
 }

@@ -26,10 +26,16 @@ let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on 
 const LEVEL_WIDTH = 20;
 const LEVEL_HEIGHT = 10;
 
+const uiCanvas = document.getElementById('uiCanvas');
+const uiCtx = uiCanvas.getContext('2d');
 const canvas = document.getElementById('gameCanvas');
-const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
 const ctx = canvas.getContext('2d');
+const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
+
+let collectedKeysNumber = 0;
+let backgroundTile;
+let backgroundColors;
 
 // Orientation constants
 const ORIENTATION_UP = 0;

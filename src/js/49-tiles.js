@@ -15,46 +15,19 @@ function getTileAt(x, y) {
 }
 
 /**
- * Remove a specific tile from the level
- * @param {string} tileName - The name of the tile to remove (e.g., "gong")
+ * Remove a specific tile or multiple tiles from the level.
+ * @param {string} tileName - The name of the tile to remove (e.g., "gong").
+ * @param {number} [x] - The x-coordinate of the tile to remove.
+ * @param {number} [y] - The y-coordinate of the tile to remove.
  */
-function removeTile(tileName) {
-  levelData = levelData.filter((element) => element.tile !== tileName);
-}
-
-/**
- * Check if the player can move to the specified position
- * @param {number} x - The x-coordinate
- * @param {number} y - The y-coordinate
- * @param {number} dx - The x-direction of movement
- * @param {number} dy - The y-direction of movement
- * @returns {boolean} - True if the player can move to this position, false otherwise
- */
-function canMoveTo(x, y, dx = 0, dy = 0) {
-  // Check grid boundaries (excluding the border)
-  if (x < 1 || x >= LEVEL_WIDTH - 1 || y < 1 || y >= LEVEL_HEIGHT - 1) {
-    return false;
-  }
-
-  const tileAtTarget = getTileAt(x, y);
-
-  // If the tile is a crate, try to move it
-  if (tileAtTarget === 'crate') {
-    return moveCrate(x, y, dx, dy); // Move the crate if possible
-  }
-
-  // If the player moves onto a gong-trigger, remove the gong
-  if (tileAtTarget === 'gong-trigger') {
-    removeTile('gong'); // Remove the gong from the level
-    return true; // Allow the player to move onto the gong-trigger
-  }
-
-  // If the tile is a block, rock, or lock, block movement
-  if (![null, 'arrow', 'key'].includes(tileAtTarget)) {
-    return false;
-  }
-
-  return true;
+function removeTile(tileName, x = null, y = null) {
+  levelData = levelData.filter((element) => {
+    // Remove tile if it matches the name and, if provided, coordinates
+    return (
+      element.tile !== tileName ||
+      (x !== null && y !== null && (element.x !== x || element.y !== y))
+    );
+  });
 }
 
 /**
@@ -84,4 +57,144 @@ function moveCrate(x, y, dx, dy) {
   }
 
   return false;
+}
+
+/**
+ * Remove a block and recursively check the adjacent block in the direction of the block's orientation.
+ * @param {number} x - The x-coordinate of the block
+ * @param {number} y - The y-coordinate of the block
+ * @param {number} dx - The x-direction of movement (based on block orientation)
+ * @param {number} dy - The y-direction of movement (based on block orientation)
+ */
+
+function removeConnectedBlocks(x, y, dx, dy) {
+  // Remove the current block
+  animateTileRemoval('block', x, y);
+  refreshCanvas();
+
+  // Calculate the position of the next block in the same direction
+  const nextX = x + dx;
+  const nextY = y + dy;
+
+  // Check if the next position contains another block
+  const nextTile = getTileAt(nextX, nextY);
+  if (nextTile === 'block') {
+    // Get the orientation of the next block
+    const nextBlockElement = levelData.find(
+      (element) =>
+        element.x === nextX && element.y === nextY && element.tile === 'block',
+    );
+    if (nextBlockElement) {
+      const nextBlockOrientation =
+        nextBlockElement.orientation || ORIENTATION_UP;
+
+      // Calculate the new dx and dy based on the next block's orientation
+      let newDx = 0;
+      let newDy = 0;
+
+      if (nextBlockOrientation === ORIENTATION_LEFT) {
+        newDx = -1;
+      } else if (nextBlockOrientation === ORIENTATION_RIGHT) {
+        newDx = 1;
+      } else if (nextBlockOrientation === ORIENTATION_UP) {
+        newDy = -1;
+      } else if (nextBlockOrientation === ORIENTATION_DOWN) {
+        newDy = 1;
+      }
+
+      // After a short delay, remove the next block and continue recursively in the new direction
+      setTimeout(() => {
+        removeConnectedBlocks(nextX, nextY, newDx, newDy);
+      }, 120); // 200ms delay for visual effect
+    }
+  }
+}
+/**
+ * Animate the removal of one or more tiles by scaling them down to 0
+ * @param {string} tileName - The name of the tile to remove (e.g., "block", "gong")
+ * @param {number|null} x - The x-coordinate of the tile to remove, or null to remove all matching tiles
+ * @param {number|null} y - The y-coordinate of the tile to remove, or null to remove all matching tiles
+ * @param {function} callback - A callback function to execute once the animation is complete
+ * @param {number} duration - The duration of the animation in milliseconds
+ */
+function animateTileRemoval(
+  tileName,
+  x = null,
+  y = null,
+  callback,
+  duration = 225,
+) {
+  // Find all matching tiles in levelData
+  const tilesToAnimate = levelData.filter((element) => {
+    return (
+      element.tile === tileName &&
+      (x === null || (element.x === x && element.y === y))
+    );
+  });
+
+  // Mark all tiles as being removed
+  tilesToAnimate.forEach((tile) => {
+    tile.isBeingRemoved = true;
+  });
+
+  // Animate each tile
+  tilesToAnimate.forEach((tile) => {
+    const startTime = performance.now();
+
+    function animate(time) {
+      const elapsedTime = time - startTime;
+      const progress = Math.min(elapsedTime / duration, 1); // Clamp progress between 0 and 1
+      const scale = 1 - progress; // Scale down from 1 to 0
+
+      ctx.clearRect(
+        tile.x * TILE_SIZE * zoomFactor,
+        tile.y * TILE_SIZE * zoomFactor,
+        TILE_SIZE * zoomFactor,
+        TILE_SIZE * zoomFactor,
+      );
+
+      // Redraw the background tile
+      const backgroundTile = GAME_SPRITES['sand'].tiles[0];
+      const backgroundColors = DEFAULT_TILE_COLORS['sand'];
+      drawTile(backgroundTile, backgroundColors, tile.x, tile.y);
+
+      // Redraw the tile with scaling
+      const tileSprite = GAME_SPRITES[tile.tile].tiles[0];
+      const colors = tile.color || DEFAULT_TILE_COLORS[tile.tile];
+
+      ctx.save();
+      ctx.translate(
+        (tile.x + 0.5) * TILE_SIZE * zoomFactor,
+        (tile.y + 0.5) * TILE_SIZE * zoomFactor,
+      ); // Move to the center of the tile
+      ctx.scale(scale, scale); // Scale down the tile
+      ctx.translate(
+        -(tile.x + 0.5) * TILE_SIZE * zoomFactor,
+        -(tile.y + 0.5) * TILE_SIZE * zoomFactor,
+      ); // Move back
+
+      drawTile(
+        tileSprite,
+        colors,
+        tile.x,
+        tile.y,
+        tile.orientation || ORIENTATION_UP,
+      );
+      ctx.restore();
+
+      // Continue the animation or finish and remove the tile
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // Once the animation is done, remove the tile from levelData
+        removeTile(tile.tile, tile.x, tile.y);
+        if (callback) {
+          callback();
+        }
+        refreshCanvas();
+      }
+    }
+
+    requestAnimationFrame(animate);
+  });
 }
