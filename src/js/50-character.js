@@ -20,6 +20,12 @@ let characterMoveFrame = 0;
 const CHARACTER_MOVE_DURATION = 300;
 let characterMoveElapsedTime = 0;
 
+let isReturningToSpawn = false; // Flag to track if the character is returning to spawn
+let spawnReturnTimeout; // Timeout to return the character to spawn after a delay
+let characterReturnStartTime = 0; // Start time for the character return animation
+const CHARACTER_RETURN_DURATION = 400; // Duration of the character return animation in ms
+let returnStartX, returnStartY; // Start position for the character return
+
 // Initialize the step counter
 let stepsPerformed = 0;
 
@@ -45,7 +51,7 @@ function drawCharacter() {
  * @returns {boolean} - True if the character can move to this position, false otherwise
  */
 function canMoveTo(x, y, dx = 0, dy = 0) {
-  if (movingCrate || isCharacterMoving || stepsPerformed >= MAX_STEPS_ALLOWED) {
+  if (movingCrate || isCharacterMoving || isReturningToSpawn) {
     return false; // Cannot move while the character or crate is moving
   }
 
@@ -114,27 +120,29 @@ function moveCharacter(dx, dy, direction) {
   // Check if the character can move to the new position
   if (canMoveTo(newX, newY, dx, dy)) {
     // Start the movement animation
-    isCharacterMoving = true;
-    characterMoveStartX = characterX;
-    characterMoveStartY = characterY;
-    characterMoveTargetX = newX;
-    characterMoveTargetY = newY;
-    characterMoveElapsedTime = 0;
+    if (stepsPerformed < MAX_STEPS_ALLOWED) {
+      isCharacterMoving = true;
+      characterMoveStartX = characterX;
+      characterMoveStartY = characterY;
+      characterMoveTargetX = newX;
+      characterMoveTargetY = newY;
+      characterMoveElapsedTime = 0;
+    }
 
-    ++stepsPerformed; // Increment the step counter on successful move
+    stepsPerformed = Math.min(stepsPerformed + 1, MAX_STEPS_ALLOWED);
 
     // Check if the character has reached 13 steps
-    if (stepsPerformed >= MAX_STEPS_ALLOWED) {
-      // Show the "13" and block further movement
-      refreshCanvas(); // This will display the updated step count
-      setTimeout(() => {
-        // After the delay, start the return to spawn animation
+    if (stepsPerformed >= MAX_STEPS_ALLOWED && !spawnReturnTimeout) {
+      spawnReturnTimeout = setTimeout(() => {
         isReturningToSpawn = true;
+        // After the delay, start the return to spawn animation
         returnStartX = characterX;
         returnStartY = characterY;
         characterReturnStartTime = performance.now();
         stepsPerformed = 0; // Reset steps
+        spawnReturnTimeout = null;
       }, RESPAWN_RESET_DELAY);
+    } else {
     }
   }
 }

@@ -87,7 +87,7 @@ function drawLevelElements(levelData) {
 function drawTile(tile, colors, x, y, options = {}) {
   const {
     orientation = ORIENTATION_UP,
-    scale = 1,
+    scale = tile.scale || 1,
     context = ctx,
     flipHorizontally = false,
   } = options;

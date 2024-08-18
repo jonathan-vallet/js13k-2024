@@ -19,6 +19,7 @@ const IMAGE_LIST = {
   lock: '16FPKMtMIMq\\qMGMZhYqMEMZeqNYeYqMCNYeqPYeYqMAOYeqPYeYrPYfqNYfYrO[eqNYeYfqMYM\\ereYgMYAYM\\fYgMYCYM[MYgMYEYMYMfYeMYGYMhMYIYPYK\\F',
   rock: '16FPIOhNFMeresfMDMerYeueMCMfqZesfqMBMgqZgYfMBMiYgZNBNYkZqNBNYiZsMBMqgriqMAMqeqYgqMYgMAMYfqMYeqMYgMAMZeqMYfNYfMAOZNYPYMqBPEOLF',
   sand: '16ZMYV]MYV]MYW\\MYMYU^MYU^MZU^MZV]MYV]XM\\XM\\X[XN[XM\\X]XZ',
+  spiral: '16FPJYSFRYQDiMZPIeSHfMYPIeM[OGeMZQGeMYRGeMYRGeSIeRJePLfNLLJ',
   trap: '16DNANANGVEQrQCNYM[N[NBMqMrYrMrMqMANZM\\q\\OqMrMYsMrMqO]N]OsNsMqYsN\\qYM]qYOqMqOsYrNAqZN[M[MqBNYqMsMrOCO[rZNFQrMJPF',
 };
 
@@ -27,7 +28,7 @@ let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on 
 const LEVEL_WIDTH = 20;
 const LEVEL_HEIGHT = 10;
 const MAX_STEPS_ALLOWED = 13; // Triskaidekaphobia!!
-const RESPAWN_RESET_DELAY = 500; // Delay before resetting the level after the character's fear of 13 (in ms)
+const RESPAWN_RESET_DELAY = 600; // Delay before resetting the level after the character's fear of 13 (in ms)
 
 const uiCanvas = document.getElementById('uiCanvas');
 const uiCtx = uiCanvas.getContext('2d');
@@ -71,6 +72,7 @@ const DEFAULT_TILE_COLORS = {
   sand: COLOR_SETS.sandSet,
   gong: COLOR_SETS.bronzeSet,
   'gong-trigger': COLOR_SETS.bronzeSet,
+  spiral: COLOR_SETS.blueGreenSet,
 };
 
 // Level data with specific tile color variations

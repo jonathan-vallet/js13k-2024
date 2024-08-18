@@ -3,10 +3,6 @@
  * @module 51-canvas-animations
  */
 let lastFrameTime = 0;
-let isReturningToSpawn = false; // Flag to track if the character is returning to spawn
-let characterReturnStartTime = 0; // Start time for the character return animation
-const CHARACTER_RETURN_DURATION = 250; // Duration of the character return animation in ms
-let returnStartX, returnStartY; // Start position for the character return
 
 /**
  * Main animation loop
@@ -138,21 +134,28 @@ function returnCharacterToSpawn() {
   const elapsedTime = performance.now() - characterReturnStartTime;
   const progress = Math.min(elapsedTime / CHARACTER_RETURN_DURATION, 1);
 
-  // Calculate the character's current position based on progress
-  characterX = returnStartX + (initialX - returnStartX) * progress;
-  characterY = returnStartY + (initialY - returnStartY) * progress;
+  // First part: scale down at the current position
+  if (progress < 0.5) {
+    characterScale = 1 - progress * 2; // Scale down from 1 to 0
+    characterX = returnStartX;
+    characterY = returnStartY;
+  } else {
+    // Second part: scale up at the spawn position
+    characterScale = (progress - 0.5) * 2; // Scale up from 0 to 1
+    characterX = initialX;
+    characterY = initialY;
+    setCharacterDirection(ORIENTATION_DOWN);
+  }
 
-  // Calculate the scale: scale down during the first half, then scale up
-  const CHARACTER_SCALE_REDUCTION = 0.4;
-  characterScale =
-    progress < 0.5
-      ? 1 - progress * 2 * (1 - CHARACTER_SCALE_REDUCTION)
-      : 1 - (1 - progress) * 2 * (1 - CHARACTER_SCALE_REDUCTION);
-  // End the animation when the progress reaches 1
+  // Terminer l'animation lorsque le progress atteint 1
   if (progress >= 1) {
     isReturningToSpawn = false;
     characterX = initialX;
     characterY = initialY;
+    characterScale = 1;
+
+    // Retirer les spirales de levelData une fois l'animation terminée
+    levelData = levelData.filter((tile) => tile.tile !== 'spiral');
   }
 }
 
