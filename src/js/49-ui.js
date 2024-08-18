@@ -10,11 +10,11 @@ function drawUI() {
   uiCtx.fillRect(0, 0, uiCanvas.width, uiCanvas.height);
 
   // Draw steps remaining
-  adjustFontSize(`Steps: ${stepsRemaining}`);
+  adjustFontSize(`Steps: ${stepsPerformed}`);
 
   uiCtx.fillStyle = 'white';
   const y = uiCanvas.height / 2 + uiCtx.font.match(/\d+/)[0] / 2;
-  uiCtx.fillText(`Steps: ${stepsRemaining}`, uiCanvas.width * 0.02, y);
+  uiCtx.fillText(`Steps: ${stepsPerformed}`, uiCanvas.width * 0.02, y);
   // Draw the key icon and count
   const keyTile = GAME_SPRITES['key'].tiles[0];
   const keyColors = DEFAULT_TILE_COLORS['key'];

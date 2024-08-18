@@ -21,7 +21,7 @@ const CHARACTER_MOVE_DURATION = 300;
 let characterMoveElapsedTime = 0;
 
 // Initialize the step counter (13 steps)
-let stepsRemaining = MAX_STEPS_ALLOWED;
+let stepsPerformed = 0;
 
 /**
  * Draw the character sprite on the canvas
@@ -124,7 +124,7 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
   // If the tile is a not a free space, return false
   if (![null, 'arrow', 'key', 'key-holder', 'flag'].includes(tileAtTarget)) {
     if (hasPerformedAction) {
-      --stepsRemaining;
+      ++stepsPerformed;
     } else {
       playActionSound('wall');
     }
@@ -139,9 +139,15 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
  * @param {number} dx - The x-direction of movement
  * @param {number} dy - The y-direction of movement
  */
+
+/**
+ * Move the character
+ * @param {number} dx - The x-direction of movement
+ * @param {number} dy - The y-direction of movement
+ */
 function moveCharacter(dx, dy, direction) {
   if (isReturningToSpawn || isCharacterMoving) {
-    return; // Prevent movement while returning to spawn
+    return; // Prevent movement while returning to spawn or if already moving
   }
 
   const newX = characterX + dx;
@@ -158,15 +164,20 @@ function moveCharacter(dx, dy, direction) {
     characterMoveTargetY = newY;
     characterMoveElapsedTime = 0;
 
-    stepsRemaining--; // Decrement the step counter on successful move
+    ++stepsPerformed; // Increment the step counter on successful move
 
-    // Check if the character has run out of steps
-    if (stepsRemaining <= 0) {
-      isReturningToSpawn = true; // Start the return to spawn animation
-      returnStartX = characterX;
-      returnStartY = characterY;
-      characterReturnStartTime = performance.now();
-      stepsRemaining = MAX_STEPS_ALLOWED;
+    // Check if the character has reached 13 steps
+    if (stepsPerformed >= MAX_STEPS_ALLOWED) {
+      // Show the "13" and block further movement
+      refreshCanvas(); // This will display the updated step count
+      setTimeout(() => {
+        // After the delay, start the return to spawn animation
+        isReturningToSpawn = true;
+        returnStartX = characterX;
+        returnStartY = characterY;
+        characterReturnStartTime = performance.now();
+        stepsPerformed = 0; // Reset steps
+      }, RESPAWN_RESET_DELAY);
     }
   }
 }

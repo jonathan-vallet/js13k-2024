@@ -26,7 +26,8 @@ const TILE_SIZE = 16; // Original tile size in pixels
 let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on screen size
 const LEVEL_WIDTH = 20;
 const LEVEL_HEIGHT = 10;
-const MAX_STEPS_ALLOWED = 3; // Triskaidekaphobia!!
+const MAX_STEPS_ALLOWED = 13; // Triskaidekaphobia!!
+const RESPAWN_RESET_DELAY = 500; // Delay before resetting the level after the character's fear of 13 (in ms)
 
 const uiCanvas = document.getElementById('uiCanvas');
 const uiCtx = uiCanvas.getContext('2d');
