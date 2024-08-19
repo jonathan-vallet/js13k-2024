@@ -17,13 +17,16 @@ function drawUI() {
   uiCtx.fillText(`Steps: ${stepsPerformed}`, uiCanvas.width * 0.02, y);
   // Draw the key icon and count
   const keyTile = GAME_SPRITES['key'].tiles[0];
-  const keyColors = DEFAULT_TILE_COLORS['key'];
+  const keyColors = DEFAULT_TILE_COLORS['key'] || [
+    '#000',
+    '#f00',
+    '#0f0',
+    '#00f',
+  ];
   drawTile(keyTile, keyColors, 4.5, 0.75, { context: uiCtx });
   uiCtx.fillText(`x${collectedKeysNumber}`, uiCanvas.width * 0.28, y);
 
-  // Draw controls (Reset, Undo)
-  uiCtx.fillText('R: Reset', uiCanvas.width * 0.8, y * 0.7);
-  uiCtx.fillText('Undo', uiCanvas.width * 0.8, y * 1.3);
+  uiCtx.fillText('R: Reset', uiCanvas.width * 0.8, y);
 }
 
 /**

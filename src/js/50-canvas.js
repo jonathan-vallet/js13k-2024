@@ -33,8 +33,8 @@ function drawLevel() {
  * @param {string} borderTileName - The name of the border tile
  */
 function drawLevelBackground(backgroundTileName, borderTileName) {
-  backgroundTile = GAME_SPRITES[backgroundTileName].tiles[0];
-  backgroundColors = DEFAULT_TILE_COLORS[backgroundTileName];
+  const backgroundTile = GAME_SPRITES[backgroundTileName].tiles[0];
+  const backgroundColors = DEFAULT_TILE_COLORS[backgroundTileName];
   const borderTile = GAME_SPRITES[borderTileName].tiles[0];
   const borderColors = DEFAULT_TILE_COLORS[borderTileName];
 
@@ -62,12 +62,12 @@ function drawLevelElements(levelData) {
   levelData.forEach((element) => {
     const tile = GAME_SPRITES[element.tile];
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
-    const colors = element.color || DEFAULT_TILE_COLORS[element.tile];
+    const colors = element.color ||
+      DEFAULT_TILE_COLORS[element.tile] || ['#000', '#f00', '#0f0', '#00f'];
     const x = element.x;
     const y = element.y;
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
-
     drawTile(frame, colors, x, y, { orientation, scale });
   });
 }

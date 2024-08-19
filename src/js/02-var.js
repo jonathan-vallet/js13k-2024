@@ -19,8 +19,11 @@ const IMAGE_LIST = {
   lock: '16FPKMtMIMq\\qMGMZhYqMEMZeqNYeYqMCNYeqPYeYqMAOYeqPYeYrPYfqNYfYrO[eqNYeYfqMYM\\ereYgMYAYM\\fYgMYCYM[MYgMYEYMYMfYeMYGYMhMYIYPYK\\F',
   rock: '16FPIOhNFMeresfMDMerYeueMCMfqZesfqMBMgqZgYfMBMiYgZNBNYkZqNBNYiZsMBMqgriqMAMqeqYgqMYgMAMYfqMYeqMYgMAMZeqMYfNYfMAOZNYPYMqBPEOLF',
   sand: '16ZMYV]MYV]MYW\\MYMYU^MYU^MZU^MZV]MYV]XM\\XM\\X[XN[XM\\X]XZ',
-  spiral: '16FPJYSFRYQDiMZPIeSHfMYPIeM[OGeMZQGeMYRGeMYRGeSIeRJePLfNLLJ',
-  trap: '16DNANANGVEQrQCNYM[N[NBMqMrYrMrMqMANZM\\q\\OqMrMYsMrMqO]N]OsNsMqYsN\\qYM]qYOqMqOsYrNAqZN[M[MqBNYqMsMrOCO[rZNFQrMJPF',
+  'spawn-current':
+    '16E\\LBYAYJZBYAYJZAYAYJYAYBYBYD[F[AYAYEZCYBZAZB\\AYB\\BYA\\BZAZBYCZEYAYA[F[DYBYBYAYJYAYAZJYAYBZJYAYLB\\E',
+  spawn:
+    '32E\\L\\LBYAYLAYAYJZBYAYIZBYAYJZAYAYJZAYAYJYAYBYBYGYAYBYBYD[F[AYB[F[AYAYEfCYBYAYErCYBZAZBhAYB[AZBtAYB\\BYAhBZA[BYAtBZAZBYCfEYAYBYCrEYAYA[F[BYA[F[DYBYBYAYGYBYBYAYJYAYAZJYAYAZJYAYBZIYAYBZJYAYLAYAYLB\\L\\E',
+  trap: '16DNANANGVEQfQCNYM[N[NBMeMfYfMfMeMANZM\\e\\OeMfMYgMfMeO]N]OgNgMeYgN\\eYM]eYOeMeOgYfNAeZN[M[MeBNYeMgMfOCO[fZNFQfMJPF',
 };
 
 const TILE_SIZE = 16; // Original tile size in pixels
@@ -38,8 +41,7 @@ const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
 
 let collectedKeysNumber = 0;
-let backgroundTile;
-let backgroundColors;
+let movementHistory = [];
 
 // Orientation constants
 const ORIENTATION_UP = 0;
@@ -51,28 +53,33 @@ const DEFAULT_ANIMATION_INTERVAL = 200; // Default interval for animations befor
 const DEFAULT_REMOVAL_DURATION = 225; // Default duration for tile removal animations
 
 const COLOR_SETS = {
-  blueGreenSet: ['#024d53', '#599dbc', '#72d1c7', '#a9ffe6'],
-  crateSet: ['#000', '#893a25', '#f89e61', '#863422'],
-  greenSet: ['#000', '#527f67', '#a2ce69', '#d6f8e1'],
-  sandSet: ['#cab168', '#e5d09e'],
-  bronzeSet: ['#000', '#811c07', '#ca6137', '#ffb59c'],
+  blueGreen: ['#024d53', '#599dbc', '#72d1c7', '#a9ffe6'],
+  crate: ['#000', '#893a25', '#f89e61', '#863422'],
+  green: ['#000', '#527f67', '#a2ce69', '#d6f8e1'],
+  sand: ['#cab168', '#e5d09e'],
+  bronze: ['#000', '#811c07', '#ca6137', '#ffb59c'],
 };
 
 // Référencer les sets de couleurs dans DEFAULT_TILE_COLORS
 const DEFAULT_TILE_COLORS = {
-  arrow: COLOR_SETS.blueGreenSet,
-  block: COLOR_SETS.blueGreenSet,
+  arrow: COLOR_SETS.blueGreen,
+  block: COLOR_SETS.blueGreen,
   character: ['#000', '#e42c37', '#c07548', '#fdcbb0'],
-  crate: COLOR_SETS.crateSet,
-  lock: COLOR_SETS.greenSet,
-  key: COLOR_SETS.greenSet,
-  flag: COLOR_SETS.bronzeSet,
-  'key-holder': COLOR_SETS.blueGreenSet,
-  rock: COLOR_SETS.blueGreenSet,
-  sand: COLOR_SETS.sandSet,
-  gong: COLOR_SETS.bronzeSet,
-  'gong-trigger': COLOR_SETS.bronzeSet,
-  spiral: COLOR_SETS.blueGreenSet,
+  crate: COLOR_SETS.crate,
+  lock: COLOR_SETS.green,
+  key: COLOR_SETS.green,
+  flag: COLOR_SETS.bronze,
+  'key-holder': COLOR_SETS.blueGreen,
+  'hole-filled': COLOR_SETS.crate,
+  rock: COLOR_SETS.blueGreen,
+  sand: COLOR_SETS.sand,
+  gong: COLOR_SETS.bronze,
+  'gong-trigger': COLOR_SETS.bronze,
+  spiral: COLOR_SETS.blueGreen,
+  trap: ['#306710', '#000', '#b1712e'],
+  hole: ['#000', '#00506e'],
+  spawn: COLOR_SETS.blueGreen,
+  'spawn-current': COLOR_SETS.blueGreen,
 };
 
 // Level data with specific tile color variations
@@ -80,8 +87,11 @@ let levelData = [
   { tile: 'arrow', x: 4, y: 7 },
   { tile: 'arrow', x: 4, y: 6, orientation: ORIENTATION_LEFT },
   { tile: 'arrow', x: 2, y: 4, orientation: ORIENTATION_LEFT },
+  { tile: 'trap', x: 15, y: 6 },
+  { tile: 'trap', x: 12, y: 6 },
   { tile: 'crate', x: 3, y: 6 },
   { tile: 'crate', x: 4, y: 6 },
+  { tile: 'crate', x: 11, y: 6 },
   { tile: 'rock', x: 11, y: 2 },
   { tile: 'rock', x: 1, y: 3 },
   { tile: 'rock', x: 2, y: 3 },
@@ -106,6 +116,10 @@ let levelData = [
   { tile: 'rock', x: 5, y: 5 },
   { tile: 'rock', x: 14, y: 5 },
   { tile: 'rock', x: 16, y: 5 },
+  { tile: 'rock', x: 14, y: 6 },
+  { tile: 'rock', x: 16, y: 6 },
+  { tile: 'rock', x: 14, y: 7 },
+  { tile: 'rock', x: 16, y: 7 },
   { tile: 'block', x: 8, y: 3, orientation: ORIENTATION_LEFT },
   { tile: 'block', x: 9, y: 3, orientation: ORIENTATION_LEFT },
   { tile: 'flag', x: 9, y: 2 },
@@ -113,7 +127,7 @@ let levelData = [
     tile: 'block',
     x: 10,
     y: 3,
-    color: COLOR_SETS.greenSet,
+    color: COLOR_SETS.green,
     orientation: ORIENTATION_LEFT,
     isPushable: true,
   },
@@ -121,5 +135,6 @@ let levelData = [
   { tile: 'key-holder', x: 15, y: 4 },
   { tile: 'key', x: 15, y: 4 },
   { tile: 'gong-trigger', x: 1, y: 4 },
-  { tile: 'gong', x: 15, y: 5 },
+  { tile: 'gong', x: 15, y: 7 },
+  { tile: 'spawn-current', x: 9, y: 7 },
 ];

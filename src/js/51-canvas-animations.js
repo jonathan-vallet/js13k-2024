@@ -126,6 +126,7 @@ function playCharacterAnimation(deltaTime) {
     characterY = characterMoveTargetY;
     characterMoveElapsedTime = 0;
     characterMoveFrame = characterFrameDirection; // Reset to the default frame
+    handlePostMoveEvents(characterMoveStartX, characterMoveStartY);
   }
 }
 
@@ -137,21 +138,23 @@ function returnCharacterToSpawn() {
   // First part: scale down at the current position
   if (progress < 0.5) {
     characterScale = 1 - progress * 2; // Scale down from 1 to 0
-    characterX = returnStartX;
-    characterY = returnStartY;
+    characterX = respawnStartX;
+    characterY = respawnStartY;
   } else {
     // Second part: scale up at the spawn position
     characterScale = (progress - 0.5) * 2; // Scale up from 0 to 1
-    characterX = initialX;
-    characterY = initialY;
-    setCharacterDirection(ORIENTATION_DOWN);
+    characterX = respawnTargetX;
+    characterY = respawnTargetY;
+    if (respawnTargetX === initialX && respawnTargetY === initialY) {
+      setCharacterDirection(ORIENTATION_DOWN); // Reset the character direction
+    }
   }
 
   // Terminer l'animation lorsque le progress atteint 1
   if (progress >= 1) {
     isReturningToSpawn = false;
-    characterX = initialX;
-    characterY = initialY;
+    characterX = respawnTargetX;
+    characterY = respawnTargetY;
     characterScale = 1;
 
     // Retirer les spirales de levelData une fois l'animation terminée
@@ -175,6 +178,17 @@ function animateCrate(deltaTime) {
     movingCrate.x = crateMoveTargetX;
     movingCrate.y = crateMoveTargetY;
     crateMoveElapsedTime = 0;
+    checkCrateInHole(movingCrate);
     movingCrate = null;
+  }
+}
+
+function checkCrateInHole(crate) {
+  const holeTileAtPosition = getTileAt(crate.x, crate.y, ['hole', 'trap']);
+  if (holeTileAtPosition) {
+    removeTile(holeTileAtPosition.tile, crate.x, crate.y);
+    removeTile('crate', crate.x, crate.y);
+    addTile('hole-filled', crate.x, crate.y);
+    playActionSound('fall');
   }
 }

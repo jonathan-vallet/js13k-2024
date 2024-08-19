@@ -21,10 +21,12 @@ function resetLevel() {
   // Reset the character's position
   characterX = initialX;
   characterY = initialY;
+  setCharacterDirection(ORIENTATION_DOWN); // Reset the character direction
   characterScale = 1;
 
-  // Reset the step counter
+  // Reset the step counter and movement history
   stepsPerformed = 0;
+  movementHistory = [];
 
   // Redraw the entire level, character, and step counter
 }

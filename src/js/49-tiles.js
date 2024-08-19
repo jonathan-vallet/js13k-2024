@@ -4,11 +4,17 @@
  * @param {number} y - The y-coordinate
  * @returns {string} - The name of the tile at this position or null if no element is found
  */
-function getTileAt(x, y) {
+function getTileAt(x, y, type = []) {
   let lastTileAt = null;
   for (const element of levelData) {
     if (element.x === x && element.y === y) {
-      lastTileAt = element.tile;
+      if (type.length > 0) {
+        if (type.includes(element.tile)) {
+          lastTileAt = element;
+        }
+      } else {
+        lastTileAt = element;
+      }
     }
   }
   return lastTileAt;
@@ -31,6 +37,17 @@ function removeTile(tileName, x = null, y = null) {
 }
 
 /**
+ * Add a new tile to the level data
+ * @param {string} tile - The name of the tile to add
+ * @param {number} x - The x-coordinate of the tile
+ * @param {number} y - The y-coordinate of the tile
+ * @param {object} [options] - Additional options for the tile
+ */
+function addTile(tile, x, y, options = {}) {
+  levelData.push({ tile, x, y, ...options });
+}
+
+/**
  * Move a crate if possible
  * @param {number} x - The x-coordinate of the crate
  * @param {number} y - The y-coordinate of the crate
@@ -44,10 +61,11 @@ function tryMoveCrate(x, y, dx, dy) {
   const newY = y + dy;
 
   // Check if the tile where the crate should move is free and does not contain another crate
-  const tileAtNewPosition = getTileAt(newX, newY);
+  const tileAtNewPosition = getTileAt(newX, newY)?.tile || null;
   if (
-    isInBounds(newX, newX) &&
-    (tileAtNewPosition === null || ['arrow'].includes(tileAtNewPosition))
+    isInBounds(newX, newY) &&
+    (tileAtNewPosition === null ||
+      ['arrow', 'hole', 'trap', 'hole(filled'].includes(tileAtNewPosition))
   ) {
     // Update the crate's position in levelData
     for (const element of levelData) {
@@ -94,7 +112,7 @@ function removeConnectedBlocks(x, y, dx, dy) {
   const nextY = y + dy;
 
   // Check if the next position contains another block
-  const nextTile = getTileAt(nextX, nextY);
+  const nextTile = getTileAt(nextX, nextY)?.tile;
   if (nextTile === 'block') {
     // Get the orientation of the next block
     const nextBlockElement = levelData.find(
@@ -126,6 +144,7 @@ function removeConnectedBlocks(x, y, dx, dy) {
     }
   }
 }
+
 /**
  * Animate the removal of one or more tiles by scaling them down to 0
  * @param {string} tileName - The name of the tile to remove (e.g., "block", "gong")

@@ -14,12 +14,11 @@ const CRATE_MOVE_DURATION = 200;
  * @param {number} y - The y-coordinate
  * @param {number} dx - The x-direction of movement
  * @param {number} dy - The y-direction of movement
- * @param {string} tileAtTarget - The name of the tile at the target position
  * @param {Object} tileElement - The tile element object
  */
-function tryPerformAction(x, y, dx, dy, tileAtTarget, tileElement) {
+function tryPerformAction(x, y, dx, dy, tileElement) {
   let hasPerformedAction = false;
-  switch (tileAtTarget) {
+  switch (tileElement?.tile) {
     case 'crate':
       if (tryMoveCrate(x, y, dx, dy)) {
         hasPerformedAction = true;
