@@ -29,12 +29,11 @@ function animate(timestamp) {
 function updateAnimations(deltaTime) {
   levelData.forEach((tile) => {
     // Handle regular animation (frame changes)
-    if (GAME_SPRITES[tile.tile].tiles.length > 1) {
+    if (TILE_DATA[tile.tile].tiles.length > 1) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
       const interval = tile.animationInterval || DEFAULT_ANIMATION_INTERVAL;
       if (tile.elapsed >= interval) {
-        tile.animationFrame =
-          (tile.animationFrame + 1) % GAME_SPRITES[tile.tile].tiles.length;
+        tile.animationFrame = (tile.animationFrame + 1) % TILE_DATA[tile.tile].tiles.length;
         tile.elapsed = 0; // Reset elapsed time
       }
     }
@@ -90,18 +89,11 @@ function updateAnimations(deltaTime) {
  */
 function playCharacterAnimation(deltaTime) {
   characterMoveElapsedTime += deltaTime;
-  const progress = Math.min(
-    characterMoveElapsedTime / CHARACTER_MOVE_DURATION,
-    1,
-  );
+  const progress = Math.min(characterMoveElapsedTime / CHARACTER_MOVE_DURATION, 1);
 
   // Interpolate the character's position
-  characterX =
-    characterMoveStartX +
-    (characterMoveTargetX - characterMoveStartX) * progress;
-  characterY =
-    characterMoveStartY +
-    (characterMoveTargetY - characterMoveStartY) * progress;
+  characterX = characterMoveStartX + (characterMoveTargetX - characterMoveStartX) * progress;
+  characterY = characterMoveStartY + (characterMoveTargetY - characterMoveStartY) * progress;
 
   // Determine the character's movement direction
   let characterFrameDirection = getMoveFrameFromDirection(characterDirection);
@@ -169,10 +161,8 @@ function returnCharacterToSpawn() {
 function animateCrate(deltaTime) {
   crateMoveElapsedTime += deltaTime;
   const progress = Math.min(crateMoveElapsedTime / CRATE_MOVE_DURATION, 1);
-  movingCrate.x =
-    crateMoveStartX + (crateMoveTargetX - crateMoveStartX) * progress;
-  movingCrate.y =
-    crateMoveStartY + (crateMoveTargetY - crateMoveStartY) * progress;
+  movingCrate.x = crateMoveStartX + (crateMoveTargetX - crateMoveStartX) * progress;
+  movingCrate.y = crateMoveStartY + (crateMoveTargetY - crateMoveStartY) * progress;
 
   if (progress >= 1) {
     movingCrate.x = crateMoveTargetX;

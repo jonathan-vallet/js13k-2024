@@ -33,8 +33,8 @@ let stepsPerformed = 0;
  * Draw the character sprite on the canvas
  */
 function drawCharacter() {
-  const characterTile = GAME_SPRITES['characters'].tiles[characterMoveFrame]; // Use the current frame
-  const characterColors = DEFAULT_TILE_COLORS['character'];
+  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame]; // Use the current frame
+  const characterColors = TILE_DATA['characters'].colors;
 
   drawTile(characterTile, characterColors, characterX, characterY, {
     scale: characterScale,
@@ -77,18 +77,9 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
 
   // If the tile is a not a free space, return false
   if (
-    ![
-      null,
-      'arrow',
-      'key',
-      'key-holder',
-      'flag',
-      'trap',
-      'hole',
-      'hole-filled',
-      'spawn',
-      'spawn-current',
-    ].includes(tileAtTarget)
+    ![null, 'arrow', 'key', 'key-holder', 'flag', 'trap', 'hole', 'hole-filled', 'spawn', 'spawn-current'].includes(
+      tileAtTarget,
+    )
   ) {
     if (hasPerformedAction) {
       ++stepsPerformed;
@@ -187,16 +178,15 @@ function handlePostMoveEvents(lastX, lastY) {
 
   switch (tileAtCurrentPosition?.tile) {
     case 'hole':
-      respawnCharacter(
-        movementHistory[movementHistory.length - 1].x,
-        movementHistory[movementHistory.length - 1].y,
-      );
+      respawnCharacter(movementHistory[movementHistory.length - 1].x, movementHistory[movementHistory.length - 1].y);
       --stepsPerformed;
       break;
   }
 
   if (stepsPerformed >= MAX_STEPS_ALLOWED) {
     respawnCharacter();
-    stepsPerformed = 0; // Reset steps
+    setTimeout(() => {
+      stepsPerformed = 0; // Reset steps after returning to spawn
+    }, CHARACTER_RETURN_DURATION);
   }
 }

@@ -73,11 +73,7 @@ gulp.task('zip', function (done) {
     const zipSize = archive.pointer();
     const percentageOfLimit = (zipSize / MAX_SIZE) * 100;
     console.log(`Zipped size: ${zipSize} bytes`);
-    console.log(
-      `You are using ${percentageOfLimit.toFixed(
-        2,
-      )}% of the 13 KB limit (13,312 bytes).`,
-    );
+    console.log(`You are using ${percentageOfLimit.toFixed(2)}% of the 13 KB limit (13,312 bytes).`);
     done();
   });
 
@@ -100,12 +96,8 @@ gulp.task('serve', function () {
   });
 
   // Regarder les changements et rafraîchir automatiquement
-  gulp
-    .watch(paths.scripts, gulp.series('scripts', 'minify-html'))
-    .on('change', browserSync.reload);
-  gulp
-    .watch(paths.html, gulp.series('minify-html'))
-    .on('change', browserSync.reload);
+  gulp.watch(paths.scripts, gulp.series('scripts', 'minify-html')).on('change', browserSync.reload);
+  gulp.watch(paths.html, gulp.series('minify-html')).on('change', browserSync.reload);
 });
 
 // Tâche 'watch' : Surveille les fichiers et régénère à la volée (sans zip)

@@ -16,15 +16,9 @@ function refreshCanvas() {
  * Draw the level background and elements
  */
 function drawLevel() {
-  drawLevelBackground('sand', 'rock');
+  // draw background image
+  ctx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
   drawLevelElements(levelData);
-  backgroundCtx.drawImage(
-    canvas,
-    0,
-    0,
-    backgroundCanvas.width,
-    backgroundCanvas.height,
-  );
 }
 
 /**
@@ -33,25 +27,38 @@ function drawLevel() {
  * @param {string} borderTileName - The name of the border tile
  */
 function drawLevelBackground(backgroundTileName, borderTileName) {
-  const backgroundTile = GAME_SPRITES[backgroundTileName].tiles[0];
-  const backgroundColors = DEFAULT_TILE_COLORS[backgroundTileName];
-  const borderTile = GAME_SPRITES[borderTileName].tiles[0];
-  const borderColors = DEFAULT_TILE_COLORS[borderTileName];
+  const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
+  const backgroundColors = TILE_DATA[backgroundTileName].colors;
+  const borderTile = TILE_DATA[borderTileName].tiles[0];
+  const borderColors = TILE_DATA[borderTileName].colors;
 
   for (let y = 0; y < LEVEL_HEIGHT; y++) {
     for (let x = 0; x < LEVEL_WIDTH; x++) {
+      // Draw the background tile at every position
       drawTile(backgroundTile, backgroundColors, x, y);
-      if (
-        x === 0 ||
-        x === LEVEL_WIDTH - 1 ||
-        y === 0 ||
-        y === LEVEL_HEIGHT - 1
-      ) {
+
+      // Draw the border tile at the edges
+      if (x === 0 || x === LEVEL_WIDTH - 1 || y === 0 || y === LEVEL_HEIGHT - 1) {
         drawTile(borderTile, borderColors, x, y);
-      } else {
+      }
+
+      // Draw all static elements
+      const element = getTileAt(x, y);
+      if (STATIC_TILE_LIST.includes(element?.tile)) {
+        drawTile(TILE_DATA[element.tile].tiles[0], TILE_DATA[element.tile].colors, x, y);
       }
     }
   }
+
+  textManager.text({
+    ctx: backgroundCtx,
+    x: 10,
+    y: 10,
+    text: '0',
+    color: 'rgb(255,0,0)',
+  });
+
+  backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
 }
 
 /**
@@ -59,11 +66,14 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
  * @param {Array} levelData - The level data array with tile information
  */
 function drawLevelElements(levelData) {
+  let drawnNumbers = 0;
   levelData.forEach((element) => {
-    const tile = GAME_SPRITES[element.tile];
+    const tile = TILE_DATA[element.tile];
+    if (STATIC_TILE_LIST.includes(element.tile)) {
+      return;
+    }
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
-    const colors = element.color ||
-      DEFAULT_TILE_COLORS[element.tile] || ['#000', '#f00', '#0f0', '#00f'];
+    const colors = element.color || TILE_DATA[element.tile].colors;
     const x = element.x;
     const y = element.y;
     const orientation = element.orientation || ORIENTATION_UP;
@@ -85,20 +95,12 @@ function drawLevelElements(levelData) {
  * @param {boolean} [options.flipHorizontally=false] - Whether to flip the tile horizontally
  */
 function drawTile(tile, colors, x, y, options = {}) {
-  const {
-    orientation = ORIENTATION_UP,
-    scale = tile.scale || 1,
-    context = ctx,
-    flipHorizontally = false,
-  } = options;
+  const { orientation = ORIENTATION_UP, scale = tile.scale || 1, context = ctx, flipHorizontally = false } = options;
 
   context.save();
 
   const halfTileSize = (TILE_SIZE * zoomFactor) / 2;
-  context.translate(
-    (x + 0.5) * TILE_SIZE * zoomFactor,
-    (y + 0.5) * TILE_SIZE * zoomFactor,
-  );
+  context.translate((x + 0.5) * TILE_SIZE * zoomFactor, (y + 0.5) * TILE_SIZE * zoomFactor);
 
   // Apply horizontal flip if necessary
   let scaleDirection = 1;
@@ -117,12 +119,7 @@ function drawTile(tile, colors, x, y, options = {}) {
       if (pixelValue > 0) {
         // Skip transparent pixels (0)
         context.fillStyle = colors[pixelValue - 1];
-        context.fillRect(
-          tileX * zoomFactor,
-          tileY * zoomFactor,
-          zoomFactor,
-          zoomFactor,
-        );
+        context.fillRect(tileX * zoomFactor, tileY * zoomFactor, zoomFactor, zoomFactor);
       }
     }
   }

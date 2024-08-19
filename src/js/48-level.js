@@ -10,7 +10,7 @@ function resetLevel() {
 
   // Reset the animation state of each tile
   levelData.forEach((tile) => {
-    if (GAME_SPRITES[tile.tile].tiles.length > 1) {
+    if (TILE_DATA[tile.tile].tiles.length > 1) {
       tile.animationFrame = 0;
       tile.elapsed = 0;
     }

@@ -6,7 +6,7 @@ function setZoomFactor() {
   canvas.width = LEVEL_WIDTH * TILE_SIZE * zoomFactor;
   canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;
   uiCanvas.width = canvas.width;
-  uiCanvas.height = TILE_SIZE * zoomFactor * 2; // 2 tiles high
+  uiCanvas.height = TILE_SIZE * 1.1 * zoomFactor; // 2 tiles high
 
   // background canvas has same ratio than canvas but cover window size
   if (window.innerWidth / window.innerHeight > LEVEL_WIDTH / LEVEL_HEIGHT) {
@@ -16,6 +16,8 @@ function setZoomFactor() {
     backgroundCanvas.height = window.innerHeight;
     backgroundCanvas.width = window.innerHeight * (LEVEL_WIDTH / LEVEL_HEIGHT);
   }
+
+  drawLevelBackground('sand', 'rock');
 }
 
 function initGame() {

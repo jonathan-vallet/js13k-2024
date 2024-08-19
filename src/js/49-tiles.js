@@ -29,10 +29,7 @@ function getTileAt(x, y, type = []) {
 function removeTile(tileName, x = null, y = null) {
   levelData = levelData.filter((element) => {
     // Remove tile if it matches the name and, if provided, coordinates
-    return (
-      element.tile !== tileName ||
-      (x !== null && y !== null && (element.x !== x || element.y !== y))
-    );
+    return element.tile !== tileName || (x !== null && y !== null && (element.x !== x || element.y !== y));
   });
 }
 
@@ -64,8 +61,7 @@ function tryMoveCrate(x, y, dx, dy) {
   const tileAtNewPosition = getTileAt(newX, newY)?.tile || null;
   if (
     isInBounds(newX, newY) &&
-    (tileAtNewPosition === null ||
-      ['arrow', 'hole', 'trap', 'hole(filled'].includes(tileAtNewPosition))
+    (tileAtNewPosition === null || ['arrow', 'hole', 'trap', 'hole-filled'].includes(tileAtNewPosition))
   ) {
     // Update the crate's position in levelData
     for (const element of levelData) {
@@ -116,12 +112,10 @@ function removeConnectedBlocks(x, y, dx, dy) {
   if (nextTile === 'block') {
     // Get the orientation of the next block
     const nextBlockElement = levelData.find(
-      (element) =>
-        element.x === nextX && element.y === nextY && element.tile === 'block',
+      (element) => element.x === nextX && element.y === nextY && element.tile === 'block',
     );
     if (nextBlockElement) {
-      const nextBlockOrientation =
-        nextBlockElement.orientation || ORIENTATION_UP;
+      const nextBlockOrientation = nextBlockElement.orientation || ORIENTATION_UP;
 
       // Calculate the new dx and dy based on the next block's orientation
       let newDx = 0;
@@ -153,19 +147,10 @@ function removeConnectedBlocks(x, y, dx, dy) {
  * @param {function} callback - A callback function to execute once the animation is complete
  * @param {number} duration - The duration of the animation in milliseconds
  */
-function animateTileRemoval(
-  tileName,
-  x = null,
-  y = null,
-  callback,
-  duration = DEFAULT_REMOVAL_DURATION,
-) {
+function animateTileRemoval(tileName, x = null, y = null, callback, duration = DEFAULT_REMOVAL_DURATION) {
   // Find all matching tiles in levelData
   const tilesToAnimate = levelData.filter((element) => {
-    return (
-      element.tile === tileName &&
-      (x === null || (element.x === x && element.y === y))
-    );
+    return element.tile === tileName && (x === null || (element.x === x && element.y === y));
   });
 
   // Mark all tiles as being removed and initialize animation properties

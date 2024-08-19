@@ -10,30 +10,7 @@ let hasPlayedWallSoundDuringKeyHold = false;
 function playActionSound(tile) {
   switch (tile) {
     case 'gong-trigger':
-      zzfx(
-        ...[
-          ,
-          0,
-          523.2511,
-          0.02,
-          ,
-          1.5,
-          1,
-          0.5,
-          -0.05,
-          0.5,
-          ,
-          ,
-          0.3,
-          0.05,
-          ,
-          ,
-          0.05,
-          0.8,
-          ,
-          0.05,
-        ],
-      ); // Sound Default
+      zzfx(...[, 0, 523.2511, 0.02, , 1.5, 1, 0.5, -0.05, 0.5, , , 0.3, 0.05, , , 0.05, 0.8, , 0.05]); // Sound Default
       break;
     case 'crate':
       zzfx(...[, 0.1, 150, 0.05, , , , 1.3, , , , , , 3]);

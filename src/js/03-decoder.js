@@ -71,11 +71,11 @@ function sliceIntoTiles(image2DArray, tileWidth, tileHeight) {
 
 /**
  * Process a sprite image and return the tiles
- * @param {string} imageKey - The key of the image in the IMAGE_LIST
+ * @param {string} imageKey - The key of the image in the TILE_DATA
  * @returns {object} - An object containing the tiles of the sprite
  */
 function processSprite(imageKey) {
-  const rleString = IMAGE_LIST[imageKey];
+  const rleString = TILE_DATA[imageKey].rle;
   const pixels = decodeRLE(rleString);
   pixelList = pixels.pixels;
 
@@ -83,18 +83,18 @@ function processSprite(imageKey) {
   // Slice into 16x16 tiles
   const tiles = sliceIntoTiles(image2DArray, 16, 16);
 
-  return { tiles }; // This will return an array of tiles, each tile being a 16x16 array of pixels
+  return tiles; // This will return an array of tiles, each tile being a 16x16 array of pixels
 }
 
 // Processing all sprites
 function processAllSprites() {
   const processedSprites = [];
 
-  for (const imageKey in IMAGE_LIST) {
-    processedSprites[imageKey] = processSprite(imageKey);
+  for (const imageKey in TILE_DATA) {
+    TILE_DATA[imageKey].tiles = processSprite(imageKey);
   }
 
   return processedSprites;
 }
 
-const GAME_SPRITES = processAllSprites();
+processAllSprites();

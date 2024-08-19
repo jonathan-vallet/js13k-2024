@@ -42,10 +42,7 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
       return false; // Prevent further movement
       break;
     case 'block':
-      const blockElement = levelData.find(
-        (element) =>
-          element.x === x && element.y === y && element.tile === 'block',
-      );
+      const blockElement = levelData.find((element) => element.x === x && element.y === y && element.tile === 'block');
       if (blockElement) {
         const blockOrientation = blockElement.orientation || ORIENTATION_UP; // Default orientation is up
 

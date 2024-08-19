@@ -5,10 +5,7 @@ let zzfx = (...t) => zzfxP(zzfxG(...t));
 let zzfxP = (...t) => {
   let e = zzfxX.createBufferSource(),
     f = zzfxX.createBuffer(t.length, t[0].length, zzfxR);
-  t.map((d, i) => f.getChannelData(i).set(d)),
-    (e.buffer = f),
-    e.connect(zzfxX.destination),
-    e.start();
+  t.map((d, i) => f.getChannelData(i).set(d)), (e.buffer = f), e.connect(zzfxX.destination), e.start();
   return e;
 };
 
@@ -85,10 +82,7 @@ let zzfxG = (
           : a < h - d
           ? ((h - a - d) / u) * y
           : 0)),
-      (f = d
-        ? f / 2 +
-          (d > a ? 0 : ((a < h - d ? 1 : (h - a) / d) * Z[(a - d) | 0]) / 2)
-        : f)),
+      (f = d ? f / 2 + (d > a ? 0 : ((a < h - d ? 1 : (h - a) / d) * Z[(a - d) | 0]) / 2) : f)),
       (p = (c += v += z) * Math.sin(E * x - I)),
       (g += p - p * B * (1 - ((1e9 * (Math.sin(a) + 1)) % 2))),
       (E += p - p * B * (1 - ((1e9 * (Math.sin(a) ** 2 + 1)) % 2))),
@@ -105,3 +99,60 @@ let zzfxR = 44100;
 
 // zzfxX - the common audio context
 let zzfxX = new (window.AudioContext || webkitAudioContext)();
+
+//! ZzFXM (v2.0.3) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
+let zzfxM = (n, f, t, e = 125) => {
+  let l,
+    o,
+    z,
+    r,
+    g,
+    h,
+    x,
+    a,
+    u,
+    c,
+    d,
+    i,
+    m,
+    p,
+    G,
+    M = 0,
+    R = [],
+    b = [],
+    j = [],
+    k = 0,
+    q = 0,
+    s = 1,
+    v = {},
+    w = ((zzfxR / e) * 60) >> 2;
+  for (; s; k++)
+    (R = [(s = a = d = m = 0)]),
+      t.map((e, d) => {
+        for (
+          x = f[e][k] || [0, 0, 0],
+            s |= !!f[e][k],
+            G = m + (f[e][0].length - 2 - !a) * w,
+            p = d == t.length - 1,
+            o = 2,
+            r = m;
+          o < x.length + p;
+          a = ++o
+        ) {
+          for (
+            g = x[o], u = (o == x.length + p - 1 && p) || (c != (x[0] || 0)) | g | 0, z = 0;
+            z < w && a;
+            z++ > w - 99 && u ? (i += (i < 1) / 99) : 0
+          )
+            (h = ((1 - i) * R[M++]) / 2 || 0), (b[r] = (b[r] || 0) - h * q + h), (j[r] = (j[r++] || 0) + h * q + h);
+          g &&
+            ((i = g % 1),
+            (q = x[1] || 0),
+            (g |= 0) &&
+              (R = v[[(c = x[(M = 0)] || 0), g]] =
+                v[[c, g]] || ((l = [...n[c]]), (l[2] *= 2 ** ((g - 12) / 12)), g > 0 ? zzfxG(...l) : [])));
+        }
+        m = G;
+      });
+  return [b, j];
+};

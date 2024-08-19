@@ -10,33 +10,66 @@ function drawUI() {
   uiCtx.fillRect(0, 0, uiCanvas.width, uiCanvas.height);
 
   // Draw steps remaining
-  adjustFontSize(`Steps: ${stepsPerformed}`);
+  textManager.text({
+    ctx: uiCtx,
+    x: 10,
+    y: 7,
+    text: `STEPS:`,
+    color: 'rgb(255,255,255)',
+  });
 
-  uiCtx.fillStyle = 'white';
-  const y = uiCanvas.height / 2 + uiCtx.font.match(/\d+/)[0] / 2;
-  uiCtx.fillText(`Steps: ${stepsPerformed}`, uiCanvas.width * 0.02, y);
+  let shakeX = 0;
+  let shakeY = 0;
+  if (stepsPerformed >= 10) {
+    const intensity = stepsPerformed - 9;
+    shakeX = getShakeOffset(intensity);
+    shakeY = getShakeOffset(intensity);
+  }
+
+  // Draw steps remaining
+  textManager.text({
+    ctx: uiCtx,
+    x: 44 + shakeX,
+    y: 7 + shakeY,
+    text: `${stepsPerformed}`,
+    color: getStepColor(stepsPerformed),
+  });
+
   // Draw the key icon and count
-  const keyTile = GAME_SPRITES['key'].tiles[0];
-  const keyColors = DEFAULT_TILE_COLORS['key'] || [
-    '#000',
-    '#f00',
-    '#0f0',
-    '#00f',
-  ];
-  drawTile(keyTile, keyColors, 4.5, 0.75, { context: uiCtx });
-  uiCtx.fillText(`x${collectedKeysNumber}`, uiCanvas.width * 0.28, y);
+  const keyTile = TILE_DATA['key'].tiles[0];
+  const keyColors = TILE_DATA['key'].colors || ['#000', '#f00', '#0f0', '#00f'];
+  drawTile(keyTile, keyColors, 4.5, 0.2, { context: uiCtx });
 
-  uiCtx.fillText('R: Reset', uiCanvas.width * 0.8, y);
+  textManager.text({
+    ctx: uiCtx,
+    x: 90,
+    y: 7,
+    text: `x${collectedKeysNumber}`,
+    color: 'rgb(255,255,255)',
+  });
+
+  textManager.text({
+    ctx: uiCtx,
+    x: 270,
+    y: 7,
+    text: `R: RESET`,
+    color: 'rgb(255,255,255)',
+  });
 }
 
-/**
- * Adjust the font size to fit the text in the canvas depending on the text length and canvas width
- * @param {string} text - The text to display
- */
-function adjustFontSize(text) {
-  let textLength = text.length;
-  uiCtx.font = '40px Arial';
-  while (uiCtx.measureText(text).width > uiCanvas.width * textLength * 0.02) {
-    uiCtx.font = `${parseInt(uiCtx.font) - 1}px Arial`;
+function getShakeOffset(intensity) {
+  const maxShake = intensity * 0.5; // L'intensité détermine l'amplitude du shake
+  return Math.random() * maxShake - maxShake / 2; // Retourne une valeur aléatoire entre -maxShake/2 et +maxShake/2
+}
+
+function getStepColor(stepsPerformed) {
+  if (stepsPerformed < 11) {
+    return 'rgb(255, 255, 255)'; // White
+  } else if (stepsPerformed < 12) {
+    return 'rgb(255, 255, 0)'; // Yellow
+  } else if (stepsPerformed < 13) {
+    return 'rgb(255, 165, 0)'; // Orange
+  } else {
+    return 'rgb(255, 0, 0)'; // Red
   }
 }
