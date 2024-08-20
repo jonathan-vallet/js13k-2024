@@ -4,8 +4,9 @@
  * @param {number} y - The y-coordinate
  * @returns {string} - The name of the tile at this position or null if no element is found
  */
-function getTileAt(x, y, type = []) {
+function getTileAt(x, y, type = [], levelIndex = currentLevel) {
   let lastTileAt = null;
+  let levelData = levels[levelIndex].levelData;
   for (const element of levelData) {
     if (element.x === x && element.y === y) {
       if (type.length > 0) {
@@ -26,10 +27,10 @@ function getTileAt(x, y, type = []) {
  * @param {number} [x] - The x-coordinate of the tile to remove.
  * @param {number} [y] - The y-coordinate of the tile to remove.
  */
-function removeTile(tileName, x = null, y = null) {
-  levelData = levelData.filter((element) => {
+function removeTile(tileName, x, y) {
+  levels[currentLevel].levelData = levels[currentLevel].levelData.filter((element) => {
     // Remove tile if it matches the name and, if provided, coordinates
-    return element.tile !== tileName || (x !== null && y !== null && (element.x !== x || element.y !== y));
+    return element.tile !== tileName || element.x !== x || element.y !== y;
   });
 }
 
@@ -41,7 +42,7 @@ function removeTile(tileName, x = null, y = null) {
  * @param {object} [options] - Additional options for the tile
  */
 function addTile(tile, x, y, options = {}) {
-  levelData.push({ tile, x, y, ...options });
+  levels[currentLevel].levelData.push({ tile, x, y, ...options });
 }
 
 /**
@@ -52,22 +53,38 @@ function addTile(tile, x, y, options = {}) {
  * @param {number} dy - The y-direction of movement
  * @returns {boolean} - True if the crate was moved, false otherwise
  */
+function tryMoveTile(tileName, x, y, dx, dy) {
+  let maxDistance = 1;
+  if (tileName === 'boulder') {
+    maxDistance = LEVEL_WIDTH;
+  }
 
-function tryMoveCrate(x, y, dx, dy) {
-  const newX = x + dx;
-  const newY = y + dy;
+  let distance = 0;
+  while (distance < maxDistance) {
+    let checkedX = x + (distance + 1) * dx;
+    let checkedY = y + (distance + 1) * dy;
+    let tileAtNewPosition = getTileAt(checkedX, checkedY)?.tile || null;
+    if (
+      isInLevelBounds(checkedX, checkedY) &&
+      (tileAtNewPosition === null || ['arrow', 'hole', 'trap', 'hole-filled'].includes(tileAtNewPosition))
+    ) {
+      distance++;
+    } else {
+      break;
+    }
+  }
 
-  // Check if the tile where the crate should move is free and does not contain another crate
-  const tileAtNewPosition = getTileAt(newX, newY)?.tile || null;
-  if (
-    isInBounds(newX, newY) &&
-    (tileAtNewPosition === null || ['arrow', 'hole', 'trap', 'hole-filled'].includes(tileAtNewPosition))
-  ) {
+  if (distance > 0) {
     // Update the crate's position in levelData
+    let levelData = levels[currentLevel].levelData;
     for (const element of levelData) {
-      if (element.x === x && element.y === y && element.tile === 'crate') {
-        startCrateAnimation(element, dx, dy);
-        playActionSound('crate');
+      if (element.x === x && element.y === y && element.tile === tileName) {
+        startTileAnimation(element, x + distance * dx, y + distance * dy);
+        for (let i = 1; i < distance; i++) {
+          setTimeout(() => {
+            playActionSound(tileName);
+          }, TILE_CELL_MOVE_DURATION * i);
+        }
         return true;
       }
     }
@@ -83,13 +100,13 @@ function tryMoveCrate(x, y, dx, dy) {
  * @param {number} dx - The x-direction of movement
  * @param {number} dy - The y-direction of movement
  */
-function startCrateAnimation(crate, dx, dy) {
-  movingCrate = crate;
-  crateMoveStartX = crate.x;
-  crateMoveStartY = crate.y;
-  crateMoveTargetX = crateMoveStartX + dx;
-  crateMoveTargetY = crateMoveStartY + dy;
-  crateMoveElapsedTime = 0;
+function startTileAnimation(tile, targetX, targetY) {
+  movingTile = tile;
+  tileMoveStartX = tile.x;
+  tileMoveStartY = tile.y;
+  tileMoveTargetX = targetX;
+  tileMoveTargetY = targetY;
+  tileMoveElapsedTime = 0;
 }
 
 /**
@@ -101,7 +118,9 @@ function startCrateAnimation(crate, dx, dy) {
  */
 function removeConnectedBlocks(x, y, dx, dy) {
   // Remove the current block
+  animateTileRemoval('block-trigger', x, y);
   animateTileRemoval('block', x, y);
+  playActionSound('block');
 
   // Calculate the position of the next block in the same direction
   const nextX = x + dx;
@@ -111,7 +130,7 @@ function removeConnectedBlocks(x, y, dx, dy) {
   const nextTile = getTileAt(nextX, nextY)?.tile;
   if (nextTile === 'block') {
     // Get the orientation of the next block
-    const nextBlockElement = levelData.find(
+    const nextBlockElement = levels[currentLevel].levelData.find(
       (element) => element.x === nextX && element.y === nextY && element.tile === 'block',
     );
     if (nextBlockElement) {
@@ -149,7 +168,7 @@ function removeConnectedBlocks(x, y, dx, dy) {
  */
 function animateTileRemoval(tileName, x = null, y = null, callback, duration = DEFAULT_REMOVAL_DURATION) {
   // Find all matching tiles in levelData
-  const tilesToAnimate = levelData.filter((element) => {
+  const tilesToAnimate = levels[currentLevel].levelData.filter((element) => {
     return element.tile === tileName && (x === null || (element.x === x && element.y === y));
   });
 

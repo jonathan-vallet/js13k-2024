@@ -5,26 +5,25 @@
  */
 
 // Initialize the character on the grid at the start of the game
-let initialX = 9;
-let initialY = 7;
+let characterInitialOrientation = ORIENTATION_DOWN;
 let characterScale = 1;
-let characterDirection = ORIENTATION_DOWN; // Track the current direction
-let characterX = initialX;
-let characterY = initialY;
+let characterDirection = characterInitialOrientation; // Track the current direction
+let characterInitialX;
+let characterInitialY;
+let characterX;
+let characterY;
 let isCharacterMoving = false;
 let characterMoveStartX = characterX;
 let characterMoveStartY = characterY;
 let characterMoveTargetX = characterX;
 let characterMoveTargetY = characterY;
 let characterMoveFrame = 0;
-const CHARACTER_MOVE_DURATION = 300;
 let characterMoveElapsedTime = 0;
 
-let isReturningToSpawn = false; // Flag to track if the character is returning to spawn
+let isCharacterReturningToSpawn = false; // Flag to track if the character is returning to spawn
 let characterReturnStartTime = 0; // Start time for the character return animation
-const CHARACTER_RETURN_DURATION = 400; // Duration of the character return animation in ms
-let respawnStartX, respawnStartY; // Start position for the character respawn
-let respawnTargetX, respawnTargetY; // Target position for the character respawn
+let characterRespawnStartX, characterRespawnStartY; // Start position for the character respawn
+let characterRespawnTargetX, characterRespawnTargetY; // Target position for the character respawn
 
 // Initialize the step counter
 let stepsPerformed = 0;
@@ -51,12 +50,12 @@ function drawCharacter() {
  * @returns {boolean} - True if the character can move to this position, false otherwise
  */
 function canMoveTo(x, y, dx = 0, dy = 0) {
-  if (movingCrate || isCharacterMoving || isReturningToSpawn) {
+  if (movingTile || isCharacterMoving || isCharacterReturningToSpawn) {
     return false; // Cannot move while the character or crate is moving
   }
 
   // Check grid boundaries (excluding the border)
-  if (!isInBounds(x, y)) {
+  if (!isInLevelBounds(x, y)) {
     playActionSound('wall');
     return false;
   }
@@ -83,7 +82,8 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
   ) {
     if (hasPerformedAction) {
       ++stepsPerformed;
-      handlePostMoveEvents(characterX, characterY);
+      hasPlayedWallSoundDuringKeyHold = true; // Avoid playing the wall sound after an action is performed on same key hold
+      handlePostMoveEvents(characterX, characterY, hasPerformedAction);
     } else {
       playActionSound('wall');
     }
@@ -98,14 +98,8 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
  * @param {number} dx - The x-direction of movement
  * @param {number} dy - The y-direction of movement
  */
-
-/**
- * Move the character
- * @param {number} dx - The x-direction of movement
- * @param {number} dy - The y-direction of movement
- */
 function moveCharacter(dx, dy, direction) {
-  if (isReturningToSpawn || isCharacterMoving) {
+  if (isCharacterReturningToSpawn || isCharacterMoving || movingTile) {
     return; // Prevent movement while returning to spawn or if already moving
   }
 
@@ -136,12 +130,12 @@ function moveCharacter(dx, dy, direction) {
 }
 
 function respawnCharacter(respawnX = null, respawnY = null) {
-  isReturningToSpawn = true;
+  isCharacterReturningToSpawn = true;
   // After the delay, start the return to spawn animation
-  respawnStartX = characterX;
-  respawnStartY = characterY;
-  respawnTargetX = respawnX || initialX;
-  respawnTargetY = respawnY || initialY;
+  characterRespawnStartX = characterX;
+  characterRespawnStartY = characterY;
+  characterRespawnTargetX = respawnX || characterInitialX;
+  characterRespawnTargetY = respawnY || characterInitialY;
   characterReturnStartTime = performance.now();
 }
 
@@ -165,21 +159,45 @@ function getMoveFrameFromDirection(direction) {
 /**
  * Handle action that triggers when the character moves to a new position
  */
-function handlePostMoveEvents(lastX, lastY) {
-  const tileAtPreviousPosition = getTileAt(lastX, lastY);
-  const tileAtCurrentPosition = getTileAt(characterX, characterY);
-
+function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
+  const tileAtPreviousPosition = getTileAt(lastX, lastY, ['trap']);
   switch (tileAtPreviousPosition?.tile) {
     case 'trap':
-      // Transformer le piège en trou après que le joueur a quitté la case
-      tileAtPreviousPosition.tile = 'hole';
+      // Transform the trap into a hole when the character moves away
+      if (!hasPerformedAction) {
+        playActionSound('trap');
+        tileAtPreviousPosition.tile = 'hole';
+      }
       break;
   }
 
+  const tileAtCurrentPosition = getTileAt(characterX, characterY, ['key', 'hole', 'spawn', 'spawn-current']);
   switch (tileAtCurrentPosition?.tile) {
     case 'hole':
       respawnCharacter(movementHistory[movementHistory.length - 1].x, movementHistory[movementHistory.length - 1].y);
       --stepsPerformed;
+      break;
+    case 'spawn-current':
+      stepsPerformed = 0;
+      break;
+    case 'spawn':
+      // Sets previous current spawn point back to spawn
+      getTileAt(characterInitialX, characterInitialY).tile = 'spawn';
+
+      // Sets as current spawn point
+      tileAtCurrentPosition.tile = 'spawn-current';
+      tileAtCurrentPosition.animationFrame = 0;
+      tileAtCurrentPosition.elapsed = 0;
+      // reset animation interval
+      characterInitialX = characterX;
+      characterInitialY = characterY;
+      stepsPerformed = 0;
+      break;
+    case 'key':
+      // Pick up the key
+      removeTile('key', characterX, characterY);
+      playActionSound('key');
+      ++collectedKeysNumber;
       break;
   }
 
@@ -187,6 +205,6 @@ function handlePostMoveEvents(lastX, lastY) {
     respawnCharacter();
     setTimeout(() => {
       stepsPerformed = 0; // Reset steps after returning to spawn
-    }, CHARACTER_RETURN_DURATION);
+    }, CHARACTER_RESPAWN_DURATION);
   }
 }

@@ -1,5 +1,3 @@
-const keyStack = [];
-
 // Handle keyboard input for character movement
 function handleKeyDown(event) {
   const key = mapKeyToDirection(event.key);

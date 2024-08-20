@@ -49,7 +49,7 @@ const textManager = {
     y: 0,
     text: '',
     vspacing: 10,
-    hspacing: 2,
+    hspacing: 1,
     color: 'rgb(255,255,255)',
   },
 };

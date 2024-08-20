@@ -7,18 +7,22 @@
  * Refresh the canvas by redrawing the level and the character
  */
 function refreshCanvas() {
-  drawLevel();
+  drawLevel(currentLevel);
   refreshUI();
   drawCharacter();
+
+  if (currentMode === 'editor') {
+    drawEditorSelectedTile();
+  }
 }
 
 /**
  * Draw the level background and elements
  */
-function drawLevel() {
+function drawLevel(levelIndex) {
   // draw background image
-  ctx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
-  drawLevelElements(levelData);
+  currentCtx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
+  drawLevelElements(levels[levelIndex].levelData);
 }
 
 /**
@@ -43,22 +47,15 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
       }
 
       // Draw all static elements
-      const element = getTileAt(x, y);
-      if (STATIC_TILE_LIST.includes(element?.tile)) {
-        drawTile(TILE_DATA[element.tile].tiles[0], TILE_DATA[element.tile].colors, x, y);
+      const element = getTileAt(x, y, STATIC_TILE_LIST);
+      if (element) {
+        drawTile(TILE_DATA[element.tile].tiles[0], TILE_DATA[element.tile].colors, x, y, {
+          orientation: element.orientation,
+        });
       }
     }
   }
-
-  textManager.text({
-    ctx: backgroundCtx,
-    x: 10,
-    y: 10,
-    text: '0',
-    color: 'rgb(255,0,0)',
-  });
-
-  backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+  backgroundCtx.drawImage(currentCanvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
 }
 
 /**
@@ -69,7 +66,7 @@ function drawLevelElements(levelData) {
   let drawnNumbers = 0;
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
-    if (STATIC_TILE_LIST.includes(element.tile)) {
+    if (currentMode == 'game' && STATIC_TILE_LIST.includes(element.tile)) {
       return;
     }
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
@@ -91,16 +88,22 @@ function drawLevelElements(levelData) {
  * @param {Object} [options={}] - Optional parameters: orientation, scale, context, flipHorizontally
  * @param {number} [options.orientation=ORIENTATION_UP] - The orientation of the tile
  * @param {number} [options.scale=1] - The scale to apply to the tile
- * @param {CanvasRenderingContext2D} [options.context=ctx] - The canvas context to draw on
+ * @param {CanvasRenderingContext2D} [options.context=currentCtx] - The canvas context to draw on
  * @param {boolean} [options.flipHorizontally=false] - Whether to flip the tile horizontally
  */
 function drawTile(tile, colors, x, y, options = {}) {
-  const { orientation = ORIENTATION_UP, scale = tile.scale || 1, context = ctx, flipHorizontally = false } = options;
+  const {
+    orientation = ORIENTATION_UP,
+    scale = tile.scale || 1,
+    context = currentCtx,
+    flipHorizontally = false,
+    alpha = 1,
+  } = options;
 
   context.save();
 
   const halfTileSize = (TILE_SIZE * zoomFactor) / 2;
-  context.translate((x + 0.5) * TILE_SIZE * zoomFactor, (y + 0.5) * TILE_SIZE * zoomFactor);
+  context.translate(Math.floor((x + 0.5) * TILE_SIZE * zoomFactor), Math.floor((y + 0.5) * TILE_SIZE * zoomFactor));
 
   // Apply horizontal flip if necessary
   let scaleDirection = 1;
@@ -119,6 +122,7 @@ function drawTile(tile, colors, x, y, options = {}) {
       if (pixelValue > 0) {
         // Skip transparent pixels (0)
         context.fillStyle = colors[pixelValue - 1];
+        context.globalAlpha = alpha;
         context.fillRect(tileX * zoomFactor, tileY * zoomFactor, zoomFactor, zoomFactor);
       }
     }

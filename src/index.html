@@ -13,6 +13,18 @@
         width: 100%;
       }
 
+      body.game {
+        .-editor {
+          display: none;
+        }
+      }
+
+      body.editor {
+        .-game {
+          display: none;
+        }
+      }
+
       #game {
         position: relative;
         width: 100%;
@@ -35,7 +47,7 @@
       }
     </style>
   </head>
-  <body>
+  <body oncontextmenu="return false;">
     <!-- <label for="boy">Boy</label>
     <input type="radio" id="boy" name="gender" value="boy" checked />
 
@@ -57,8 +69,27 @@
     <input type="color" id="redColor" value="#e42c37" /> -->
     <div id="game">
       <canvas id="gameBackgroundCanvas"></canvas>
-      <canvas id="uiCanvas"></canvas>
-      <canvas id="gameCanvas"></canvas>
+      <canvas id="uiCanvas" class="-game"></canvas>
+      <canvas id="gameCanvas" class="-game"></canvas>
+      <div id="editor" class="-editor">
+        <div id="editorUi">
+          <label>
+            Tile:
+            <select id="editorTileSelect"></select>
+          </label>
+          <label>
+            Orientation:
+            <select id="editorOrientationSelect">
+              <option value="0">Up</option>
+              <option value="1">Right</option>
+              <option value="2">Down</option>
+              <option value="3">Left</option>
+            </select>
+          </label>
+          <button id="generateJsonButton">Generate JSON</button>
+        </div>
+        <canvas id="editorCanvas"></canvas>
+      </div>
     </div>
     <script src="bundle.js" inline></script>
   </body>

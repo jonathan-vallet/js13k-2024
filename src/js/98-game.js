@@ -5,6 +5,8 @@ function setZoomFactor() {
   );
   canvas.width = LEVEL_WIDTH * TILE_SIZE * zoomFactor;
   canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;
+  editorCanvas.width = canvas.width;
+  editorCanvas.height = canvas.height;
   uiCanvas.width = canvas.width;
   uiCanvas.height = TILE_SIZE * 1.1 * zoomFactor; // 2 tiles high
 
@@ -16,23 +18,35 @@ function setZoomFactor() {
     backgroundCanvas.height = window.innerHeight;
     backgroundCanvas.width = window.innerHeight * (LEVEL_WIDTH / LEVEL_HEIGHT);
   }
-
-  drawLevelBackground('sand', 'rock');
 }
 
 function initGame() {
   // Disable image smoothing for sharp pixelated look
   ctx.imageSmoothingEnabled = false;
-
-  levelData.forEach((element) => {
-    element.animationFrame = 0; // Start at the first frame
-  });
-
-  window.addEventListener('resize', setZoomFactor);
-  // Adjust the canvas size to fit the level size
-  setZoomFactor();
-
-  requestAnimationFrame(animate);
+  drawLevelBackground('sand', 'rock');
+  startLevel(currentLevel);
 }
 
-initGame();
+window.addEventListener('resize', () => {
+  setZoomFactor();
+  drawLevelBackground('sand', 'rock');
+});
+// Adjust the canvas size to fit the level size
+setZoomFactor();
+
+function switchMode(mode) {
+  document.body.classList.remove(currentMode);
+  document.body.classList.add(mode);
+  currentMode = mode;
+  currentCtx = mode === 'game' ? ctx : editorCtx;
+  currentCanvas = mode === 'game' ? canvas : editorCanvas;
+
+  if (mode === 'game') {
+    initGame();
+  } else {
+    initEditor();
+  }
+}
+
+switchMode(currentMode);
+requestAnimationFrame(animate);
