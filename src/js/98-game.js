@@ -1,7 +1,7 @@
 function setZoomFactor() {
   zoomFactor = Math.min(
     Math.floor(window.innerWidth / (LEVEL_WIDTH * TILE_SIZE)),
-    Math.floor(window.innerHeight / (LEVEL_HEIGHT * TILE_SIZE)),
+    Math.floor((window.innerHeight * 0.89) / (LEVEL_HEIGHT * TILE_SIZE)),
   );
   canvas.width = LEVEL_WIDTH * TILE_SIZE * zoomFactor;
   canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;

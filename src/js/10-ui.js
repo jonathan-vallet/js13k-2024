@@ -29,7 +29,7 @@ function drawUI() {
   // Draw steps remaining
   textManager.text({
     ctx: uiCtx,
-    x: 44 + shakeX,
+    x: 40 + shakeX,
     y: 7 + shakeY,
     text: `${stepsPerformed}`,
     color: getStepColor(stepsPerformed),
@@ -39,6 +39,15 @@ function drawUI() {
   const keyTile = TILE_DATA['key'].tiles[0];
   const keyColors = TILE_DATA['key'].colors || ['#000', '#f00', '#0f0', '#00f'];
   drawTile(keyTile, keyColors, 4.5, 0.2, { context: uiCtx });
+
+  // Draw current level
+  textManager.text({
+    ctx: uiCtx,
+    x: 120,
+    y: 7,
+    text: `LEVEL: ${currentLevel + 1}`,
+    color: 'rgb(255,255,255)',
+  });
 
   textManager.text({
     ctx: uiCtx,

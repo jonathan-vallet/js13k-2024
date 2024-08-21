@@ -4,7 +4,7 @@
 function initEditor() {
   // Disable image smoothing for sharp pixelated look
   editorCtx.imageSmoothingEnabled = false;
-  currentLevel = 2;
+  currentLevel = 0;
   drawLevelBackground('sand', 'rock');
   startLevel(currentLevel);
 
@@ -88,9 +88,11 @@ function handleEditorClick(e) {
           ? parseInt($orientationSelect.value)
           : ORIENTATION_UP,
       });
+      let encoded = encodeLevel(levels[currentLevel].levelData);
     }
   } else if (e.buttons === 2) {
     // Right mouse button (remove tile)
     removeTile($editorTileSelector.value, currentEditorTile.x, currentEditorTile.y);
+    let encoded = encodeLevel(levels[currentLevel].levelData);
   }
 }

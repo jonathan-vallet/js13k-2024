@@ -12,8 +12,25 @@ const replace = require('gulp-replace');
 
 // Define replacements for shortening the code
 const replacements = {
+  // html elements
   gameBackgroundCanvas: 'gBC',
   gameCanvas: 'gC',
+  editorOrientationSelect: 'eOS',
+  editorTileSelect: 'eTS',
+  editorCanvas: 'eC',
+  // tile names
+  'block-trigger': 'bT',
+  crate: 'c',
+  'hole-filled': 'hF',
+  hole: 'h',
+  flag: 'f',
+  'key-holder': 'kH',
+  // object properties
+  canChangeOrientation: 'cCO',
+  colors: 'co',
+  isStatic: 'iS',
+  orientation: 'o',
+  rle: 'r',
 };
 
 // Chemins de fichiers
@@ -26,15 +43,26 @@ const paths = {
 
 const MAX_SIZE = 13312; // 13,312 bytes = 13 KB
 
-// Minifier et concaténer les scripts JS
-gulp.task('scripts', function () {
+// Concaténer les scripts JS sans minification (pour le développement)
+gulp.task('scripts-dev', function () {
+  return gulp
+    .src(paths.scripts)
+    .pipe(concat('bundle.js'))
+    .pipe(gulp.dest(paths.dist))
+    .on('error', function (err) {
+      console.error('Error in scripts-dev task', err.toString());
+    });
+});
+
+// Minifier et concaténer les scripts JS (pour la production)
+gulp.task('scripts-prod', function () {
   return gulp
     .src(paths.scripts)
     .pipe(concat('bundle.js'))
     .pipe(terser())
     .pipe(gulp.dest(paths.dist))
     .on('error', function (err) {
-      console.error('Error in scripts task', err.toString());
+      console.error('Error in scripts-prod task', err.toString());
     });
 });
 
@@ -86,6 +114,15 @@ gulp.task('zip', function (done) {
   archive.finalize();
 });
 
+// Apply the replacements to the minified files
+gulp.task('replace', function () {
+  let stream = gulp.src(path.join(paths.dist, '**/*.{js,html}')); // Apply to all JS and HTML files in the dist folder
+  for (const [original, replacement] of Object.entries(replacements)) {
+    stream = stream.pipe(replace(original, replacement));
+  }
+  return stream.pipe(gulp.dest(paths.dist));
+});
+
 // Serveur de développement avec BrowserSync et LiveReload
 gulp.task('serve', function () {
   // Initialiser BrowserSync et servir le dossier dist
@@ -96,18 +133,18 @@ gulp.task('serve', function () {
   });
 
   // Regarder les changements et rafraîchir automatiquement
-  gulp.watch(paths.scripts, gulp.series('scripts', 'minify-html')).on('change', browserSync.reload);
+  gulp.watch(paths.scripts, gulp.series('scripts-dev', 'minify-html')).on('change', browserSync.reload);
   gulp.watch(paths.html, gulp.series('minify-html')).on('change', browserSync.reload);
 });
 
-// Tâche 'watch' : Surveille les fichiers et régénère à la volée (sans zip)
+// Tâche 'watch' : Surveille les fichiers et régénère à la volée (sans zip, sans minification JS)
 gulp.task('watch', function () {
-  gulp.watch(paths.scripts, gulp.series('scripts', 'minify-html'));
+  gulp.watch(paths.scripts, gulp.series('scripts-dev', 'minify-html'));
   gulp.watch(paths.html, gulp.series('minify-html'));
 });
 
 // Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
-gulp.task('zip', gulp.series('scripts', 'minify-css', 'minify-html', 'zip'));
+gulp.task('zip', gulp.series('scripts-prod', 'minify-css', 'minify-html', 'replace', 'zip'));
 
 // Tâche par défaut : Utiliser la tâche 'serve' pour le développement avec live reload
-gulp.task('default', gulp.series('scripts', 'minify-html', 'serve'));
+gulp.task('default', gulp.series('scripts-dev', 'minify-html', 'serve'));

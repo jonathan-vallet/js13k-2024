@@ -28,7 +28,7 @@ function resetCharacter() {
   characterInitialY = levels[currentLevel].characterInitialY;
   characterX = characterInitialX;
   characterY = characterInitialY;
-  setCharacterDirection(characterInitialOrientation); // Reset the character direction
+  setCharacterDirection(ORIENTATION_DOWN); // Reset the character direction
   characterScale = 1;
 }
 

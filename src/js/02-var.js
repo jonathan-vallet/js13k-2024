@@ -1,11 +1,11 @@
 // Canvas variables
-const uiCanvas = document.getElementById('uiCanvas');
+const uiCanvas = $('#uiCanvas');
 const uiCtx = uiCanvas.getContext('2d');
-const canvas = document.getElementById('gameCanvas');
+const canvas = $('#gameCanvas');
 const ctx = canvas.getContext('2d');
-const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
+const backgroundCanvas = $('#gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
-const editorCanvas = document.getElementById('editorCanvas');
+const editorCanvas = $('#editorCanvas');
 const editorCtx = editorCanvas.getContext('2d');
 
 let currentCanvas = canvas; // Current canvas context
@@ -20,8 +20,6 @@ let movementHistory = [];
 let lastFrameTime = 0; // For animation loop
 const keyStack = []; // Stack of keys pressed
 let currentLevel = 0;
-
-let $ = (selector) => document.querySelector(selector);
 
 let $editorTileSelector = $('#editorTileSelect');
 let $orientationSelect = $('#editorOrientationSelect');

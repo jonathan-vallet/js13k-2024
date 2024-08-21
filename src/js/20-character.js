@@ -5,9 +5,8 @@
  */
 
 // Initialize the character on the grid at the start of the game
-let characterInitialOrientation = ORIENTATION_DOWN;
-let characterScale = 1;
-let characterDirection = characterInitialOrientation; // Track the current direction
+let characterScale;
+let characterDirection; // Track the current direction
 let characterInitialX;
 let characterInitialY;
 let characterX;
@@ -17,11 +16,11 @@ let characterMoveStartX = characterX;
 let characterMoveStartY = characterY;
 let characterMoveTargetX = characterX;
 let characterMoveTargetY = characterY;
-let characterMoveFrame = 0;
-let characterMoveElapsedTime = 0;
+let characterMoveFrame;
+let characterMoveElapsedTime;
 
-let isCharacterReturningToSpawn = false; // Flag to track if the character is returning to spawn
-let characterReturnStartTime = 0; // Start time for the character return animation
+let isCharacterReturningToSpawn; // Flag to track if the character is returning to spawn
+let characterReturnStartTime; // Start time for the character return animation
 let characterRespawnStartX, characterRespawnStartY; // Start position for the character respawn
 let characterRespawnTargetX, characterRespawnTargetY; // Target position for the character respawn
 

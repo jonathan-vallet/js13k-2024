@@ -9,10 +9,11 @@
 function refreshCanvas() {
   drawLevel(currentLevel);
   refreshUI();
-  drawCharacter();
 
   if (currentMode === 'editor') {
     drawEditorSelectedTile();
+  } else {
+    drawCharacter();
   }
 }
 
@@ -45,16 +46,13 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
       if (x === 0 || x === LEVEL_WIDTH - 1 || y === 0 || y === LEVEL_HEIGHT - 1) {
         drawTile(borderTile, borderColors, x, y);
       }
-
-      // Draw all static elements
-      const element = getTileAt(x, y, STATIC_TILE_LIST);
-      if (element) {
-        drawTile(TILE_DATA[element.tile].tiles[0], TILE_DATA[element.tile].colors, x, y, {
-          orientation: element.orientation,
-        });
-      }
     }
   }
+
+  // Draw all static elements
+  console.log(levels[currentLevel], currentLevel);
+  drawLevelElements(levels[currentLevel].levelData, true);
+
   backgroundCtx.drawImage(currentCanvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
 }
 
@@ -62,11 +60,10 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
  * Draw the level background elements
  * @param {Array} levelData - The level data array with tile information
  */
-function drawLevelElements(levelData) {
-  let drawnNumbers = 0;
+function drawLevelElements(levelData, isDrawingStatic = false) {
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
-    if (currentMode == 'game' && STATIC_TILE_LIST.includes(element.tile)) {
+    if (currentMode == 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
       return;
     }
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame

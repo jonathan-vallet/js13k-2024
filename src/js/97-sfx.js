@@ -37,7 +37,6 @@ function playActionSound(tile) {
       }
       break;
     default:
-      console.warn(`No sound effect for tile: ${tile}`);
       break;
   }
 }
