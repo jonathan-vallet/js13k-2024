@@ -49,7 +49,7 @@ const textManager = {
     y: 0,
     scale: 1,
     text: '',
-    vspacing: 10,
+    vspacing: 1,
     hspacing: 1,
     color: 'rgb(255,255,255)',
   },
@@ -69,10 +69,10 @@ textManager.textLine = function (opt) {
         const pixelIndex = y * letterWidth + x;
         if (letter[pixelIndex] === '1') {
           opt.ctx.rect(
-            (opt.x + (x + letterX + opt.hspacing * i)) * zoomFactor,
-            (opt.y + y) * zoomFactor,
-            zoomFactor,
-            zoomFactor,
+            (opt.x + ((x + letterX) * opt.scale + opt.hspacing * i)) * zoomFactor,
+            (opt.y + y) * opt.scale * zoomFactor,
+            zoomFactor * opt.scale,
+            zoomFactor * opt.scale,
           );
         }
       }
@@ -100,6 +100,7 @@ textManager.text = function (options) {
       y,
       text: line,
       hspacing: opt.hspacing,
+      scale: opt.scale,
     });
   }
 

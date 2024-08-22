@@ -1,5 +1,5 @@
 window.addEventListener('keydown', (e) => {
-  const key = mapKeyToDirection(event.key);
+  const key = mapKeyToDirection(e.key);
   if (currentScreen === 'game') {
     handleGameKeydown(key);
   }

@@ -5,14 +5,30 @@ const menuOptions = [
 ];
 let currentMenuIndex = 1; // Index of the currently selected menu item
 
+// Redessiner le dégradé avec la nouvelle valeur de 'r'
+let r = 0.6; // Valeur initiale pour la force de dithering
+let rDirection = 1; // Direction de l'animation (1 pour augmenter, -1 pour diminuer)
+
 let menuZones = []; // To store clickable areas
 function drawStartScreen() {
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Modifier la valeur de 'r' pour animer l'effet
+  r += rDirection * 0.005; // Ajuster la vitesse d'animation
 
-  const menuStartX = 50; // X-coordinate for menu start
-  const menuStartY = 100; // Y-coordinate for menu start
-  const menuSpacing = 20; // Space between menu items
+  // Inverser la direction si on atteint certaines limites
+  if (r > 0.9 || r < 0.6) {
+    rDirection *= -1;
+  }
+
+  const color1 = '#800080';
+  const color2 = '#FF4500';
+  const color3 = '#FFD700';
+
+  drawDitheredBayerGradient(ctx, canvas.width, 0, canvas.height / 2.5, color1, color2, r);
+  drawDitheredBayerGradient(ctx, canvas.width, canvas.height / 2.5, canvas.height / 2, color2, color3, r / 2);
+
+  const menuStartX = 5; // X-coordinate for menu start
+  const menuStartY = 15; // Y-coordinate for menu start
+  const menuSpacing = 4; // Space between menu items
 
   menuZones = []; // Clear previous zones
 
@@ -20,22 +36,21 @@ function drawStartScreen() {
     const yPosition = menuStartY + index * menuSpacing;
     const isHighlighted = index === currentMenuIndex;
 
-    // Draw the option text
     textManager.text({
       ctx: ctx,
-      x: menuStartX,
-      y: yPosition,
-      scale: 3,
+      x: menuStartX * zoomFactor,
+      y: yPosition * zoomFactor,
+      scale: 1,
       text: option.text,
-      color: isHighlighted ? 'rgb(255,255,0)' : option.isDisabled ? 'rgb(150,150,150)' : 'rgb(255,255,255)',
+      color: isHighlighted ? 'rgb(255,255,0)' : option.isDisabled ? 'rgb(150,150,150)' : 'rgb(0, 0,0)',
     });
 
     // Store clickable zone (a bit wider and taller than the text)
     menuZones.push({
-      x: menuStartX - 10,
-      y: yPosition - 10,
-      width: 200, // Adjust width as needed
-      height: 20, // Adjust height as needed
+      x: menuStartX - 2,
+      y: (yPosition - 6) * zoomFactor,
+      width: 80 * zoomFactor, // Adjust width as needed
+      height: 16 * zoomFactor, // Adjust height as needed
       action: option.action,
       isDisabled: option.isDisabled,
     });
@@ -89,6 +104,35 @@ function handleMenuKeydown(key, e) {
     const selectedOption = menuOptions[currentMenuIndex];
     if (!selectedOption.isDisabled) {
       handleMenuAction(selectedOption.action);
+    }
+  }
+}
+
+const bayerMatrix4x4 = [
+  [-0.5, 0, -0.375, 0.125],
+  [0.25, -0.25, 0.375, -0.125],
+  [-0.3125, 0.1875, -0.4375, 0.0625],
+  [0.4375, -0.0625, 0.3125, -0.1875],
+];
+const bayerSize = 4;
+
+function drawDitheredBayerGradient(ctx, width, startY, height, color1, color2, r = 0.25) {
+  for (let y = 0; y < height; y++) {
+    // Calculer la couleur de base pour cette ligne
+    const gradientRatio = (y * zoomFactor) / height;
+    const baseColorValue = gradientRatio;
+
+    for (let x = 0; x < width; x++) {
+      // Appliquer la matrice de Bayer pour dither
+      const bayerValue = bayerMatrix4x4[y % bayerSize][x % bayerSize];
+      const ditheredValue = baseColorValue + bayerValue * r; // Le facteur 'r' ajuste la force du dither
+
+      // Choisir la couleur en fonction de la valeur ditherée
+      const color = ditheredValue < 0.5 ? color1 : color2;
+      ctx.fillStyle = color;
+
+      // Dessiner le pixel avec le facteur de zoom
+      ctx.fillRect(x * zoomFactor, startY + y * zoomFactor, zoomFactor, zoomFactor);
     }
   }
 }
