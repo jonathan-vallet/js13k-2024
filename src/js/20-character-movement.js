@@ -1,13 +1,11 @@
 // Handle keyboard input for character movement
-function handleKeyDown(event) {
-  const key = mapKeyToDirection(event.key);
+function handleGameKeydown(key) {
   if (key && !keyStack.includes(key)) {
     keyStack.push(key);
   }
 }
 
-function handleKeyUp(event) {
-  const key = mapKeyToDirection(event.key);
+function handleGameKeyup(key) {
   if (key) {
     const index = keyStack.indexOf(key);
     if (index !== -1) {
@@ -44,7 +42,3 @@ function mapKeyToDirection(key) {
       return null;
   }
 }
-
-// Add event listeners for keydown and keyup
-window.addEventListener('keydown', handleKeyDown);
-window.addEventListener('keyup', handleKeyUp);

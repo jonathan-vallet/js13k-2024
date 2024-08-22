@@ -13,14 +13,13 @@
         width: 100%;
       }
 
-      body.game {
-        .-editor {
+      body:not(.game) {
+        .-game {
           display: none;
         }
       }
-
-      body.editor {
-        .-game {
+      body:not(.editor) {
+        .-editor {
           display: none;
         }
       }
@@ -70,7 +69,6 @@
     <div id="game">
       <canvas id="gameBackgroundCanvas"></canvas>
       <canvas id="uiCanvas" class="-game"></canvas>
-      <canvas id="gameCanvas" class="-game"></canvas>
       <div id="editor" class="-editor">
         <div id="editorUi">
           <label>
@@ -88,9 +86,8 @@
           </label>
           <button id="generateJsonButton">Generate JSON</button>
         </div>
-        <canvas id="editorCanvas"></canvas>
       </div>
-    </div>
+      <canvas id="gameCanvas"></canvas>
     <script src="bundle.js" inline></script>
   </body>
 </html>

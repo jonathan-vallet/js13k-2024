@@ -196,7 +196,7 @@ function checkCrateInHole(crate) {
   if (holeTileAtPosition) {
     removeTile(holeTileAtPosition.tile, crate.x, crate.y);
     removeTile('crate', crate.x, crate.y);
-    addTile('hole-filled', crate.x, crate.y);
+    addTile('hole-filled', crate.x, crate.y, { isUnder: true });
     playActionSound('fall');
   }
 }

@@ -5,13 +5,9 @@ const canvas = $('#gameCanvas');
 const ctx = canvas.getContext('2d');
 const backgroundCanvas = $('#gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
-const editorCanvas = $('#editorCanvas');
-const editorCtx = editorCanvas.getContext('2d');
 
-let currentCanvas = canvas; // Current canvas context
-let currentCtx = ctx; // Current canvas context
-let currentMode = 'game'; // Current mode: game or editor
-// currentMode = 'editor'; // Current mode: game or editor
+let currentScreen = 'game'; // Current mode: game or editor
+currentScreen = 'menu'; // Current mode: game or editor
 
 // Global variables
 let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on screen size

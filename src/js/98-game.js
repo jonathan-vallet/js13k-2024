@@ -5,8 +5,6 @@ function setZoomFactor() {
   );
   canvas.width = LEVEL_WIDTH * TILE_SIZE * zoomFactor;
   canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;
-  editorCanvas.width = canvas.width;
-  editorCanvas.height = canvas.height;
   uiCanvas.width = canvas.width;
   uiCanvas.height = TILE_SIZE * 1.1 * zoomFactor; // 2 tiles high
 
@@ -23,7 +21,6 @@ function setZoomFactor() {
 function initGame() {
   // Disable image smoothing for sharp pixelated look
   ctx.imageSmoothingEnabled = false;
-  drawLevelBackground('sand', 'rock');
   startLevel(currentLevel);
 }
 
@@ -35,18 +32,17 @@ window.addEventListener('resize', () => {
 setZoomFactor();
 
 function switchMode(mode) {
-  document.body.classList.remove(currentMode);
+  document.body.classList.remove(currentScreen);
   document.body.classList.add(mode);
-  currentMode = mode;
-  currentCtx = mode === 'game' ? ctx : editorCtx;
-  currentCanvas = mode === 'game' ? canvas : editorCanvas;
+  currentScreen = mode;
 
-  if (mode === 'game') {
+  if (currentScreen === 'game') {
     initGame();
-  } else {
+  }
+  if (currentScreen === 'editor') {
     initEditor();
   }
 }
 
-switchMode(currentMode);
+switchMode(currentScreen);
 requestAnimationFrame(animate);

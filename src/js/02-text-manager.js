@@ -47,6 +47,7 @@ const textManager = {
   defaultOptions: {
     x: 0,
     y: 0,
+    scale: 1,
     text: '',
     vspacing: 10,
     hspacing: 1,
@@ -84,7 +85,7 @@ textManager.textLine = function (opt) {
 textManager.text = function (options) {
   const opt = { ctx: ctx, ...this.defaultOptions, ...options }; // Merge with defaults
   const lines = opt.text.split('\n');
-  const letterSize = 5 * zoomFactor;
+  const letterSize = 5 * zoomFactor * opt.scale;
 
   // Begin drawing
   opt.ctx.beginPath();

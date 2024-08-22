@@ -170,11 +170,16 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       break;
   }
 
-  const tileAtCurrentPosition = getTileAt(characterX, characterY, ['key', 'hole', 'spawn', 'spawn-current']);
+  // const tileAtCurrentPosition = getTileAt(characterX, characterY, ['flag', 'key', 'hole', 'spawn', 'spawn-current']);
+  const tileAtCurrentPosition = getTileAt(characterX, characterY);
   switch (tileAtCurrentPosition?.tile) {
     case 'hole':
       respawnCharacter(movementHistory[movementHistory.length - 1].x, movementHistory[movementHistory.length - 1].y);
       --stepsPerformed;
+      break;
+    case 'flag':
+      startLevel(currentLevel + 1);
+      return false; // Prevent further movement
       break;
     case 'spawn-current':
       stepsPerformed = 0;

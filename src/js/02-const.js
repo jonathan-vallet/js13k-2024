@@ -8,6 +8,7 @@ const COLOR_SETS = {
   bronze: ['#000', '#811c07', '#ca6137', '#ffb59c'],
 };
 
+// CAUTION! If new assets are added, push them at the end of the object, or it will break RLE of every levels
 const TILE_DATA = {
   arrow: {
     rle: '16LKZLA\\K^LZLBZLBZLLLLLLLLLLLLG',

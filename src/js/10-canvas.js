@@ -7,12 +7,17 @@
  * Refresh the canvas by redrawing the level and the character
  */
 function refreshCanvas() {
-  drawLevel(currentLevel);
-  refreshUI();
-
-  if (currentMode === 'editor') {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+  if (currentScreen === 'menu') {
+    drawStartScreen();
+  }
+  if (currentScreen === 'editor') {
+    drawLevel(currentLevel);
     drawEditorSelectedTile();
-  } else {
+  }
+  if (currentScreen === 'game') {
+    drawLevel(currentLevel);
+    refreshUI();
     drawCharacter();
   }
 }
@@ -22,7 +27,7 @@ function refreshCanvas() {
  */
 function drawLevel(levelIndex) {
   // draw background image
-  currentCtx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
   drawLevelElements(levels[levelIndex].levelData);
 }
 
@@ -50,10 +55,8 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
   }
 
   // Draw all static elements
-  console.log(levels[currentLevel], currentLevel);
   drawLevelElements(levels[currentLevel].levelData, true);
-
-  backgroundCtx.drawImage(currentCanvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+  backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
 }
 
 /**
@@ -63,7 +66,7 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
 function drawLevelElements(levelData, isDrawingStatic = false) {
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
-    if (currentMode == 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
+    if (currentScreen == 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
       return;
     }
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
@@ -85,14 +88,14 @@ function drawLevelElements(levelData, isDrawingStatic = false) {
  * @param {Object} [options={}] - Optional parameters: orientation, scale, context, flipHorizontally
  * @param {number} [options.orientation=ORIENTATION_UP] - The orientation of the tile
  * @param {number} [options.scale=1] - The scale to apply to the tile
- * @param {CanvasRenderingContext2D} [options.context=currentCtx] - The canvas context to draw on
+ * @param {CanvasRenderingContext2D} [options.context=ctx] - The canvas context to draw on
  * @param {boolean} [options.flipHorizontally=false] - Whether to flip the tile horizontally
  */
 function drawTile(tile, colors, x, y, options = {}) {
   const {
     orientation = ORIENTATION_UP,
     scale = tile.scale || 1,
-    context = currentCtx,
+    context = ctx,
     flipHorizontally = false,
     alpha = 1,
   } = options;

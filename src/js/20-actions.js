@@ -36,10 +36,6 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
         });
       }
       break;
-    case 'flag':
-      resetLevel(); // Reset the level on reaching the flag
-      return false; // Prevent further movement
-      break;
     case 'block-trigger':
       const blockOrientation = tileElement.orientation || ORIENTATION_UP; // Default orientation is up
       if (

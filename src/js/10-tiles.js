@@ -42,7 +42,7 @@ function removeTile(tileName, x, y) {
  * @param {object} [options] - Additional options for the tile
  */
 function addTile(tile, x, y, options = {}) {
-  levels[currentLevel].levelData.push({ tile, x, y, ...options });
+  levels[currentLevel].levelData[options.isUnder ? 'unshift' : 'push']({ tile, x, y, ...options });
 }
 
 /**
