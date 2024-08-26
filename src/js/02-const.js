@@ -1,4 +1,6 @@
 let $ = (selector) => document.querySelector(selector);
+let setLocalStorage = (key, value) => localStorage.setItem(key, value);
+let getLocalStorage = (key) => localStorage.getItem(key);
 
 const COLOR_SETS = {
   blueGreen: ['#024d53', '#599dbc', '#72d1c7', '#a9ffe6'],

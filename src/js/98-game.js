@@ -18,14 +18,8 @@ function setZoomFactor() {
   }
 }
 
-function startNewGame() {
-  currentLevel = 0;
-  initGame();
-  switchMode('game');
-}
-
 function initGame() {
-  // Disable image smoothing for sharp pixelated look
+  setLocalStorage('currentLevel', currentLevel);
   startLevel(currentLevel);
 }
 

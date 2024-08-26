@@ -1,9 +1,11 @@
+let canContinue = getLocalStorage('currentLevel') !== null;
+
 const menuOptions = [
-  { text: 'CONTINUE', action: 'continue', isDisabled: true },
+  { text: 'CONTINUE', action: 'continue', isDisabled: !canContinue },
   { text: 'NEW GAME', action: 'newGame', isDisabled: false },
   { text: 'LEVEL EDITOR', action: 'levelEditor', isDisabled: false },
 ];
-let currentMenuIndex = 1; // Index of the currently selected menu item
+let currentMenuIndex = canContinue ? 0 : 1; // Index of the currently selected menu item
 
 // Redessiner le dégradé avec la nouvelle valeur de 'r'
 let r = 0.6; // Valeur initiale pour la force de dithering
@@ -77,8 +79,8 @@ function handleMenuClick(e) {
 function handleMenuAction(action) {
   switch (action) {
     case 'continue':
-      // Logique pour continuer le jeu
-      currentScreen = 'game';
+      currentLevel = getLocalStorage('currentLevel');
+      switchMode('game');
       break;
     case 'newGame':
       // Logique pour démarrer un nouveau jeu

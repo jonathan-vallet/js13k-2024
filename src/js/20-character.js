@@ -189,6 +189,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       --stepsPerformed;
       break;
     case 'flag':
+      setLocalStorage('currentLevel', currentLevel + 1);
       startLevel(currentLevel + 1);
       return false; // Prevent further movement
       break;
