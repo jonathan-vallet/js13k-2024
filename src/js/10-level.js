@@ -1,5 +1,6 @@
 function startLevel(levelIndex) {
   // Saves initial state of the level
+  currentLevel = levelIndex;
   drawLevelBackground('sand', 'rock');
   levels[currentLevel].initialData = JSON.parse(JSON.stringify(levels[currentLevel].levelData));
   stepsPerformed = 0;

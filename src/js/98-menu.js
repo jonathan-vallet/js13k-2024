@@ -79,7 +79,7 @@ function handleMenuClick(e) {
 function handleMenuAction(action) {
   switch (action) {
     case 'continue':
-      currentLevel = getLocalStorage('currentLevel');
+      currentLevel = parseInt(getLocalStorage('currentLevel'));
       switchMode('game');
       break;
     case 'newGame':
