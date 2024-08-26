@@ -50,6 +50,15 @@ canvas.addEventListener('mousemove', (e) => {
   }
 });
 
+canvas.addEventListener('mouseleave', (e) => {
+  e.preventDefault();
+  if (currentScreen === 'editor') {
+    currentEditorTile.x = -1;
+    currentEditorTile.y = -1;
+    drawEditorSelectedTile();
+  }
+});
+
 canvas.addEventListener('mousewheel', (e) => {
   e.preventDefault();
   if (currentScreen === 'editor') {
@@ -70,7 +79,7 @@ canvas.addEventListener('mousedown', (e) => {
 
 canvas.addEventListener('click', (e) => {
   if (currentScreen === 'menu') {
-    handleMenuClick();
+    handleMenuClick(e);
   }
 });
 

@@ -18,9 +18,14 @@ function setZoomFactor() {
   }
 }
 
+function startNewGame() {
+  currentLevel = 0;
+  initGame();
+  switchMode('game');
+}
+
 function initGame() {
   // Disable image smoothing for sharp pixelated look
-  ctx.imageSmoothingEnabled = false;
   startLevel(currentLevel);
 }
 
@@ -28,14 +33,11 @@ window.addEventListener('resize', () => {
   setZoomFactor();
   drawLevelBackground('sand', 'rock');
 });
-// Adjust the canvas size to fit the level size
-setZoomFactor();
 
 function switchMode(mode) {
   document.body.classList.remove(currentScreen);
   document.body.classList.add(mode);
   currentScreen = mode;
-
   if (currentScreen === 'game') {
     initGame();
   }
@@ -44,5 +46,27 @@ function switchMode(mode) {
   }
 }
 
-switchMode(currentScreen);
-requestAnimationFrame(animate);
+function loadGame() {
+  // Adjust the canvas size to fit the level size
+  ctx.imageSmoothingEnabled = false;
+  setZoomFactor();
+  // Checks if url has a level parameter, if so, play that level if it's valid
+  const urlParams = new URLSearchParams(window.location.search);
+  const levelParam = urlParams.get('level');
+  if (levelParam) {
+    let customLevel = decodeLevel(levelParam);
+    console.log(customLevel);
+    if (customLevel) {
+      levels.push(customLevel);
+      currentLevel = levels.length - 1;
+      console.log(currentLevel, levels);
+      switchMode('game');
+    }
+  } else {
+    switchMode(currentScreen);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+loadGame();

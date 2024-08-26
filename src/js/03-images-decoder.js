@@ -53,6 +53,7 @@ function convertTo2DArray(pixels, imageWidth) {
  * @returns {number[][][]} - An array of 16x16 tiles
  */
 function sliceIntoTiles(image2DArray, tileWidth, tileHeight) {
+  console.log(image2DArray.length, image2DArray[0].length);
   const tiles = [];
   const numRows = image2DArray.length;
   const numCols = image2DArray[0].length;

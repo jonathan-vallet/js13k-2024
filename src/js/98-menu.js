@@ -19,12 +19,15 @@ function drawStartScreen() {
     rDirection *= -1;
   }
 
-  const color1 = '#800080';
-  const color2 = '#FF4500';
-  const color3 = '#FFD700';
+  const color1 = '#1c0066';
+  const color2 = '#01399a';
+  const color3 = '#0090cc';
 
-  drawDitheredBayerGradient(ctx, canvas.width, 0, canvas.height / 2.5, color1, color2, r);
-  drawDitheredBayerGradient(ctx, canvas.width, canvas.height / 2.5, canvas.height / 2, color2, color3, r / 2);
+  drawDitheredBayerGradient(backgroundCtx, canvas.width, 0, canvas.height / 2.5, color1, color2, r);
+  drawDitheredBayerGradient(backgroundCtx, canvas.width, canvas.height / 2.5, canvas.height / 2, color2, color3, r / 2);
+
+  // Draw the game on background canvas
+  ctx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
 
   const menuStartX = 5; // X-coordinate for menu start
   const menuStartY = 15; // Y-coordinate for menu start

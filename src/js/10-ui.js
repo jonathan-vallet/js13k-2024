@@ -60,7 +60,14 @@ function drawUI() {
   textManager.text({
     ctx: uiCtx,
     x: 270,
-    y: 7,
+    y: 3,
+    text: `E: UNDO`,
+    color: 'rgb(255,255,255)',
+  });
+  textManager.text({
+    ctx: uiCtx,
+    x: 270,
+    y: 10,
     text: `R: RESET`,
     color: 'rgb(255,255,255)',
   });

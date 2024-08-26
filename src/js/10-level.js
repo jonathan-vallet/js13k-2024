@@ -1,9 +1,10 @@
 function startLevel(levelIndex) {
   // Saves initial state of the level
-  currentLevel = levelIndex;
   drawLevelBackground('sand', 'rock');
   levels[currentLevel].initialData = JSON.parse(JSON.stringify(levels[currentLevel].levelData));
   stepsPerformed = 0;
+  collectedKeysNumber = 0;
+  actionHistory = [];
   resetCharacter(); // Reset the character position and direction
 }
 
@@ -13,12 +14,7 @@ function startLevel(levelIndex) {
 function resetLevel() {
   // Restore the level data to its initial state
   levels[currentLevel].levelData = JSON.parse(JSON.stringify(levels[currentLevel].initialData));
-
-  resetCharacter(); // Reset the character position and direction
-
-  // Reset the step counter and movement history
-  stepsPerformed = 0;
-  movementHistory = [];
+  startLevel(currentLevel); // Restart the level
 }
 
 /**

@@ -6,6 +6,7 @@ function handleGameKeydown(key) {
 }
 
 function handleGameKeyup(key) {
+  console.log('keyup', key, event.key);
   if (key) {
     const index = keyStack.indexOf(key);
     if (index !== -1) {
@@ -14,8 +15,12 @@ function handleGameKeyup(key) {
   }
 
   // R to reset the level
-  if (event.key === 'r') {
+  if (key === 'r') {
     resetLevel();
+  }
+  // E to undo the last action
+  if (key === 'e') {
+    undoLastAction();
   }
 
   hasPlayedWallSoundDuringKeyHold = false;
@@ -39,6 +44,6 @@ function mapKeyToDirection(key) {
     case 'd':
       return 'right';
     default:
-      return null;
+      return key;
   }
 }

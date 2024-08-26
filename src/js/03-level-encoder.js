@@ -71,9 +71,9 @@ function getTileCharacter(tileName) {
  */
 function getOrientationSymbol(orientation) {
   const orientationMap = {
-    1: '+', // Right
-    2: '*', // Down
-    3: '/', // Left
+    1: 'x', // Right
+    2: 'y', // Down
+    3: 'z', // Left
   };
 
   return orientationMap[orientation] || ''; // Par défaut, aucune orientation spécifique

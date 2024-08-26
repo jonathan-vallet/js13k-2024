@@ -6,16 +6,15 @@ const ctx = canvas.getContext('2d');
 const backgroundCanvas = $('#gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
 
-let currentScreen = 'game'; // Current mode: game or editor
-currentScreen = 'menu'; // Current mode: game or editor
+let currentScreen = 'menu';
 
 // Global variables
 let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on screen size
 let collectedKeysNumber = 0;
-let movementHistory = [];
+let actionHistory;
 let lastFrameTime = 0; // For animation loop
 const keyStack = []; // Stack of keys pressed
-let currentLevel = 0;
+let currentLevel = 1;
 
 let $editorTileSelector = $('#editorTileSelect');
 let $orientationSelect = $('#editorOrientationSelect');

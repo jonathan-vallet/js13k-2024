@@ -19,22 +19,27 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
   let hasPerformedAction = false;
   switch (tileElement?.tile) {
     case 'crate':
-      if (tryMoveTile(tileElement?.tile, x, y, dx, dy)) {
-        hasPerformedAction = true;
-      }
-      break;
     case 'boulder':
       if (tryMoveTile(tileElement?.tile, x, y, dx, dy)) {
         hasPerformedAction = true;
+        saveActionHistory();
+        if (getTileAt(x, y, ['switch-trigger'])) {
+          invertSwitches();
+        }
       }
       break;
     case 'lock':
       if (collectedKeysNumber > 0) {
         hasPerformedAction = true;
+        saveActionHistory();
         animateTileRemoval('lock', x, y, () => {
           collectedKeysNumber--;
         });
       }
+      break;
+    case 'trap':
+      // Don't perform any action if the character is moving on a trap, but saves history before to avoid trap activation
+      saveActionHistory();
       break;
     case 'block-trigger':
       const blockOrientation = tileElement.orientation || ORIENTATION_UP; // Default orientation is up
@@ -45,18 +50,51 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
         (blockOrientation === ORIENTATION_DOWN && dy === 1)
       ) {
         // Remove the block and start removing connected blocks recursively
-        removeConnectedBlocks(x, y, dx, dy);
         hasPerformedAction = true;
+        saveActionHistory();
+        removeConnectedBlocks(x, y, dx, dy);
       }
       break;
     case 'gong-trigger':
       if (!tileElement.triggered) {
-        tileElement.triggered = true;
         hasPerformedAction = true;
+        saveActionHistory();
+        tileElement.triggered = true;
         animateTileRemoval('gong');
       }
       break;
   }
 
   return hasPerformedAction;
+}
+
+/**
+ * Save the current level state to the action history
+ */
+function saveActionHistory() {
+  actionHistory.push({
+    levelData: JSON.parse(JSON.stringify(levels[currentLevel].levelData)),
+    stepsPerformed,
+    collectedKeysNumber,
+    characterX,
+    characterY,
+    characterDirection,
+  });
+}
+
+/**
+ * Undo the last action performed
+ */
+function undoLastAction() {
+  if (actionHistory.length > 0) {
+    const previousLevelState = actionHistory.pop();
+    console.log('Undoing last action:', previousLevelState);
+    // Restore the previous level state (level data, steps, keys, character position)
+    levels[currentLevel].levelData = previousLevelState.levelData;
+    stepsPerformed = previousLevelState.stepsPerformed;
+    collectedKeysNumber = previousLevelState.collectedKeysNumber;
+    characterX = previousLevelState.characterX;
+    characterY = previousLevelState.characterY;
+    setCharacterDirection(previousLevelState.characterDirection);
+  }
 }

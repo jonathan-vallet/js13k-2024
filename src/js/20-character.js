@@ -11,7 +11,7 @@ let characterInitialX;
 let characterInitialY;
 let characterX;
 let characterY;
-let isCharacterMoving = false;
+let isCharacterMoving;
 let characterMoveStartX = characterX;
 let characterMoveStartY = characterY;
 let characterMoveTargetX = characterX;
@@ -67,6 +67,7 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
     return false;
   }
 
+  let levelStateBeforeAction = encodeLevel(levels[currentLevel].levelData);
   let hasPerformedAction = tryPerformAction(x, y, dx, dy, tileElement);
 
   if (hasPerformedAction) {
@@ -75,9 +76,21 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
 
   // If the tile is a not a free space, return false
   if (
-    ![null, 'arrow', 'key', 'key-holder', 'flag', 'trap', 'hole', 'hole-filled', 'spawn', 'spawn-current'].includes(
-      tileAtTarget,
-    )
+    ![
+      null,
+      'arrow',
+      'key',
+      'key-holder',
+      'flag',
+      'trap',
+      'hole',
+      'spikes',
+      'hole-filled',
+      'spawn',
+      'spawn-current',
+      'switch-trigger',
+      'switch-off',
+    ].includes(tileAtTarget)
   ) {
     if (hasPerformedAction) {
       ++stepsPerformed;
@@ -104,7 +117,6 @@ function moveCharacter(dx, dy, direction) {
 
   const newX = characterX + dx;
   const newY = characterY + dy;
-  let previousDirection = characterDirection;
   setCharacterDirection(direction);
 
   // Check if the character can move to the new position
@@ -117,11 +129,6 @@ function moveCharacter(dx, dy, direction) {
       characterMoveTargetX = newX;
       characterMoveTargetY = newY;
       characterMoveElapsedTime = 0;
-      movementHistory.push({
-        x: characterX,
-        y: characterY,
-        orientation: previousDirection,
-      });
     }
 
     stepsPerformed = Math.min(stepsPerformed + 1, MAX_STEPS_ALLOWED);
@@ -159,22 +166,26 @@ function getMoveFrameFromDirection(direction) {
  * Handle action that triggers when the character moves to a new position
  */
 function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
-  const tileAtPreviousPosition = getTileAt(lastX, lastY, ['trap']);
+  const tileAtPreviousPosition = getTileAt(lastX, lastY, ['trap', 'switch-trigger']);
+  const tileAtCurrentPosition = getTileAt(characterX, characterY);
+
   switch (tileAtPreviousPosition?.tile) {
     case 'trap':
       // Transform the trap into a hole when the character moves away
-      if (!hasPerformedAction) {
+      if (!hasPerformedAction && tileAtCurrentPosition?.tile !== 'hole') {
         playActionSound('trap');
         tileAtPreviousPosition.tile = 'hole';
       }
       break;
+    case 'switch-trigger':
+      invertSwitches();
+      break;
   }
 
-  // const tileAtCurrentPosition = getTileAt(characterX, characterY, ['flag', 'key', 'hole', 'spawn', 'spawn-current']);
-  const tileAtCurrentPosition = getTileAt(characterX, characterY);
   switch (tileAtCurrentPosition?.tile) {
     case 'hole':
-      respawnCharacter(movementHistory[movementHistory.length - 1].x, movementHistory[movementHistory.length - 1].y);
+    case 'spikes':
+      respawnCharacter(lastX, lastY);
       --stepsPerformed;
       break;
     case 'flag':
@@ -196,6 +207,9 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       characterInitialX = characterX;
       characterInitialY = characterY;
       stepsPerformed = 0;
+      break;
+    case 'switch-trigger':
+      invertSwitches();
       break;
     case 'key':
       // Pick up the key

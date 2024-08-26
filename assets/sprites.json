@@ -16,5 +16,11 @@
   "sand": "16ZMYV]MYV]MYW\\MYMYU^MYU^MZU^MZV]MYV]XM\\XM\\X[XN[XM\\X]XZ",
   "spawn-current": "16E\\LBYAYJZBYAYJZAYAYJYAYBYBYD[F[AYAYEZCYBZAZB\\AYB\\BYA\\BZAZBYCZEYAYA[F[DYBYBYAYJYAYAZJYAYBZJYAYLB\\E",
   "spawn": "32E\\L\\LBYAYLAYAYJZBYAYIZBYAYJZAYAYJZAYAYJYAYBYBYGYAYBYBYD[F[AYB[F[AYAYEfCYBYAYErCYBZAZBhAYB[AZBtAYB\\BYAhBZA[BYAtBZAZBYCfEYAYBYCrEYAYA[F[BYA[F[DYBYBYAYGYBYBYAYJYAYAZJYAYAZJYAYBZIYAYBZJYAYLAYAYLB\\L\\E",
-  "trap": "16DNANANGVEQfQCNYM[N[NBMeMfYfMfMeMANZM\\e\\OeMfMYgMfMeO]N]OgNgMeYgN\\eYM]eYOeMeOgYfNAeZN[M[MeBNYeMgMfOCO[fZNFQfMJPF"
+  "spikes": "16LEpeBe|qeA|sArgqgqgrAreMeqeMeqeMerArgqgqgrA|sArgqgqgrAreMeqeMeqeMerArgqgqgrA|sArgqgqgrAreMeqeMeqeMerArgqgqgrB|qB",
+  "switch-off": "16LLIpfBedeBeZxZeBeYzYeBeYs\\sYeBeYs\\sYeBeYs\\sYeBeYzYeBeYzYeBeZxZeBedeBpfLLI",
+  "switch-on": "16CVEMexeMDMqftfqMCeMqeqPqeqMeBeMqeqPqeqMeBeMqeqPqeqMeBeMqftfqMeBeMexeMeBeNlNeBeMqZereZqMeBeMeqZfZqeMeBeMYerfreYMeBeNYe\\eYNeBeXeBiDiLE",
+  "switch-trigger": "16Zp[pfYplTkMxMjMxMjMrPrMjMrPrMjMrPrMjMxMjMxMjM`MjYTYk`hYpf[pZ",
+  "trap": "16DNANANGVEQfQCNYM[N[NBMeMfYfMfMeMANZM\\e\\OeMfMYgMfMeO]N]OgNgMeYgN\\eYM]eYOeMeOgYfNAeZN[M[MeBNYeMgMfOCO[fZNFQfMJPF",
+  "wall-border": "16XXUpfMpplMpfXXXXNuOuNwMwMhsMerhNiNjPgQgXXW",
+  "wall": "16MuPwhrNhsjqMoNfMjMlNfNiMgPjXXV|OksesNgqlrNnMfqNhNkqOjNhXXV"
 }

@@ -22,6 +22,27 @@ function getTileAt(x, y, type = [], levelIndex = currentLevel) {
 }
 
 /**
+ * Get all tiles of a specific type or all tiles in the level
+ * @param {string[]} type - An array of tile names to filter by
+ * @param {number} levelIndex - The index of the level to search
+ * @returns {object[]} - An array of tile elements
+ */
+function getAllTiles(type = [], levelIndex = currentLevel) {
+  let lastTileAt = [];
+  let levelData = levels[levelIndex].levelData;
+  for (const element of levelData) {
+    if (type.length > 0) {
+      if (type.includes(element.tile)) {
+        lastTileAt.push(element);
+      }
+    } else {
+      lastTileAt.push(element);
+    }
+  }
+  return lastTileAt;
+}
+
+/**
  * Remove a specific tile or multiple tiles from the level.
  * @param {string} tileName - The name of the tile to remove (e.g., "gong").
  * @param {number} [x] - The x-coordinate of the tile to remove.
@@ -46,7 +67,7 @@ function addTile(tile, x, y, options = {}) {
 }
 
 /**
- * Move a crate if possible
+ * Move a tile if possible (crate, boulder)
  * @param {number} x - The x-coordinate of the crate
  * @param {number} y - The y-coordinate of the crate
  * @param {number} dx - The x-direction of movement
@@ -66,7 +87,8 @@ function tryMoveTile(tileName, x, y, dx, dy) {
     let tileAtNewPosition = getTileAt(checkedX, checkedY)?.tile || null;
     if (
       isInLevelBounds(checkedX, checkedY) &&
-      (tileAtNewPosition === null || ['arrow', 'hole', 'trap', 'hole-filled'].includes(tileAtNewPosition))
+      (tileAtNewPosition === null ||
+        ['arrow', 'hole', 'trap', 'hole-filled', 'switch-off', 'switch-trigger', 'spikes'].includes(tileAtNewPosition))
     ) {
       distance++;
     } else {
@@ -153,7 +175,7 @@ function removeConnectedBlocks(x, y, dx, dy) {
       // After a short delay, remove the next block and continue recursively in the new direction
       setTimeout(() => {
         removeConnectedBlocks(nextX, nextY, newDx, newDy);
-      }, 120); // 200ms delay for visual effect
+      }, 120); // delay for visual effect
     }
   }
 }
@@ -179,5 +201,24 @@ function animateTileRemoval(tileName, x = null, y = null, callback, duration = D
     tile.elapsed = 0; // Reset elapsed time for removal animation
     tile.removalDuration = duration; // Set removal duration
     tile.removeCallback = callback; // Store the callback
+  });
+}
+
+/**
+ * Invert all switches in the level
+ */
+function invertSwitches() {
+  let switchOnList = getAllTiles('switch-on');
+  let switchOffList = getAllTiles('switch-off');
+  switchOnList.forEach((tile) => {
+    tile.tile = 'switch-off';
+  });
+  switchOffList.forEach((tile) => {
+    tile.tile = 'switch-on';
+    // If a tile is on a switch, remove it
+    let tileAt = getTileAt(tile.x, tile.y, ['crate', 'boulder']);
+    if (tileAt) {
+      animateTileRemoval(tileAt.tile, tile.x, tile.y);
+    }
   });
 }

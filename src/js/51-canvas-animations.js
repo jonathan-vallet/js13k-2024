@@ -184,8 +184,15 @@ function animateTile(deltaTime) {
     tileMoveElapsedTime = 0;
 
     // Specific logic for different tile types
+    // When a crate reaches a hole or a trap, replace it with a filled hole
     if (movingTile.tile === 'crate') {
       checkCrateInHole(movingTile);
+    }
+    // When a boulder or crate reaches a switch trigger, invert the switches
+    if (['crate', 'boulder'].includes(movingTile.tile)) {
+      if (getTileAt(movingTile.x, movingTile.y, ['switch-trigger'])) {
+        invertSwitches();
+      }
     }
     movingTile = null; // Reset moving tile after the animation
   }

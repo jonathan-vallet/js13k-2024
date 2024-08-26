@@ -2,7 +2,6 @@
  * Initialize the level editor
  */
 function initEditor() {
-  // Disable image smoothing for sharp pixelated look
   currentLevel = 0;
   startLevel(currentLevel);
 
@@ -51,4 +50,42 @@ function handleEditorClick(e) {
     removeTile($editorTileSelector.value, currentEditorTile.x, currentEditorTile.y);
     let encoded = encodeLevel(levels[currentLevel].levelData);
   }
+}
+
+$('#editorTestLevelButton').addEventListener('click', () => {
+  if (!checkEditorLevelValidity()) {
+    return;
+  }
+
+  let encoded = encodeLevel(levels[currentLevel].levelData);
+  window.open(`./index.html?level=${encoded}`);
+});
+
+let $editorMessage = $('#editorMessage');
+
+function checkEditorLevelValidity() {
+  let levelData = levels[currentLevel].levelData;
+  let playerSpawnNumber = 0;
+  let flagNumber = 0;
+  levelData.forEach((tile) => {
+    if (tile.tile === 'spawn-current') {
+      playerSpawnNumber++;
+    } else if (tile.tile === 'flag') {
+      flagNumber++;
+    }
+  });
+
+  let message = '';
+  let isValid = playerSpawnNumber === 1 && flagNumber === 1;
+  if (!isValid) {
+    if (playerSpawnNumber !== 1) {
+      message += 'There must be exactly one player spawn point.\n';
+    }
+    if (flagNumber !== 1) {
+      message += 'There must be exactly one flag.\n';
+    }
+  }
+
+  $editorMessage.textContent = message;
+  return isValid;
 }

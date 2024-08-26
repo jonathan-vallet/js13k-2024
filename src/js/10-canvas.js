@@ -55,7 +55,9 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
   }
 
   // Draw all static elements
-  drawLevelElements(levels[currentLevel].levelData, true);
+  if (currentScreen === 'game') {
+    drawLevelElements(levels[currentLevel].levelData, true);
+  }
   backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
 }
 
@@ -66,7 +68,7 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
 function drawLevelElements(levelData, isDrawingStatic = false) {
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
-    if (currentScreen == 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
+    if (currentScreen === 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
       return;
     }
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
