@@ -42,7 +42,7 @@ function updateAnimations(deltaTime) {
     if (tile.isBeingRemoved) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
       const duration = tile.removalDuration || DEFAULT_REMOVAL_DURATION;
-      tile.scale = Math.max(1 - tile.elapsed / duration, 0); // Reduce scale over time
+      tile.scale = max(1 - tile.elapsed / duration, 0); // Reduce scale over time
 
       if (tile.scale <= 0) {
         removeTile(tile.tile, tile.x, tile.y);
@@ -89,7 +89,7 @@ function updateAnimations(deltaTime) {
  */
 function playCharacterAnimation(deltaTime) {
   characterMoveElapsedTime += deltaTime;
-  const progress = Math.min(characterMoveElapsedTime / CHARACTER_MOVE_DURATION, 1);
+  const progress = min(characterMoveElapsedTime / CHARACTER_MOVE_DURATION, 1);
 
   // Interpolate the character's position
   characterX = characterMoveStartX + (characterMoveTargetX - characterMoveStartX) * progress;
@@ -125,7 +125,7 @@ function playCharacterAnimation(deltaTime) {
 function returnCharacterToSpawn() {
   // Handle character return to spawn animation
   const elapsedTime = performance.now() - characterReturnStartTime;
-  const progress = Math.min(elapsedTime / CHARACTER_RESPAWN_DURATION, 1);
+  const progress = min(elapsedTime / CHARACTER_RESPAWN_DURATION, 1);
 
   // First part: scale down at the current position
   if (progress < 0.5) {
@@ -160,7 +160,7 @@ function animateTile(deltaTime) {
 
   const totalDistance = Math.abs(tileMoveStartX - tileMoveTargetX) + Math.abs(tileMoveStartY - tileMoveTargetY);
   let moveDuration = TILE_CELL_MOVE_DURATION * totalDistance;
-  const progress = Math.min(tileMoveElapsedTime / moveDuration, 1);
+  const progress = min(tileMoveElapsedTime / moveDuration, 1);
 
   if (movingTile.tile === 'boulder') {
     // Calculate the rotation based on progress and total distance

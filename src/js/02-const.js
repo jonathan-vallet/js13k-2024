@@ -2,6 +2,9 @@ let $ = (selector) => document.querySelector(selector);
 let setLocalStorage = (key, value) => localStorage.setItem(key, value);
 let getLocalStorage = (key) => localStorage.getItem(key);
 
+let min = Math.min;
+let max = Math.max;
+
 const COLOR_SETS = {
   blueGreen: ['#024d53', '#599dbc', '#72d1c7', '#a9ffe6'],
   crate: ['#000', '#893a25', '#f89e61', '#c16c43'],

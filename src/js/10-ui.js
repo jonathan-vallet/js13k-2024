@@ -10,12 +10,11 @@ function drawUI() {
   uiCtx.fillRect(0, 0, uiCanvas.width, uiCanvas.height);
 
   // Draw steps remaining
-  textManager.text({
+  writeText({
     ctx: uiCtx,
     x: 10,
     y: 7,
     text: `STEPS:`,
-    color: 'rgb(255,255,255)',
   });
 
   let shakeX = 0;
@@ -27,7 +26,7 @@ function drawUI() {
   }
 
   // Draw steps remaining
-  textManager.text({
+  writeText({
     ctx: uiCtx,
     x: 40 + shakeX,
     y: 7 + shakeY,
@@ -41,35 +40,31 @@ function drawUI() {
   drawTile(keyTile, keyColors, 4.5, 0.2, { context: uiCtx });
 
   // Draw current level
-  textManager.text({
+  writeText({
     ctx: uiCtx,
     x: 120,
     y: 7,
-    text: `LEVEL: ${currentLevel + 1}`,
-    color: 'rgb(255,255,255)',
+    text: `LEVEL: ${currentLevel}`,
   });
 
-  textManager.text({
+  writeText({
     ctx: uiCtx,
     x: 90,
     y: 7,
     text: `x${collectedKeysNumber}`,
-    color: 'rgb(255,255,255)',
   });
 
-  textManager.text({
+  writeText({
     ctx: uiCtx,
     x: 270,
     y: 3,
     text: `E: UNDO`,
-    color: 'rgb(255,255,255)',
   });
-  textManager.text({
+  writeText({
     ctx: uiCtx,
     x: 270,
     y: 10,
     text: `R: RESET`,
-    color: 'rgb(255,255,255)',
   });
 }
 

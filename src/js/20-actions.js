@@ -88,7 +88,6 @@ function saveActionHistory() {
 function undoLastAction() {
   if (actionHistory.length > 0) {
     const previousLevelState = actionHistory.pop();
-    console.log('Undoing last action:', previousLevelState);
     // Restore the previous level state (level data, steps, keys, character position)
     levels[currentLevel].levelData = previousLevelState.levelData;
     stepsPerformed = previousLevelState.stepsPerformed;

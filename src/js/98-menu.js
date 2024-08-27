@@ -41,13 +41,13 @@ function drawStartScreen() {
     const yPosition = menuStartY + index * menuSpacing;
     const isHighlighted = index === currentMenuIndex;
 
-    textManager.text({
+    writeText({
       ctx: ctx,
       x: menuStartX * zoomFactor,
       y: yPosition * zoomFactor,
-      scale: 1,
+      scale: 2,
       text: option.text,
-      color: isHighlighted ? 'rgb(255,255,0)' : option.isDisabled ? 'rgb(150,150,150)' : 'rgb(0, 0,0)',
+      color: isHighlighted ? '#ff0' : option.isDisabled ? '#999' : '#000',
     });
 
     // Store clickable zone (a bit wider and taller than the text)

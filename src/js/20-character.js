@@ -131,7 +131,7 @@ function moveCharacter(dx, dy, direction) {
       characterMoveElapsedTime = 0;
     }
 
-    stepsPerformed = Math.min(stepsPerformed + 1, MAX_STEPS_ALLOWED);
+    stepsPerformed = min(stepsPerformed + 1, MAX_STEPS_ALLOWED);
   }
 }
 

@@ -1,4 +1,4 @@
-window.addEventListener('keydown', (e) => {
+addEventListener('keydown', (e) => {
   const key = mapKeyToDirection(e.key);
   if (currentScreen === 'game') {
     handleGameKeydown(key);
@@ -12,7 +12,7 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-window.addEventListener('keyup', (event) => {
+addEventListener('keyup', (event) => {
   const key = mapKeyToDirection(event.key);
   if (currentScreen === 'game') {
     handleGameKeyup(key);
@@ -63,7 +63,7 @@ canvas.addEventListener('mousewheel', (e) => {
   e.preventDefault();
   if (currentScreen === 'editor') {
     // Changes tile orientation
-    const delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
+    const delta = max(-1, min(1, e.wheelDelta || -e.detail));
 
     $orientationSelect.value = (parseInt($orientationSelect.value) + delta + 4) % 4;
     drawEditorSelectedTile();

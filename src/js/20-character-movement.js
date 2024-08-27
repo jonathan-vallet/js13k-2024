@@ -6,7 +6,6 @@ function handleGameKeydown(key) {
 }
 
 function handleGameKeyup(key) {
-  console.log('keyup', key, event.key);
   if (key) {
     const index = keyStack.indexOf(key);
     if (index !== -1) {

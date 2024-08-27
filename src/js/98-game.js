@@ -19,7 +19,7 @@ function setZoomFactor() {
 }
 
 function initGame() {
-  setLocalStorage('currentLevel', currentLevel);
+  // Disable image smoothing for sharp pixelated look
   startLevel(currentLevel);
 }
 
@@ -49,11 +49,9 @@ function loadGame() {
   const levelParam = urlParams.get('level');
   if (levelParam) {
     let customLevel = decodeLevel(levelParam);
-    console.log(customLevel);
     if (customLevel) {
       levels.push(customLevel);
       currentLevel = levels.length - 1;
-      console.log(currentLevel, levels);
       switchMode('game');
     }
   } else {

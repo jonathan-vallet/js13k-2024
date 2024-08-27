@@ -18,13 +18,24 @@ const replacements = {
   editorOrientationSelect: 'eOS',
   editorTileSelect: 'eTS',
   editorCanvas: 'eC',
+  // colors
+  blueGreen: 'bG',
+  green: 'g',
+  bronze: 'br',
+  purple: 'p',
+  sand: 's',
+
   // tile names
-  'block-trigger': 'bT',
-  crate: 'c',
-  'hole-filled': 'hF',
-  hole: 'h',
-  flag: 'f',
-  'key-holder': 'kH',
+  // 'block-trigger': 'bT',
+  // crate: 'c',
+  // 'hole-filled': 'hF',
+  // hole: 'h',
+  // flag: 'f',
+  // 'gong-trigger': 'gT',
+  // 'spawn-current': 'sC',
+  // gong: 'g',
+  // 'key-holder': 'kH',
+
   // object properties
   canChangeOrientation: 'cCO',
   colors: 'co',

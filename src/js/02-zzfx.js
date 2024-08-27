@@ -63,7 +63,7 @@ let zzfxG = (
           ? 2 < r
             ? 3 < r
               ? Math.sin((g % b) ** 3)
-              : Math.max(Math.min(Math.tan(g), 1), -1)
+              : max(min(Math.tan(g), 1), -1)
             : 1 - (((((2 * g) / b) % 2) + 2) % 2)
           : 1 - 4 * Math.abs(Math.round(g / b) - g / b)
         : Math.sin(g)),
