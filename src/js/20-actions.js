@@ -23,8 +23,9 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
       if (tryMoveTile(tileElement?.tile, x, y, dx, dy)) {
         hasPerformedAction = true;
         saveActionHistory();
-        if (getTileAt(x, y, ['switch-trigger'])) {
-          invertSwitches();
+        let switchTrigger = getTileAt(x, y, ['switch-trigger']);
+        if (switchTrigger) {
+          invertSwitches(switchTrigger.orientation);
         }
       }
       break;
@@ -32,7 +33,7 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
       if (collectedKeysNumber > 0) {
         hasPerformedAction = true;
         saveActionHistory();
-        animateTileRemoval('lock', x, y, () => {
+        animateTileRemoval('lock', x, y, null, () => {
           collectedKeysNumber--;
         });
       }
@@ -60,7 +61,7 @@ function tryPerformAction(x, y, dx, dy, tileElement) {
         hasPerformedAction = true;
         saveActionHistory();
         tileElement.triggered = true;
-        animateTileRemoval('gong');
+        animateTileRemoval('gong', null, null, tileElement.orientation);
       }
       break;
   }

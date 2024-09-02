@@ -24,7 +24,11 @@ function drawEditorSelectedTile() {
   const selectedOrientation = parseInt($orientationSelect.value);
 
   drawTile(TILE_DATA[selectedTile].tiles[0], TILE_DATA[selectedTile].colors, currentEditorTile.x, currentEditorTile.y, {
-    orientation: TILE_DATA[selectedTile].canChangeOrientation ? selectedOrientation : ORIENTATION_UP,
+    orientation:
+      TILE_DATA[selectedTile].canChangeOrientation || TILE_DATA[selectedTile].useOrientationForColor
+        ? selectedOrientation
+        : ORIENTATION_UP,
+    useOrientationForColor: TILE_DATA[selectedTile].useOrientationForColor,
     scale: 1,
     flipHorizontally: false,
     alpha: 0.5,
@@ -39,16 +43,21 @@ function handleEditorClick(e) {
       isInLevelBounds(currentEditorTile.x, currentEditorTile.y)
     ) {
       addTile($editorTileSelector.value, currentEditorTile.x, currentEditorTile.y, {
-        orientation: TILE_DATA[$editorTileSelector.value].canChangeOrientation
-          ? parseInt($orientationSelect.value)
-          : ORIENTATION_UP,
+        orientation:
+          TILE_DATA[$editorTileSelector.value].canChangeOrientation ||
+          TILE_DATA[$editorTileSelector.value].useOrientationForColor
+            ? parseInt($orientationSelect.value)
+            : ORIENTATION_UP,
       });
       let encoded = encodeLevel(levels[currentLevel].levelData);
     }
   } else if (e.buttons === 2) {
-    // Right mouse button (remove tile)
-    removeTile($editorTileSelector.value, currentEditorTile.x, currentEditorTile.y);
-    let encoded = encodeLevel(levels[currentLevel].levelData);
+    // Right mouse button (remove tile at position)
+    let tile = getTileAt(currentEditorTile.x, currentEditorTile.y);
+    if (tile) {
+      removeTile(tile.tile, currentEditorTile.x, currentEditorTile.y);
+      encodeLevel(levels[currentLevel].levelData);
+    }
   }
 }
 

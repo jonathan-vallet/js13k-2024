@@ -185,13 +185,26 @@ function removeConnectedBlocks(x, y, dx, dy) {
  * @param {string} tileName - The name of the tile to remove (e.g., "block", "gong")
  * @param {number|null} x - The x-coordinate of the tile to remove, or null to remove all matching tiles
  * @param {number|null} y - The y-coordinate of the tile to remove, or null to remove all matching tiles
+ * @param {number|null} orientation - The orientation of the tile to remove, or null to remove all matching tiles
  * @param {function} callback - A callback function to execute once the animation is complete
  * @param {number} duration - The duration of the animation in milliseconds
  */
-function animateTileRemoval(tileName, x = null, y = null, callback, duration = DEFAULT_REMOVAL_DURATION) {
+function animateTileRemoval(
+  tileName,
+  x = null,
+  y = null,
+  orientation = null,
+  callback = () => {},
+  duration = DEFAULT_REMOVAL_DURATION,
+) {
   // Find all matching tiles in levelData
   const tilesToAnimate = levels[currentLevel].levelData.filter((element) => {
-    return element.tile === tileName && (x === null || (element.x === x && element.y === y));
+    return (
+      element.tile === tileName &&
+      (x === null || element.x === x) &&
+      (y === null || element.y === y) &&
+      (orientation === null || element.orientation === orientation)
+    );
   });
 
   // Mark all tiles as being removed and initialize animation properties
@@ -207,18 +220,22 @@ function animateTileRemoval(tileName, x = null, y = null, callback, duration = D
 /**
  * Invert all switches in the level
  */
-function invertSwitches() {
+function invertSwitches(orientation) {
   let switchOnList = getAllTiles('switch-on');
   let switchOffList = getAllTiles('switch-off');
   switchOnList.forEach((tile) => {
-    tile.tile = 'switch-off';
+    if (tile.orientation === orientation) {
+      tile.tile = 'switch-off';
+    }
   });
   switchOffList.forEach((tile) => {
-    tile.tile = 'switch-on';
-    // If a tile is on a switch, remove it
-    let tileAt = getTileAt(tile.x, tile.y, ['crate', 'boulder']);
-    if (tileAt) {
-      animateTileRemoval(tileAt.tile, tile.x, tile.y);
+    if (tile.orientation === orientation) {
+      tile.tile = 'switch-on';
+      // If a tile is on a switch, remove it
+      let tileAt = getTileAt(tile.x, tile.y, ['crate', 'boulder']);
+      if (tileAt) {
+        animateTileRemoval(tileAt.tile, tile.x, tile.y);
+      }
     }
   });
 }

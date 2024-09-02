@@ -68,6 +68,15 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
 function drawLevelElements(levelData, isDrawingStatic = false) {
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
+
+    // If drawing static elements, draw a key-holder under each key
+    if (isDrawingStatic && element.tile === 'key') {
+      const keyHolderTile = TILE_DATA['key-holder'];
+      const keyHolderFrame = keyHolderTile.tiles[0]; // Assume the key-holder has only one frame
+      const keyHolderColors = keyHolderTile.colors;
+      drawTile(keyHolderFrame, keyHolderColors, element.x, element.y);
+    }
+
     if (currentScreen === 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
       return;
     }
@@ -77,7 +86,8 @@ function drawLevelElements(levelData, isDrawingStatic = false) {
     const y = element.y;
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
-    drawTile(frame, colors, x, y, { orientation, scale });
+    const useOrientationForColor = TILE_DATA[element.tile].useOrientationForColor;
+    drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor });
   });
 }
 
@@ -100,6 +110,7 @@ function drawTile(tile, colors, x, y, options = {}) {
     context = ctx,
     flipHorizontally = false,
     alpha = 1,
+    useOrientationForColor = false,
   } = options;
 
   context.save();
@@ -114,7 +125,11 @@ function drawTile(tile, colors, x, y, options = {}) {
   }
 
   context.scale(scale * scaleDirection, scale); // Apply scaling
-  context.rotate((orientation * Math.PI) / 2); // Apply rotation
+  if (useOrientationForColor) {
+    colors = colors[orientation];
+  } else {
+    context.rotate((orientation * Math.PI) / 2); // Apply rotation
+  }
   context.translate(-halfTileSize, -halfTileSize); // Move to the top-left corner of the tile
 
   // Draw the tile by iterating over the pixels

@@ -190,8 +190,27 @@ function animateTile(deltaTime) {
     }
     // When a boulder or crate reaches a switch trigger, invert the switches
     if (['crate', 'boulder'].includes(movingTile.tile)) {
-      if (getTileAt(movingTile.x, movingTile.y, ['switch-trigger'])) {
-        invertSwitches();
+      let switchTrigger = getTileAt(tileMoveTargetX, tileMoveTargetY, ['switch-trigger']);
+      if (switchTrigger) {
+        invertSwitches(switchTrigger.orientation);
+      }
+    }
+    // When a boulder hit a gong trigger
+    if (movingTile.tile === 'boulder') {
+      const deltaX = tileMoveTargetX - tileMoveStartX;
+      const deltaY = tileMoveTargetY - tileMoveStartY;
+
+      // Calculate the next position that the boulder would move to if it continued in the same direction
+      const nextX = movingTile.x + (deltaX !== 0 ? Math.sign(deltaX) : 0);
+      const nextY = movingTile.y + (deltaY !== 0 ? Math.sign(deltaY) : 0);
+
+      // Check if the next position contains a gong-trigger
+      const nextTile = getTileAt(nextX, nextY);
+      if (nextTile && nextTile.tile === 'gong-trigger' && !nextTile.triggered) {
+        nextTile.triggered = true;
+        saveActionHistory();
+        animateTileRemoval('gong', null, null, nextTile.orientation);
+        playActionSound('gong-trigger');
       }
     }
     movingTile = null; // Reset moving tile after the animation

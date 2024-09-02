@@ -19,9 +19,6 @@ function decodeLevel(encodedString) {
       let x = (tileIndex % (LEVEL_WIDTH - 2)) + 1;
       let y = Math.floor(tileIndex / (LEVEL_WIDTH - 2)) + 1;
       if (tileName) {
-        if (tileName === 'key') {
-          levelData.push({ tile: 'key-holder', x, y, orientation });
-        }
         levelData.push({ tile: tileName, x, y, orientation });
 
         if (tileName === 'spawn-current') {

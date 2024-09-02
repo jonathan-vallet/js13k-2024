@@ -178,7 +178,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       }
       break;
     case 'switch-trigger':
-      invertSwitches();
+      invertSwitches(tileAtPreviousPosition.orientation);
       break;
   }
 
@@ -210,7 +210,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       stepsPerformed = 0;
       break;
     case 'switch-trigger':
-      invertSwitches();
+      invertSwitches(tileAtCurrentPosition.orientation);
       break;
     case 'key':
       // Pick up the key

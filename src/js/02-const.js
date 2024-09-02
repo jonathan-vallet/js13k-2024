@@ -11,6 +11,8 @@ const COLOR_SETS = {
   green: ['#000', '#527f67', '#a2ce69', '#d6f8e1'],
   sand: ['#e5d09e', '#cab168'],
   bronze: ['#000', '#811c07', '#ca6137', '#ffb59c'],
+  silver: ['#000', '#014a5d', '#7ddbff', '#d0ffea'],
+  gold: ['#000', '#5e3718', '#d8aa3b', '#fdffaa'],
   purple: ['#341b2e', '#6a5979', '#937cb2', '#afbeff'],
 };
 
@@ -47,12 +49,14 @@ const TILE_DATA = {
   },
   'gong-trigger': {
     rle: '16XQsevesNqfTfqNfOhNgNfNeteNfNfMeqPqeMfMAMeMeqMrMqeMeMBMeMeqPqeMeMBMeNeteNeMBMeMAMhMAMeMBMeMBPBMeMBMeMHMeMBMeMHMeMBMeMAQBMeMBMeMBQAMeMBOHOA',
-    colors: COLOR_SETS.bronze,
+    colors: [COLOR_SETS.bronze, COLOR_SETS.silver, COLOR_SETS.gold, COLOR_SETS.purple],
+    useOrientationForColor: true,
     isStatic: true,
   },
   gong: {
     rle: '16F\\JZtZGYfvYEZe^rYC\\jYrYB[lYqYBZnZBYhthYBYgq\\qgYBYgqYrYqgYBYgq\\qgYBZgtgZBeZlZeCeZjZeEe`eGlD',
-    colors: COLOR_SETS.bronze,
+    colors: [COLOR_SETS.bronze, COLOR_SETS.silver, COLOR_SETS.gold, COLOR_SETS.purple],
+    useOrientationForColor: true,
   },
   'hole-filled': {
     rle: '16LLLAMANAMFXNANYnYOZVZNeNeqjNeNeMfqetfMeNeMfteqfMeNeNjqeNeNZVZOYnYOYXYMAM[MZM]MCMAYMYNYNAMLF',
@@ -110,15 +114,20 @@ const TILE_DATA = {
   },
   'switch-off': {
     rle: '16LLIpfBedeBeZxZeBeYzYeBeYs\\sYeBeYs\\sYeBeYs\\sYeBeYzYeBeYzYeBeZxZeBedeBpfLLI',
-    colors: COLOR_SETS.purple,
+    colors: [COLOR_SETS.purple, COLOR_SETS.bronze, COLOR_SETS.silver, COLOR_SETS.gold],
+    useOrientationForColor: true,
   },
   'switch-on': {
     rle: '16CVEMexeMDMqftfqMCeMqeqPqeqMeBeMqeqPqeqMeBeMqeqPqeqMeBeMqftfqMeBeMexeMeBeNlNeBeMqZereZqMeBeMeqZfZqeMeBeMYerfreYMeBeNYe\\eYNeBeXeBiDiLE',
     colors: COLOR_SETS.purple,
+    colors: [COLOR_SETS.purple, COLOR_SETS.bronze, COLOR_SETS.silver, COLOR_SETS.gold],
+    useOrientationForColor: true,
   },
   'switch-trigger': {
     rle: '16Zp[pfYplTkMxMjMxMjMrPrMjMrPrMjMrPrMjMxMjMxMjM`MjYTYk`hYpf[pZ',
     colors: COLOR_SETS.purple,
+    colors: [COLOR_SETS.purple, COLOR_SETS.bronze, COLOR_SETS.silver, COLOR_SETS.gold],
+    useOrientationForColor: true,
   },
 };
 
