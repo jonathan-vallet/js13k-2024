@@ -19,3 +19,6 @@ let currentLevel = 1;
 let $editorTileSelector = $('#editorTileSelect');
 let $orientationSelect = $('#editorOrientationSelect');
 let currentEditorTile = { x: -1, y: -1 };
+
+let musicAudio = document.createElement('audio');
+let musicplayer = new CPlayer();

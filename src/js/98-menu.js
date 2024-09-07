@@ -25,15 +25,36 @@ function drawStartScreen() {
   const color2 = '#01399a';
   const color3 = '#0090cc';
 
-  drawDitheredBayerGradient(backgroundCtx, canvas.width, 0, canvas.height / 2.5, color1, color2, r);
-  drawDitheredBayerGradient(backgroundCtx, canvas.width, canvas.height / 2.5, canvas.height / 2, color2, color3, r / 2);
+  // draw a base64 image on background canvas
+  let backgroundImage = new Image();
+  backgroundImage.src =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAACgAgMAAABWEiUVAAAACVBMVEUBOZocAGYAkMzM6PIZAAAARklEQVQY02MIJROKAnEgEAvCaDB2BeIQIHaBY0YkWgCIGcCYBYgd4DQtQAMQcwBxBxgrALESGK8A4i4gXgXGi4BYC4jJhgDoJyriwWJx+QAAAABJRU5ErkJggg==';
 
+  if (backgroundImage.height) {
+    // Calcule l'échelle pour que l'image prenne 100% de la hauteur du canvas
+    let scaleFactor = backgroundCtx.canvas.height / backgroundImage.height;
+    let newHeight = backgroundCtx.canvas.height;
+    let newWidth = backgroundImage.width * scaleFactor;
+    // Créer un canvas temporaire pour dessiner l'image à l'échelle désirée sans flou
+    let tempCanvas = document.createElement('canvas');
+    tempCanvas.width = newWidth;
+    tempCanvas.height = newHeight;
+
+    let tempCtx = tempCanvas.getContext('2d');
+    tempCtx.imageSmoothingEnabled = false; // S'assurer que le lissage est désactivé dans le canvas temporaire
+    tempCtx.drawImage(backgroundImage, 0, 0, newWidth, newHeight);
+
+    // Dessiner l'image répétée horizontalement sur le canvas principal
+    for (let x = 0; x < backgroundCtx.canvas.width; x += newWidth) {
+      backgroundCtx.drawImage(tempCanvas, x, 0, newWidth, newHeight);
+    }
+  }
   // Draw the game on background canvas
   ctx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
 
-  const menuStartX = 5; // X-coordinate for menu start
-  const menuStartY = 15; // Y-coordinate for menu start
-  const menuSpacing = 4; // Space between menu items
+  const menuStartX = 50; // X-coordinate for menu start
+  const menuStartY = 70; // Y-coordinate for menu start
+  const menuSpacing = 15; // Space between menu items
 
   menuZones = []; // Clear previous zones
 
@@ -43,19 +64,19 @@ function drawStartScreen() {
 
     writeText({
       ctx: ctx,
-      x: menuStartX * zoomFactor,
-      y: yPosition * zoomFactor,
-      scale: 2,
+      x: menuStartX,
+      y: yPosition,
+      hspacing: 2,
       text: option.text,
       color: isHighlighted ? '#ff0' : option.isDisabled ? '#999' : '#000',
     });
 
     // Store clickable zone (a bit wider and taller than the text)
     menuZones.push({
-      x: menuStartX - 2,
-      y: (yPosition - 6) * zoomFactor,
+      x: (menuStartX - 2) * zoomFactor,
+      y: (yPosition - menuSpacing / 2.5) * zoomFactor,
       width: 80 * zoomFactor, // Adjust width as needed
-      height: 16 * zoomFactor, // Adjust height as needed
+      height: menuSpacing * zoomFactor, // Adjust height as needed
       action: option.action,
       isDisabled: option.isDisabled,
     });
@@ -83,11 +104,9 @@ function handleMenuAction(action) {
       switchMode('game');
       break;
     case 'newGame':
-      // Logique pour démarrer un nouveau jeu
       switchMode('game');
       break;
     case 'levelEditor':
-      // Logique pour entrer dans l'éditeur de niveau
       switchMode('editor');
       break;
   }
@@ -109,35 +128,6 @@ function handleMenuKeydown(key, e) {
     const selectedOption = menuOptions[currentMenuIndex];
     if (!selectedOption.isDisabled) {
       handleMenuAction(selectedOption.action);
-    }
-  }
-}
-
-const bayerMatrix4x4 = [
-  [-0.5, 0, -0.375, 0.125],
-  [0.25, -0.25, 0.375, -0.125],
-  [-0.3125, 0.1875, -0.4375, 0.0625],
-  [0.4375, -0.0625, 0.3125, -0.1875],
-];
-const bayerSize = 4;
-
-function drawDitheredBayerGradient(ctx, width, startY, height, color1, color2, r = 0.25) {
-  for (let y = 0; y < height; y++) {
-    // Calculer la couleur de base pour cette ligne
-    const gradientRatio = (y * zoomFactor) / height;
-    const baseColorValue = gradientRatio;
-
-    for (let x = 0; x < width; x++) {
-      // Appliquer la matrice de Bayer pour dither
-      const bayerValue = bayerMatrix4x4[y % bayerSize][x % bayerSize];
-      const ditheredValue = baseColorValue + bayerValue * r; // Le facteur 'r' ajuste la force du dither
-
-      // Choisir la couleur en fonction de la valeur ditherée
-      const color = ditheredValue < 0.5 ? color1 : color2;
-      ctx.fillStyle = color;
-
-      // Dessiner le pixel avec le facteur de zoom
-      ctx.fillRect(x * zoomFactor, startY + y * zoomFactor, zoomFactor, zoomFactor);
     }
   }
 }

@@ -82,7 +82,7 @@ function writeText(options) {
     x: 0,
     y: 0,
     text: '',
-    vspacing: 1,
+    vspacing: 0,
     hspacing: 1,
     color: '#fff',
   };
@@ -96,7 +96,6 @@ function writeText(options) {
     const line = lines[i];
     const x = opt.x;
     const y = opt.y + (letterSize + opt.vspacing * zoomFactor) * i;
-
     writeTextLine({
       ctx: opt.ctx,
       x,

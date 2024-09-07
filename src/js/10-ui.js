@@ -30,7 +30,7 @@ function drawUI() {
     ctx: uiCtx,
     x: 40 + shakeX,
     y: 7 + shakeY,
-    text: `${stepsPerformed}`,
+    text: `${13 - stepsPerformed}`,
     color: getStepColor(stepsPerformed),
   });
 

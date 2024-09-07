@@ -40,9 +40,30 @@ function switchMode(mode) {
   }
 }
 
+function initMusic() {
+  var introWave, loopWave;
+
+  // Générer l'intro et la boucle au chargement
+  introWave = generateMusic(introSong);
+  loopWave = generateMusic(loopSong);
+
+  // Jouer l'intro en premier
+  playMusic(introWave);
+
+  // Quand l'intro est terminée, passer à la boucle
+  musicAudio.addEventListener('ended', function () {
+    playMusic(loopWave, true); // Jouer la musique de boucle
+  });
+
+  // Lancer la lecture au début
+  playMusicControl();
+}
+
 function loadGame() {
   // Adjust the canvas size to fit the level size
   ctx.imageSmoothingEnabled = false;
+  uiCtx.imageSmoothingEnabled = false;
+  backgroundCtx.imageSmoothingEnabled = false;
   setZoomFactor();
   // Checks if url has a level parameter, if so, play that level if it's valid
   const urlParams = new URLSearchParams(window.location.search);
@@ -57,6 +78,9 @@ function loadGame() {
   } else {
     switchMode(currentScreen);
   }
+
+  preloadSFX();
+  initMusic();
 
   requestAnimationFrame(animate);
 }

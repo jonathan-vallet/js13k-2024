@@ -134,6 +134,30 @@ gulp.task('replace', function () {
   return stream.pipe(gulp.dest(paths.dist));
 });
 
+gulp.task('zip-html', function (done) {
+  const output = fs.createWriteStream(paths.zipDest);
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
+  output.on('close', () => {
+    const zipSize = archive.pointer();
+    const percentageOfLimit = (zipSize / MAX_SIZE) * 100;
+    console.log(`Zipped size: ${zipSize} bytes`);
+    console.log(`You are using ${percentageOfLimit.toFixed(2)}% of the 13 KB limit (13,312 bytes).`);
+    done();
+  });
+
+  archive.on('error', (err) => {
+    throw err;
+  });
+
+  archive.pipe(output);
+
+  // Archive uniquement le fichier index.html dans le dossier dist
+  archive.file(path.join(paths.dist, 'index.html'), { name: 'index.html' });
+
+  archive.finalize();
+});
+
 // Serveur de développement avec BrowserSync et LiveReload
 gulp.task('serve', function () {
   // Initialiser BrowserSync et servir le dossier dist
@@ -156,6 +180,9 @@ gulp.task('watch', function () {
 
 // Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
 gulp.task('zip', gulp.series('scripts-prod', 'minify-css', 'minify-html', 'replace', 'zip'));
+
+// Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
+gulp.task('zip-only', gulp.series('zip'));
 
 // Tâche par défaut : Utiliser la tâche 'serve' pour le développement avec live reload
 gulp.task('default', gulp.series('scripts-dev', 'minify-html', 'serve'));

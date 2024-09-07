@@ -46,6 +46,7 @@ function updateAnimations(deltaTime) {
 
       if (tile.scale <= 0) {
         removeTile(tile.tile, tile.x, tile.y);
+        tile.isBeingRemoved = false;
         if (tile.removeCallback) {
           tile.removeCallback();
         }
@@ -208,7 +209,6 @@ function animateTile(deltaTime) {
       const nextTile = getTileAt(nextX, nextY);
       if (nextTile && nextTile.tile === 'gong-trigger' && !nextTile.triggered) {
         nextTile.triggered = true;
-        saveActionHistory();
         animateTileRemoval('gong', null, null, nextTile.orientation);
         playActionSound('gong-trigger');
       }

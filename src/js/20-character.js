@@ -71,6 +71,7 @@ function canMoveTo(x, y, dx = 0, dy = 0) {
   let hasPerformedAction = tryPerformAction(x, y, dx, dy, tileElement);
 
   if (hasPerformedAction) {
+    saveActionHistory();
     playActionSound(tileAtTarget);
   }
 
@@ -121,6 +122,7 @@ function moveCharacter(dx, dy, direction) {
 
   // Check if the character can move to the new position
   if (canMoveTo(newX, newY, dx, dy)) {
+    saveActionHistory();
     // Start the movement animation
     if (stepsPerformed < MAX_STEPS_ALLOWED) {
       isCharacterMoving = true;
@@ -187,6 +189,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
     case 'spikes':
       respawnCharacter(lastX, lastY);
       --stepsPerformed;
+      playActionSound('fall');
       break;
     case 'flag':
       setLocalStorage('currentLevel', currentLevel + 1);
@@ -194,11 +197,13 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       return false; // Prevent further movement
       break;
     case 'spawn-current':
+      playActionSound('spawn');
       stepsPerformed = 0;
       break;
     case 'spawn':
       // Sets previous current spawn point back to spawn
       getTileAt(characterInitialX, characterInitialY).tile = 'spawn';
+      playActionSound('spawn');
 
       // Sets as current spawn point
       tileAtCurrentPosition.tile = 'spawn-current';
