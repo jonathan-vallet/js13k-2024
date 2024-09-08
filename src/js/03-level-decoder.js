@@ -19,23 +19,14 @@ function decodeLevel(encodedString) {
       let x = (tileIndex % (LEVEL_WIDTH - 2)) + 1;
       let y = Math.floor(tileIndex / (LEVEL_WIDTH - 2)) + 1;
       if (tileName) {
-        levelData.push({ tile: tileName, x, y, orientation });
-
+        // add crate and boulder tiles at the end to remain on top of the other tiles
+        levelData[['crate', 'boulder'].includes(tileName) ? 'push' : 'unshift']({ tile: tileName, x, y, orientation });
         if (tileName === 'spawn-current') {
           characterInitialX = x;
           characterInitialY = y;
         }
       }
       ++tileIndex;
-    }
-  }
-
-  // Place crate and boulder tiles after all other tiles
-  for (let i = 0; i < levelData.length; i++) {
-    const tile = levelData[i];
-    if (['crate', 'boulder'].includes(tile.tile)) {
-      levelData.splice(i, 1);
-      levelData.push(tile);
     }
   }
 

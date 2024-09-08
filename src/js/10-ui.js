@@ -26,6 +26,9 @@ function drawUI() {
   if (currentScreen === 'editor') {
     title = 'TILE:';
   }
+  if (currentScreen === 'levelSelector') {
+    title = 'LEVEL SELECTION';
+  }
 
   writeText({
     ctx: uiCtx,

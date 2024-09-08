@@ -195,6 +195,12 @@ function animateTile(deltaTime) {
       if (switchTrigger) {
         invertSwitches(switchTrigger.orientation);
       }
+      // When a crate reaches a switch-on tile, remove it
+      let switchOn = getTileAt(tileMoveTargetX, tileMoveTargetY, ['switch-on']);
+      if (switchOn) {
+        animateTileRemoval(movingTile.tile, tileMoveTargetX, tileMoveTargetY);
+        playActionSound('fall');
+      }
     }
     // When a boulder hit a gong trigger
     if (movingTile.tile === 'boulder') {

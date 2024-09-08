@@ -137,6 +137,7 @@ function moveCharacter(dx, dy, direction) {
 }
 
 function respawnCharacter(respawnX = null, respawnY = null) {
+  playActionSound('respawn');
   isCharacterReturningToSpawn = true;
   // After the delay, start the return to spawn animation
   characterRespawnStartX = characterX;
@@ -196,7 +197,6 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       return false; // Prevent further movement
       break;
     case 'spawn-current':
-      playActionSound('spawn');
       stepsPerformed = 0;
       break;
     case 'spawn':
@@ -214,7 +214,10 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       stepsPerformed = 0;
       break;
     case 'switch-trigger':
-      invertSwitches(tileAtCurrentPosition.orientation);
+      // If player reaches last step, don't invert the switches as he will respawn
+      if (stepsPerformed < MAX_STEPS_ALLOWED) {
+        invertSwitches(tileAtCurrentPosition.orientation);
+      }
       break;
     case 'key':
       // Pick up the key
@@ -226,6 +229,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
 
   if (stepsPerformed >= MAX_STEPS_ALLOWED) {
     respawnCharacter();
+    // If player respawns from a switch trigger, invert the switches
     setTimeout(() => {
       stepsPerformed = 0; // Reset steps after returning to spawn
     }, CHARACTER_RESPAWN_DURATION);

@@ -3,7 +3,7 @@ let canContinue = getLocalStorage('currentLevel') !== null;
 const menuOptions = [
   { text: 'CONTINUE', action: 'continue', isDisabled: !canContinue },
   { text: 'NEW GAME', action: 'newGame' },
-  { text: 'LEVEL SELECTOR', action: 'levelSelector' },
+  { text: 'LEVEL SELECTION', action: 'levelSelector' },
   { text: 'LEVEL EDITOR', action: 'levelEditor' },
 ];
 let currentMenuIndex = canContinue ? 0 : 1; // Index of the currently selected menu item

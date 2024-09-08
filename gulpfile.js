@@ -19,24 +19,22 @@ const replacements = {
   editorTileSelect: 'eTS',
   editorCanvas: 'eC',
   uiCanvas: 'uC',
+  editorTestLevelButton: 'eTLB',
+
+  // Character parameters
+  skin: 's',
+  hair: 'h',
+  outfit: 'o',
+  gender: 'g',
 
   // colors
   blueGreen: 'bG',
   green: 'g',
   bronze: 'br',
+  silver: 'si',
+  gold: 'go',
   purple: 'p',
   sand: 's',
-
-  // tile names
-  'block-trigger': 'bT',
-  // crate: 'c',
-  'hole-filled': 'hF',
-  // hole: 'h',
-  // flag: 'f',
-  'gong-trigger': 'gT',
-  'spawn-current': 'sC',
-  // gong: 'g',
-  'key-holder': 'kH',
 
   // object properties
   canChangeOrientation: 'cCO',
@@ -46,6 +44,14 @@ const replacements = {
   orientation: 'o',
   rle: 'r',
   characterData: 'cD',
+  levelData: 'lD',
+  collectedKeysNumber: 'cKN',
+  characterX: 'cX',
+  characterY: 'cY',
+  characterDirection: 'cDi',
+  characterInitialX: 'cIX',
+  characterInitialY: 'cIY',
+  limit: 'l',
 
   // Music player
   numChannels: 'nC',
@@ -61,6 +67,7 @@ const replacements = {
   levelEditor: 'lE',
   characterSelection: 'cS',
   newGame: 'nG',
+  levelSelector: 'lS',
 };
 
 // Chemins de fichiers

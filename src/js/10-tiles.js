@@ -235,6 +235,7 @@ function invertSwitches(orientation) {
       let tileAt = getTileAt(tile.x, tile.y, ['crate', 'boulder']);
       if (tileAt) {
         animateTileRemoval(tileAt.tile, tile.x, tile.y);
+        playActionSound('fall');
       }
     }
   });
