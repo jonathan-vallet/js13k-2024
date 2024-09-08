@@ -13,18 +13,8 @@
         width: 100%;
       }
 
-      body:not(.game) {
-        .-game {
-          display: none;
-        }
-      }
       body:not(.editor) {
         .-editor {
-          display: none;
-        }
-      }
-      body:not(.characterSelection) {
-        .-characterSelection {
           display: none;
         }
       }
@@ -52,28 +42,9 @@
     </style>
   </head>
   <body oncontextmenu="return false;">
-    <!-- <label for="boy">Boy</label>
-    <input type="radio" id="boy" name="gender" value="boy" checked />
-
-    <label for="girl">Girl</label>
-    <input type="radio" id="girl" name="gender" value="girl" />
-    <br />
-    <label for="greenColor">Hair:</label>
-    <input type="color" id="greenColor" value="#c07548" list="presets" />
-    <datalist id="presets">
-      <option value="#cccccc">Grey</option>
-      <option value="#ffffff">White</option>
-      <option value="#6699cc">Blue</option>
-    </datalist>
-
-    <label for="blueColor">Skin:</label>
-    <input type="color" id="blueColor" value="#fdcbb0" />
-
-    <label for="redColor">Clothes:</label>
-    <input type="color" id="redColor" value="#e42c37" /> -->
     <div id="game">
       <canvas id="gameBackgroundCanvas"></canvas>
-      <canvas id="uiCanvas" class="-game"></canvas>
+      <canvas id="uiCanvas"></canvas>
       <div id="editor" class="-editor">
         <div id="editorUi">
           <label>

@@ -22,3 +22,6 @@ let currentEditorTile = { x: -1, y: -1 };
 
 let musicAudio = document.createElement('audio');
 let musicplayer = new CPlayer();
+
+let isSoundActive = getLocalStorage('isSoundActive') === 'true';
+console.log('isSoundActive', isSoundActive);

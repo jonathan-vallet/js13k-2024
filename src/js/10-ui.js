@@ -9,63 +9,80 @@ function drawUI() {
   uiCtx.fillStyle = '#333';
   uiCtx.fillRect(0, 0, uiCanvas.width, uiCanvas.height);
 
-  // Draw steps remaining
+  let soundTileName = isSoundActive ? 'sound-on' : 'sound-off';
+  const soundTile = TILE_DATA[soundTileName].tiles[0];
+  const soundColors = TILE_DATA[soundTileName].colors;
+  drawTile(soundTile, soundColors, 18.8, 0.1, { context: uiCtx });
+  let title = '';
+  if (currentScreen === 'menu') {
+    title = '13 STEPS TO ESCAPE';
+  }
+  if (currentScreen === 'characterSelection') {
+    title = 'CHARACTER CUSTOMIZATION';
+  }
+  if (currentScreen === 'game') {
+    title = 'STEPS';
+  }
+
   writeText({
     ctx: uiCtx,
     x: 10,
-    y: 7,
-    text: `STEPS:`,
+    y: 6,
+    text: title,
   });
 
-  let shakeX = 0;
-  let shakeY = 0;
-  if (stepsPerformed >= 10) {
-    const intensity = stepsPerformed - 9;
-    shakeX = getShakeOffset(intensity);
-    shakeY = getShakeOffset(intensity);
+  if (currentScreen === 'game') {
+    // Draw steps remaining
+    let shakeX = 0;
+    let shakeY = 0;
+    if (stepsPerformed >= 10) {
+      const intensity = stepsPerformed - 9;
+      shakeX = getShakeOffset(intensity);
+      shakeY = getShakeOffset(intensity);
+    }
+
+    // Draw steps remaining
+    writeText({
+      ctx: uiCtx,
+      x: 40 + shakeX,
+      y: 6 + shakeY,
+      text: `${13 - stepsPerformed}`,
+      color: getStepColor(stepsPerformed),
+    });
+
+    // Draw the key icon and count
+    const keyTile = TILE_DATA['key'].tiles[0];
+    const keyColors = TILE_DATA['key'].colors;
+    drawTile(keyTile, keyColors, 4.5, 0.2, { context: uiCtx });
+
+    // Draw current level
+    writeText({
+      ctx: uiCtx,
+      x: 120,
+      y: 6,
+      text: `LEVEL: ${currentLevel}`,
+    });
+
+    writeText({
+      ctx: uiCtx,
+      x: 90,
+      y: 6,
+      text: `x${collectedKeysNumber}`,
+    });
+
+    writeText({
+      ctx: uiCtx,
+      x: 220,
+      y: 3,
+      text: `E: UNDO`,
+    });
+    writeText({
+      ctx: uiCtx,
+      x: 220,
+      y: 10,
+      text: `R: RESET`,
+    });
   }
-
-  // Draw steps remaining
-  writeText({
-    ctx: uiCtx,
-    x: 40 + shakeX,
-    y: 7 + shakeY,
-    text: `${13 - stepsPerformed}`,
-    color: getStepColor(stepsPerformed),
-  });
-
-  // Draw the key icon and count
-  const keyTile = TILE_DATA['key'].tiles[0];
-  const keyColors = TILE_DATA['key'].colors || ['#000', '#f00', '#0f0', '#00f'];
-  drawTile(keyTile, keyColors, 4.5, 0.2, { context: uiCtx });
-
-  // Draw current level
-  writeText({
-    ctx: uiCtx,
-    x: 120,
-    y: 7,
-    text: `LEVEL: ${currentLevel}`,
-  });
-
-  writeText({
-    ctx: uiCtx,
-    x: 90,
-    y: 7,
-    text: `x${collectedKeysNumber}`,
-  });
-
-  writeText({
-    ctx: uiCtx,
-    x: 270,
-    y: 3,
-    text: `E: UNDO`,
-  });
-  writeText({
-    ctx: uiCtx,
-    x: 270,
-    y: 10,
-    text: `R: RESET`,
-  });
 }
 
 function getShakeOffset(intensity) {
@@ -84,3 +101,20 @@ function getStepColor(stepsPerformed) {
     return 'rgb(255, 0, 0)'; // Red
   }
 }
+
+function toggleSound() {
+  isSoundActive = !isSoundActive;
+  setLocalStorage('isSoundActive', isSoundActive);
+  if (isSoundActive) {
+    playMusicControl();
+  } else {
+    stopMusic();
+  }
+}
+
+uiCanvas.addEventListener('click', function (event) {
+  // if click on sound icon, toggle sound
+  if (event.offsetX > 18 * TILE_SIZE * zoomFactor) {
+    toggleSound();
+  }
+});

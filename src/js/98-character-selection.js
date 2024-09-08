@@ -1,10 +1,3 @@
-let characterData = {
-  gender: 0, // 0 = boy, 1 = girl
-  skin: 0,
-  hair: 0,
-  outfit: 0,
-};
-
 const selectionOptions = {
   gender: ['boy', 'girl'],
   skin: skinColors,
@@ -65,10 +58,10 @@ function drawCharacterSelectionScreen() {
 }
 
 function drawColorSelector(colors, selectedColorIndex, x, y) {
-  const circleRadius = 4 * zoomFactor;
+  const circleRadius = 6 * zoomFactor;
   colors.forEach((color, index) => {
     ctx.beginPath();
-    ctx.arc(x * zoomFactor + index * (circleRadius * 3), y * zoomFactor, circleRadius, 0, 2 * Math.PI);
+    ctx.arc(x * zoomFactor + index * (circleRadius * 3), (y + 2) * zoomFactor, circleRadius, 0, 2 * Math.PI);
     ctx.fillStyle = color;
     ctx.fill();
     if (index === selectedColorIndex) {
@@ -86,11 +79,12 @@ function handleCharacterSelectionKeydown(key, e) {
     if (selectionStageIndex === 0) {
       currentMenuIndex = (currentMenuIndex + direction + optionLength) % optionLength;
       characterData.gender = currentMenuIndex;
+      setLocalStorage('characterData', JSON.stringify(characterData));
     } else {
       const stage = selectionStageList[selectionStageIndex];
       characterData[stage] = (characterData[stage] + direction + optionLength) % optionLength;
-      console.log(stage, selectionOptions[stage], characterData, characterData[stage]);
       TILE_DATA['characters'].colors[selectionStageIndex] = selectionOptions[stage][characterData[stage]];
+      setLocalStorage('characterData', JSON.stringify(characterData));
     }
   };
 
@@ -105,6 +99,7 @@ function handleCharacterSelectionKeydown(key, e) {
     currentMenuIndex = 0;
     if (selectionStageIndex >= selectionStageList.length) {
       // Character selection completed, switch to game mode
+      setLocalStorage('currentLevel', 1);
       switchMode('game');
     }
   }

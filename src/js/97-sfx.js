@@ -3,236 +3,101 @@
  */
 let hasPlayedWallSoundDuringKeyHold = false;
 
+let sharedBlockSound = {
+  songData: [
+    {
+      i: [0, 255, 116, 64, 0, 255, 120, 0, 64, 127, 4, 6, 35, 0, 0, 0, 0, 0, 0, 0, 2, 14, 0, 10, 32, 0, 0, 0, 0],
+      p: [1],
+      c: [{ n: [140, 142], f: [] }],
+    },
+  ],
+  rowLen: 5513,
+  patternLen: 32,
+  endPattern: 0,
+  numChannels: 1,
+};
+
 let soundList = {
   'gong-trigger': {
     songData: [
       {
-        // Instrument 0
-        i: [
-          0, // OSC1_WAVEFORM
-          255, // OSC1_VOL
-          152, // OSC1_SEMI
-          0, // OSC1_XENV
-          0, // OSC2_WAVEFORM
-          255, // OSC2_VOL
-          152, // OSC2_SEMI
-          12, // OSC2_DETUNE
-          0, // OSC2_XENV
-          0, // NOISE_VOL
-          2, // ENV_ATTACK
-          0, // ENV_SUSTAIN
-          60, // ENV_RELEASE
-          0, // ENV_EXP_DECAY
-          0, // ARP_CHORD
-          0, // ARP_SPEED
-          0, // LFO_WAVEFORM
-          0, // LFO_AMT
-          0, // LFO_FREQ
-          0, // LFO_FX_FREQ
-          2, // FX_FILTER
-          255, // FX_FREQ
-          0, // FX_RESONANCE
-          0, // FX_DIST
-          32, // FX_DRIVE
-          47, // FX_PAN_AMT
-          3, // FX_PAN_FREQ
-          157, // FX_DELAY_AMT
-          2, // FX_DELAY_TIME
-        ],
-        // Patterns
+        i: [0, 255, 152, 0, 0, 255, 152, 12, 0, 0, 2, 0, 60, 0, 0, 0, 0, 0, 0, 0, 2, 255, 0, 0, 32, 47, 3, 157, 2],
         p: [1],
-        // Columns
         c: [{ n: [123], f: [] }],
       },
     ],
-    rowLen: 5513, // In sample lengths
-    patternLen: 32, // Rows per pattern
-    endPattern: 0, // End pattern
-    numChannels: 1, // Number of channels
+    rowLen: 5513,
+    patternLen: 32,
+    endPattern: 0,
+    numChannels: 1,
   },
   fall: {
     songData: [
       {
-        // Instrument 0
-        i: [
-          0, // OSC1_WAVEFORM
-          128, // OSC1_VOL
-          106, // OSC1_SEMI
-          64, // OSC1_XENV
-          0, // OSC2_WAVEFORM
-          127, // OSC2_VOL
-          106, // OSC2_SEMI
-          12, // OSC2_DETUNE
-          64, // OSC2_XENV
-          16, // NOISE_VOL
-          0, // ENV_ATTACK
-          0, // ENV_SUSTAIN
-          134, // ENV_RELEASE
-          0, // ENV_EXP_DECAY
-          0, // ARP_CHORD
-          0, // ARP_SPEED
-          0, // LFO_WAVEFORM
-          0, // LFO_AMT
-          0, // LFO_FREQ
-          0, // LFO_FX_FREQ
-          2, // FX_FILTER
-          24, // FX_FREQ
-          169, // FX_RESONANCE
-          5, // FX_DIST
-          71, // FX_DRIVE
-          83, // FX_PAN_AMT
-          5, // FX_PAN_FREQ
-          0, // FX_DELAY_AMT
-          0, // FX_DELAY_TIME
-        ],
-        // Patterns
+        i: [0, 128, 106, 64, 0, 127, 106, 12, 64, 16, 0, 0, 134, 0, 0, 0, 0, 0, 0, 0, 2, 24, 169, 5, 71, 83, 5, 0, 0],
         p: [1],
-        // Columns
         c: [{ n: [164], f: [] }],
       },
     ],
-    rowLen: 7350, // In sample lengths
-    patternLen: 32, // Rows per pattern
-    endPattern: 0, // End pattern
-    numChannels: 1, // Number of channels
+    rowLen: 7350,
+    patternLen: 32,
+    endPattern: 0,
+    numChannels: 1,
   },
   crate: {
     songData: [
       {
-        // Instrument 0
-        i: [
-          0, // OSC1_WAVEFORM
-          0, // OSC1_VOL
-          140, // OSC1_SEMI
-          0, // OSC1_XENV
-          0, // OSC2_WAVEFORM
-          0, // OSC2_VOL
-          140, // OSC2_SEMI
-          0, // OSC2_DETUNE
-          0, // OSC2_XENV
-          255, // NOISE_VOL
-          11, // ENV_ATTACK
-          28, // ENV_SUSTAIN
-          59, // ENV_RELEASE
-          0, // ENV_EXP_DECAY
-          0, // ARP_CHORD
-          0, // ARP_SPEED
-          0, // LFO_WAVEFORM
-          51, // LFO_AMT
-          2, // LFO_FREQ
-          1, // LFO_FX_FREQ
-          2, // FX_FILTER
-          58, // FX_FREQ
-          31, // FX_RESONANCE
-          0, // FX_DIST
-          32, // FX_DRIVE
-          88, // FX_PAN_AMT
-          1, // FX_PAN_FREQ
-          39, // FX_DELAY_AMT
-          2, // FX_DELAY_TIME
-        ],
-        // Patterns
+        i: [0, 0, 140, 0, 0, 0, 140, 0, 0, 255, 11, 28, 59, 0, 0, 0, 0, 51, 2, 1, 2, 58, 31, 0, 32, 88, 1, 39, 2],
         p: [1],
-        // Columns
         c: [{ n: [132], f: [] }],
       },
     ],
-    rowLen: 5513, // In sample lengths
-    patternLen: 32, // Rows per pattern
-    endPattern: 0, // End pattern
-    numChannels: 1, // Number of channels
+    rowLen: 5513,
+    patternLen: 32,
+    endPattern: 0,
+    numChannels: 1,
   },
   key: {
     songData: [
       {
-        // Instrument 0
-        i: [
-          0, // OSC1_WAVEFORM
-          255, // OSC1_VOL
-          152, // OSC1_SEMI
-          0, // OSC1_XENV
-          0, // OSC2_WAVEFORM
-          255, // OSC2_VOL
-          152, // OSC2_SEMI
-          12, // OSC2_DETUNE
-          0, // OSC2_XENV
-          0, // NOISE_VOL
-          12, // ENV_ATTACK
-          17, // ENV_SUSTAIN
-          28, // ENV_RELEASE
-          0, // ENV_EXP_DECAY
-          0, // ARP_CHORD
-          0, // ARP_SPEED
-          0, // LFO_WAVEFORM
-          0, // LFO_AMT
-          0, // LFO_FREQ
-          0, // LFO_FX_FREQ
-          2, // FX_FILTER
-          255, // FX_FREQ
-          0, // FX_RESONANCE
-          0, // FX_DIST
-          32, // FX_DRIVE
-          47, // FX_PAN_AMT
-          3, // FX_PAN_FREQ
-          0, // FX_DELAY_AMT
-          0, // FX_DELAY_TIME
-        ],
-        // Patterns
+        i: [0, 255, 152, 0, 0, 255, 152, 12, 0, 0, 12, 17, 28, 0, 0, 0, 0, 0, 0, 0, 2, 255, 0, 0, 32, 47, 3, 0, 0],
         p: [1],
-        // Columns
         c: [{ n: [135, 147], f: [] }],
       },
     ],
-    rowLen: 7350, // In sample lengths
-    patternLen: 32, // Rows per pattern
-    endPattern: 0, // End pattern
-    numChannels: 1, // Number of channels
+    rowLen: 7350,
+    patternLen: 32,
+    endPattern: 0,
+    numChannels: 1,
   },
   spawn: {
     songData: [
       {
-        // Instrument 0
-        i: [
-          2, // OSC1_WAVEFORM
-          64, // OSC1_VOL
-          128, // OSC1_SEMI
-          0, // OSC1_XENV
-          2, // OSC2_WAVEFORM
-          64, // OSC2_VOL
-          140, // OSC2_SEMI
-          14, // OSC2_DETUNE
-          0, // OSC2_XENV
-          0, // NOISE_VOL
-          7, // ENV_ATTACK
-          20, // ENV_SUSTAIN
-          28, // ENV_RELEASE
-          0, // ENV_EXP_DECAY
-          0, // ARP_CHORD
-          0, // ARP_SPEED
-          0, // LFO_WAVEFORM
-          97, // LFO_AMT
-          4, // LFO_FREQ
-          1, // LFO_FX_FREQ
-          3, // FX_FILTER
-          49, // FX_FREQ
-          154, // FX_RESONANCE
-          0, // FX_DIST
-          109, // FX_DRIVE
-          107, // FX_PAN_AMT
-          4, // FX_PAN_FREQ
-          93, // FX_DELAY_AMT
-          2, // FX_DELAY_TIME
-        ],
-        // Patterns
+        i: [2, 64, 128, 0, 2, 64, 140, 14, 0, 0, 7, 20, 28, 0, 0, 0, 0, 97, 4, 1, 3, 49, 154, 0, 109, 107, 4, 93, 2],
         p: [1],
-        // Columns
         c: [{ n: [135, 139, 142, 147], f: [] }],
       },
     ],
-    rowLen: 6014, // In sample lengths
-    patternLen: 32, // Rows per pattern
-    endPattern: 0, // End pattern
-    numChannels: 1, // Number of channels
+    rowLen: 6014,
+    patternLen: 32,
+    endPattern: 0,
+    numChannels: 1,
+  },
+  lock: sharedBlockSound,
+  'block-trigger': sharedBlockSound,
+  block: sharedBlockSound,
+  trap: {
+    songData: [
+      {
+        i: [0, 0, 116, 0, 0, 0, 128, 0, 0, 255, 27, 39, 43, 0, 0, 0, 0, 51, 2, 1, 2, 33, 239, 3, 32, 113, 1, 39, 2],
+        p: [1],
+        c: [{ n: [123, 144], f: [] }],
+      },
+    ],
+    rowLen: 5513,
+    patternLen: 32,
+    endPattern: 0,
+    numChannels: 1,
   },
 };
 

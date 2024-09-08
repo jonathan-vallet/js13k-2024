@@ -20,9 +20,9 @@ function refreshCanvas() {
   }
   if (currentScreen === 'game') {
     drawLevel(currentLevel);
-    refreshUI();
     drawCharacter();
   }
+  refreshUI();
 }
 
 /**
