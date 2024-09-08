@@ -11,6 +11,9 @@ function refreshCanvas() {
   if (currentScreen === 'menu') {
     drawStartScreen();
   }
+  if (currentScreen === 'characterSelection') {
+    drawCharacterSelectionScreen();
+  }
   if (currentScreen === 'editor') {
     drawLevel(currentLevel);
     drawEditorSelectedTile();

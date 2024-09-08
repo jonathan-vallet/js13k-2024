@@ -6,6 +6,9 @@ addEventListener('keydown', (e) => {
   if (currentScreen === 'menu') {
     handleMenuKeydown(key, e);
   }
+  if (currentScreen === 'characterSelection') {
+    handleCharacterSelectionKeydown(key, e);
+  }
   // Escape key to go back to menu
   if (e.key === 'Escape') {
     switchMode('menu');
@@ -25,16 +28,6 @@ canvas.addEventListener('mousemove', (e) => {
   const rect = canvas.getBoundingClientRect();
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
-
-  if (currentScreen === 'menu') {
-    menuZones.forEach((zone, index) => {
-      if (mouseX >= zone.x && mouseX <= zone.x + zone.width && mouseY >= zone.y && mouseY <= zone.y + zone.height) {
-        if (!zone.isDisabled) {
-          currentMenuIndex = index; // Highlight the option being hovered
-        }
-      }
-    });
-  }
 
   if (currentScreen === 'editor') {
     currentEditorTile.x = Math.floor(mouseX / (TILE_SIZE * zoomFactor));
@@ -74,12 +67,6 @@ canvas.addEventListener('mousedown', (e) => {
   isMouseDown = true;
   if (currentScreen === 'editor') {
     handleEditorClick(e);
-  }
-});
-
-canvas.addEventListener('click', (e) => {
-  if (currentScreen === 'menu') {
-    handleMenuClick(e);
   }
 });
 

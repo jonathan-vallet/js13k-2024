@@ -31,9 +31,8 @@ let stepsPerformed = 0;
  * Draw the character sprite on the canvas
  */
 function drawCharacter() {
-  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame]; // Use the current frame
+  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame + 9 * characterData.gender]; // Use the current frame
   const characterColors = TILE_DATA['characters'].colors;
-
   drawTile(characterTile, characterColors, characterX, characterY, {
     scale: characterScale,
     flipHorizontally: characterDirection === ORIENTATION_RIGHT,
