@@ -70,8 +70,6 @@ $('#editorTestLevelButton').addEventListener('click', () => {
   window.open(`./index.html?level=${encoded}`);
 });
 
-let $editorMessage = $('#editorMessage');
-
 function checkEditorLevelValidity() {
   let levelData = levels[currentLevel].levelData;
   let playerSpawnNumber = 0;
@@ -84,17 +82,7 @@ function checkEditorLevelValidity() {
     }
   });
 
-  let message = '';
   let isValid = playerSpawnNumber === 1 && flagNumber === 1;
-  if (!isValid) {
-    if (playerSpawnNumber !== 1) {
-      message += 'There must be exactly one player spawn point.\n';
-    }
-    if (flagNumber !== 1) {
-      message += 'There must be exactly one flag.\n';
-    }
-  }
 
-  $editorMessage.textContent = message;
   return isValid;
 }

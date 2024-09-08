@@ -99,6 +99,7 @@ function handleCharacterSelectionKeydown(key, e) {
     currentMenuIndex = 0;
     if (selectionStageIndex >= selectionStageList.length) {
       // Character selection completed, switch to game mode
+      currentLevel = 1;
       setLocalStorage('currentLevel', 1);
       switchMode('game');
     }

@@ -18,6 +18,8 @@ const replacements = {
   editorOrientationSelect: 'eOS',
   editorTileSelect: 'eTS',
   editorCanvas: 'eC',
+  uiCanvas: 'uC',
+
   // colors
   blueGreen: 'bG',
   green: 'g',
@@ -26,22 +28,39 @@ const replacements = {
   sand: 's',
 
   // tile names
-  // 'block-trigger': 'bT',
+  'block-trigger': 'bT',
   // crate: 'c',
-  // 'hole-filled': 'hF',
+  'hole-filled': 'hF',
   // hole: 'h',
   // flag: 'f',
-  // 'gong-trigger': 'gT',
-  // 'spawn-current': 'sC',
+  'gong-trigger': 'gT',
+  'spawn-current': 'sC',
   // gong: 'g',
-  // 'key-holder': 'kH',
+  'key-holder': 'kH',
 
   // object properties
   canChangeOrientation: 'cCO',
+  useOrientationForColor: 'uOFC',
   colors: 'co',
   isStatic: 'iS',
   orientation: 'o',
   rle: 'r',
+  characterData: 'cD',
+
+  // Music player
+  numChannels: 'nC',
+  songData: 'sD',
+  patternLen: 'pL',
+  endPattern: 'eP',
+  rowLen: 'rL',
+
+  // Storage data
+  isSoundActive: 'iSA',
+
+  // Menu names
+  levelEditor: 'lE',
+  characterSelection: 'cS',
+  newGame: 'nG',
 };
 
 // Chemins de fichiers
@@ -182,7 +201,7 @@ gulp.task('watch', function () {
 gulp.task('zip', gulp.series('scripts-prod', 'minify-css', 'minify-html', 'replace', 'zip'));
 
 // Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
-gulp.task('zip-only', gulp.series('zip'));
+gulp.task('zip-only', gulp.series('zip-html'));
 
 // Tâche par défaut : Utiliser la tâche 'serve' pour le développement avec live reload
 gulp.task('default', gulp.series('scripts-dev', 'minify-html', 'serve'));

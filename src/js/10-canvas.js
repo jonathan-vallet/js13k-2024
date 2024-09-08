@@ -14,6 +14,9 @@ function refreshCanvas() {
   if (currentScreen === 'characterSelection') {
     drawCharacterSelectionScreen();
   }
+  if (currentScreen === 'levelSelector') {
+    drawLevelSelectorScreen();
+  }
   if (currentScreen === 'editor') {
     drawLevel(currentLevel);
     drawEditorSelectedTile();
@@ -39,7 +42,7 @@ function drawLevel(levelIndex) {
  * @param {string} backgroundTileName - The name of the background tile
  * @param {string} borderTileName - The name of the border tile
  */
-function drawLevelBackground(backgroundTileName, borderTileName) {
+function drawLevelBackground(backgroundTileName, borderTileName, context = ctx) {
   const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
   const backgroundColors = TILE_DATA[backgroundTileName].colors;
   const borderTile = TILE_DATA[borderTileName].tiles[0];
@@ -48,11 +51,11 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
   for (let y = 0; y < LEVEL_HEIGHT; y++) {
     for (let x = 0; x < LEVEL_WIDTH; x++) {
       // Draw the background tile at every position
-      drawTile(backgroundTile, backgroundColors, x, y);
+      drawTile(backgroundTile, backgroundColors, x, y, { context });
 
       // Draw the border tile at the edges
       if (x === 0 || x === LEVEL_WIDTH - 1 || y === 0 || y === LEVEL_HEIGHT - 1) {
-        drawTile(borderTile, borderColors, x, y);
+        drawTile(borderTile, borderColors, x, y, { context });
       }
     }
   }
@@ -61,14 +64,16 @@ function drawLevelBackground(backgroundTileName, borderTileName) {
   if (currentScreen === 'game') {
     drawLevelElements(levels[currentLevel].levelData, true);
   }
-  backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+  if (context === ctx) {
+    backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+  }
 }
 
 /**
  * Draw the level background elements
  * @param {Array} levelData - The level data array with tile information
  */
-function drawLevelElements(levelData, isDrawingStatic = false) {
+function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
 
@@ -77,7 +82,7 @@ function drawLevelElements(levelData, isDrawingStatic = false) {
       const keyHolderTile = TILE_DATA['key-holder'];
       const keyHolderFrame = keyHolderTile.tiles[0]; // Assume the key-holder has only one frame
       const keyHolderColors = keyHolderTile.colors;
-      drawTile(keyHolderFrame, keyHolderColors, element.x, element.y);
+      drawTile(keyHolderFrame, keyHolderColors, element.x, element.y, { context });
     }
 
     if (currentScreen === 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
@@ -90,7 +95,7 @@ function drawLevelElements(levelData, isDrawingStatic = false) {
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
     const useOrientationForColor = TILE_DATA[element.tile].useOrientationForColor;
-    drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor });
+    drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor, context });
   });
 }
 

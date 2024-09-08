@@ -7,6 +7,8 @@ function setZoomFactor() {
   canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;
   uiCanvas.width = canvas.width;
   uiCanvas.height = TILE_SIZE * 1.1 * zoomFactor; // 2 tiles high
+  $('#editor').style.width = `${canvas.width}px`;
+  $('#editor').style.transform = `translateY(${uiCanvas.height / 2}px)`;
 
   // background canvas has same ratio than canvas but cover window size
   if (window.innerWidth / window.innerHeight > LEVEL_WIDTH / LEVEL_HEIGHT) {
@@ -55,8 +57,11 @@ function initMusic() {
     playMusic(loopWave, true); // Jouer la musique de boucle
   });
 
-  // Lancer la lecture au début
   playMusicControl();
+  // Lancer la lecture au début
+  if (!isSoundActive) {
+    stopMusic();
+  }
 }
 
 function loadGame() {

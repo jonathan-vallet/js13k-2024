@@ -23,6 +23,9 @@ function drawUI() {
   if (currentScreen === 'game') {
     title = 'STEPS';
   }
+  if (currentScreen === 'editor') {
+    title = 'TILE:';
+  }
 
   writeText({
     ctx: uiCtx,
@@ -30,6 +33,15 @@ function drawUI() {
     y: 6,
     text: title,
   });
+
+  if (currentScreen === 'editor') {
+    writeText({
+      ctx: uiCtx,
+      x: 92,
+      y: 6,
+      text: 'ORIENTATION:',
+    });
+  }
 
   if (currentScreen === 'game') {
     // Draw steps remaining

@@ -2,68 +2,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>13 steps to death</title>
-    <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-      }
-
-      body:not(.editor) {
-        .-editor {
-          display: none;
-        }
-      }
-
-      #game {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      #gameBackgroundCanvas {
-        position: absolute;
-        top: -5%;
-        left: -5%;
-        width: 110%;
-        height: 110%;
-        z-index: -1;
-        object-fit: cover;
-        filter: blur(15px) brightness(50%);
-      }
-    </style>
+    <style>body{margin:0;padding:0;overflow:hidden;height:100%;width:100%;display:flex}body:not(.editor){#editor{display:none}}body:not(.characterSelection){.-characterSelection{display:none}}#game{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}#gameBackgroundCanvas{position:absolute;top:-5%;left:-5%;width:110%;height:110%;object-fit:cover;filter:blur(15px) brightness(50%)}#editor{width:100%;height:0;z-index:1;display:flex;justify-content:space-around}select,button{transform:translateY(-50%);height:24px}</style>
   </head>
   <body oncontextmenu="return false;">
+    <canvas id="gameBackgroundCanvas"></canvas>
     <div id="game">
-      <canvas id="gameBackgroundCanvas"></canvas>
-      <canvas id="uiCanvas"></canvas>
-      <div id="editor" class="-editor">
-        <div id="editorUi">
-          <label>
-            Tile:
-            <select id="editorTileSelect"></select>
-          </label>
-          <label>
-            Orientation:
-            <select id="editorOrientationSelect">
-              <option value="0">Up</option>
-              <option value="1">Right</option>
-              <option value="2">Down</option>
-              <option value="3">Left</option>
-            </select>
-          </label>
-          <button id="editorTestLevelButton">Test level</button>
-          <p id="editorMessage"></p>
-        </div>
+      <div id="editor">
+          <select id="editorTileSelect"></select>
+          <select id="editorOrientationSelect">
+            <option value="0">Up</option>
+            <option value="1">Right</option>
+            <option value="2">Down</option>
+            <option value="3">Left</option>
+          </select>
+          <button id="editorTestLevelButton">Test/Share</button>
       </div>
+      <canvas id="uiCanvas"></canvas>
       <canvas id="gameCanvas"></canvas>
     <script src="bundle.js" inline></script>
   </body>

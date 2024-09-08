@@ -160,6 +160,11 @@ const TILE_DATA = {
     colors: COLOR_SETS.green,
     limit: 0,
   },
+  star: {
+    rle: '16GNLAMZMLMZMKMeZeMJMereMEQeteRZfvfZMAMeYqNrNqYeMCMfvfMENrNrNEMfvfMDMfrfrfMDMfZfZfMCMeZfNfZeMBMeYeNBNeYeMBPFPA',
+    colors: COLOR_SETS.gold,
+    limit: 0,
+  },
 };
 
 // Game constants

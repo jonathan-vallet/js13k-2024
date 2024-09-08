@@ -9,6 +9,9 @@ addEventListener('keydown', (e) => {
   if (currentScreen === 'characterSelection') {
     handleCharacterSelectionKeydown(key, e);
   }
+  if (currentScreen === 'levelSelector') {
+    handleLevelSelectionKeydown(key, e);
+  }
   // Escape key to go back to menu
   if (e.key === 'Escape') {
     switchMode('menu');
