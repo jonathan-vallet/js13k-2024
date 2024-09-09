@@ -57,9 +57,9 @@ function initMusic() {
     playMusic(loopWave, true); // Jouer la musique de boucle
   });
 
-  playMusicControl();
-  // Lancer la lecture au début
-  if (!isSoundActive) {
+  if (isSoundActive) {
+    playMusicControl();
+  } else {
     stopMusic();
   }
 }
@@ -86,6 +86,7 @@ function loadGame() {
 
   preloadSFX();
   initMusic();
+  initLevelPreviews();
 
   requestAnimationFrame(animate);
 }

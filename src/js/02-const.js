@@ -130,7 +130,7 @@ const TILE_DATA = {
     limit: 0,
   },
   spikes: {
-    rle: '16LEpeBe|qeA|sArgqgqgrAreMeqeMeqeMerArgqgqgrA|sArgqgqgrAreMeqeMeqeMerArgqgqgrA|sArgqgqgrAreMeqeMeqeMerArgqgqgrB|qB',
+    rle: '16CMGMEeOiOeBeYMqM]MqMYeAYNeN[NeNYAYMgM[MgMYAYMgM[MgMYAYQ[QYAd[A[M_M[AZO]OZAZMqM]MqMZAYNeN[NeNYAYMgM[MgMYAYMgM[MgMYAYQ[QYBdYB',
     colors: COLOR_SETS.blueGreen,
   },
   'switch-off': {

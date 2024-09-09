@@ -192,8 +192,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
       playActionSound('fall');
       break;
     case 'flag':
-      setLocalStorage('currentLevel', currentLevel + 1);
-      startLevel(currentLevel + 1);
+      endLevel();
       return false; // Prevent further movement
       break;
     case 'spawn-current':

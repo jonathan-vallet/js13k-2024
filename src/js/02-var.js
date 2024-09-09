@@ -23,4 +23,11 @@ let currentEditorTile = { x: -1, y: -1 };
 let musicAudio = document.createElement('audio');
 let musicplayer = new CPlayer();
 
-let isSoundActive = getLocalStorage('isSoundActive') === 'true';
+let isSoundActive = getLocalStorage('isSoundActive') === 'false' ? false : true;
+
+let levelSelectionIndex = 1; // Index of the currently selected level
+const totalLevelNumber = encodedLevels.length - 1; // Total number of levels
+const levelsPerRow = 4; // Define how many levels per row
+const levelPreviewImageListize = 50; // Size of each level preview on the grid
+const levelSpacing = 10; // Space between level previews
+let levelPreviewImageList = []; // Tableau pour stocker les miniatures des niveaux

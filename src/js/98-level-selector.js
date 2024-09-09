@@ -1,11 +1,23 @@
-let levelSelectionIndex = 1; // Index of the currently selected level
-const totalLevelNumber = encodedLevels.length - 1; // Total number of levels
-const levelsPerRow = 4; // Define how many levels per row
-const levelPreviewSize = 50; // Size of each level preview on the grid
-const levelSpacing = 10; // Space between level previews
+// Cette fonction est appelée lorsque l'écran de sélection des niveaux est initialisé
+function initLevelPreviews() {
+  for (let i = 1; i <= totalLevelNumber; i++) {
+    const previewCanvas = document.createElement('canvas');
+    const previewCtx = previewCanvas.getContext('2d');
+    previewCanvas.width = canvas.width;
+    previewCanvas.height = canvas.height;
+    previewCtx.imageSmoothingEnabled = false;
 
+    // Dessiner la miniature du niveau
+    drawLevelMiniature(i, previewCtx, levelPreviewImageListize);
+
+    // Stocker la miniature dans le tableau
+    levelPreviewImageList[i] = previewCanvas;
+  }
+}
+
+// Fonction pour dessiner l'écran de sélection de niveau
 function drawLevelSelectorScreen() {
-  drawBackground(); // Utiliser le fond comme pour les autres écrans
+  drawBackground();
 
   const gridStartX = 50; // X-coordinate for the start of the grid
   const gridStartY = 20; // Y-coordinate for the start of the grid
@@ -13,35 +25,57 @@ function drawLevelSelectorScreen() {
   for (let i = 1; i <= totalLevelNumber; i++) {
     const isHighlighted = i === levelSelectionIndex;
 
-    const x = gridStartX + ((i - 1) % levelsPerRow) * (levelPreviewSize + levelSpacing);
-    const y = gridStartY + Math.floor((i - 1) / levelsPerRow) * (levelPreviewSize / 2 + levelSpacing);
+    const x = gridStartX + ((i - 1) % levelsPerRow) * (levelPreviewImageListize + levelSpacing);
+    const y = gridStartY + Math.floor((i - 1) / levelsPerRow) * (levelPreviewImageListize / 2 + levelSpacing);
 
-    drawLevelPreview(i, x, y, levelPreviewSize, isHighlighted);
+    drawLevelPreview(i, x, y, levelPreviewImageListize, isHighlighted);
+  }
+
+  // if all levels are completed, display a message
+  if (getLocalStorage('completedLevelList')?.length === totalLevelNumber) {
+    writeText({
+      ctx: ctx,
+      x: 125,
+      y: 105,
+      text: 'CONGRATULATIONS!',
+      color: '#ff0',
+      size: 20,
+    });
+    writeText({
+      ctx: ctx,
+      x: 80,
+      y: 130,
+      text: 'YOU ESCAPED ALL LEVELS WITHIN 13 STEPS!',
+      color: '#ff0',
+      size: 20,
+    });
+
+    drawTile(TILE_DATA['star'].tiles[0], TILE_DATA['star'].colors, 2, 7, { scale: 2 });
+    drawTile(TILE_DATA['star'].tiles[0], TILE_DATA['star'].colors, 17, 7, { scale: 2 });
   }
 }
 
-// This function draws the level preview (a rectangle for now, can be improved with actual level details)
+/**
+ * Draw the level preview on the screen
+ * @param {number} levelIndex - The index of the level
+ * @param {number} x - The x-coordinate of the preview
+ * @param {number} y - The y-coordinate of the preview
+ * @param {number} size - The size of the preview
+ * @param {boolean} isHighlighted - Whether the preview is highlighted
+ */
 function drawLevelPreview(levelIndex, x, y, size, isHighlighted) {
-  const previewCanvas = document.createElement('canvas');
-  const previewCtx = previewCanvas.getContext('2d');
-  previewCanvas.width = canvas.width;
-  previewCanvas.height = canvas.height;
-  previewCanvas.imageSmoothingEnabled = false;
-
-  // Draw the level at a smaller scale
-  drawLevelMiniature(levelIndex, previewCtx, size);
-
-  // Draw the preview on the main canvas
+  // Draw the level preview image
+  const previewCanvas = levelPreviewImageList[levelIndex];
   ctx.drawImage(previewCanvas, x * zoomFactor, y * zoomFactor, size * zoomFactor, (size / 2) * zoomFactor);
 
-  // Highlight the selected level
+  // Draw a border around the preview if highlighted
   if (isHighlighted) {
     ctx.lineWidth = 2;
     ctx.strokeStyle = '#ff0';
     ctx.strokeRect(x * zoomFactor, y * zoomFactor, size * zoomFactor, (size / 2) * zoomFactor);
   }
 
-  // Optionally, display the level number inside the preview box
+  // Add the level number
   writeText({
     ctx: ctx,
     x: x + size / 2 - 5,
@@ -49,6 +83,12 @@ function drawLevelPreview(levelIndex, x, y, size, isHighlighted) {
     text: `L${levelIndex}`,
     color: isHighlighted ? '#ff0' : '#000',
   });
+
+  // If level is completed, draw a star tile bottom right
+  const completedLevelList = getLocalStorage('completedLevelList') || [];
+  if (completedLevelList.includes(levelIndex)) {
+    drawTile(TILE_DATA['star'].tiles[0], TILE_DATA['star'].colors, x / 16 - 0.3, y / 16 - 0.5, { scale: 0.8 });
+  }
 }
 
 function drawLevelMiniature(levelIndex, previewCtx, size) {

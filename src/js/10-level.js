@@ -18,6 +18,17 @@ function resetLevel() {
   startLevel(currentLevel); // Restart the level
 }
 
+function endLevel() {
+  let completedLevelList = getLocalStorage('completedLevelList') || [];
+  if (!completedLevelList.includes(currentLevel)) {
+    completedLevelList.push(currentLevel);
+    setLocalStorage('completedLevelList', JSON.stringify(completedLevelList));
+  }
+  setLocalStorage('currentLevel', currentLevel + 1);
+  levelSelectionIndex = currentLevel + 1;
+  switchMode('levelSelector');
+}
+
 /**
  * Reset the character to its initial position and direction
  */

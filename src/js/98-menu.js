@@ -58,6 +58,10 @@ function drawStartScreen() {
 }
 
 function handleMenuAction(action) {
+  if (isSoundActive) {
+    playMusicControl();
+  }
+
   switch (action) {
     case 'continue':
       currentLevel = parseInt(getLocalStorage('currentLevel'));
