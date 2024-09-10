@@ -161,7 +161,7 @@ const TILE_DATA = {
     limit: 0,
   },
   star: {
-    rle: '16GNLAMZMLMZMKMeZeMJMereMEQeteRZfvfZMAMeYqNrNqYeMCMfvfMENrNrNEMfvfMDMfrfrfMDMfZfZfMCMeZfNfZeMBMeYeNBNeYeMBPFPA',
+    rle: '16GNLAMZMLMZMKMeZeMJMereMEQeteRZfqMrMqfZMAMeYrMrMrYeMCMfvfMEMeqPqeMEMesNseMDMfvfMDMfZrZfMCMeZfNfZeMBMeYeNBNeYeMBPFPA',
     colors: COLOR_SETS.gold,
     limit: 0,
   },
