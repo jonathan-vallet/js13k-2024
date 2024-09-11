@@ -14,11 +14,15 @@ function startLevel(levelIndex) {
  */
 function resetLevel() {
   // Restore the level data to its initial state
-  levels[currentLevel].levelData = JSON.parse(JSON.stringify(levels[currentLevel].initialData));
+  if (levels[currentLevel]?.initialData) {
+    levels[currentLevel].levelData = JSON.parse(JSON.stringify(levels[currentLevel].initialData));
+  }
   startLevel(currentLevel); // Restart the level
 }
 
 function endLevel() {
+  console.log('Level completed!, reset keystack');
+  keyStack = [];
   let completedLevelList = getLocalStorage('completedLevelList') || [];
   if (!completedLevelList.includes(currentLevel)) {
     completedLevelList.push(currentLevel);

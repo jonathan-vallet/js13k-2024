@@ -56,7 +56,6 @@ function initMusic() {
   musicAudio.addEventListener('ended', function () {
     playMusic(loopWave, true); // Jouer la musique de boucle
   });
-
   if (isSoundActive) {
     playMusicControl();
   } else {

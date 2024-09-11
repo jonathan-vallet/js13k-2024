@@ -127,6 +127,8 @@ function handleLevelSelectionKeydown(key, e) {
 
 function loadLevel(levelIndex) {
   currentLevel = levelIndex; // Adjust this based on your level management logic
+  // If level was already completed, reset it
+  resetLevel();
   switchMode('game'); // Start the game mode
 }
 

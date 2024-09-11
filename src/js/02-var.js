@@ -13,7 +13,7 @@ let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on 
 let collectedKeysNumber = 0;
 let actionHistory;
 let lastFrameTime = 0; // For animation loop
-const keyStack = []; // Stack of keys pressed
+let keyStack = []; // Stack of keys pressed
 let currentLevel = 1;
 
 let $editorTileSelector = $('#editorTileSelect');
@@ -23,8 +23,7 @@ let currentEditorTile = { x: -1, y: -1 };
 let musicAudio = document.createElement('audio');
 let musicplayer = new CPlayer();
 
-let isSoundActive = getLocalStorage('isSoundActive') === 'false' ? false : true;
-
+let isSoundActive = getLocalStorage('isSoundActive') === false ? false : true;
 let levelSelectionIndex = 1; // Index of the currently selected level
 const totalLevelNumber = encodedLevels.length - 1; // Total number of levels
 const levelsPerRow = 4; // Define how many levels per row
