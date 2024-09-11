@@ -88,7 +88,7 @@ function handleMenuAction(action) {
   }
 }
 
-function handleMenuKeydown(key, e) {
+function handleMenuKeydown(key) {
   switch (key) {
     case 'up':
       currentMenuIndex = (currentMenuIndex - 1 + menuOptions.length) % menuOptions.length;

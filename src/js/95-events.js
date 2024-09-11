@@ -1,29 +1,64 @@
-addEventListener('keydown', (e) => {
+document.addEventListener('keydown', (e) => {
   const key = mapKeyToDirection(e.key);
-  if (currentScreen === 'game') {
-    handleGameKeydown(key);
-  }
-  if (currentScreen === 'menu') {
-    handleMenuKeydown(key, e);
-  }
-  if (currentScreen === 'characterSelection') {
-    handleCharacterSelectionKeydown(key, e);
-  }
-  if (currentScreen === 'levelSelector') {
-    handleLevelSelectionKeydown(key, e);
-  }
+  handleInput(key);
+
   // Escape key to go back to menu
   if (e.key === 'Escape') {
     switchMode('menu');
   }
 });
 
-addEventListener('keyup', (event) => {
+function handleInput(input) {
+  if (currentScreen === 'game') {
+    handleGameKeydown(input);
+  }
+  if (currentScreen === 'menu') {
+    handleMenuKeydown(input);
+  }
+  if (currentScreen === 'characterSelection') {
+    handleCharacterSelectionKeydown(input);
+  }
+  if (currentScreen === 'levelSelector') {
+    handleLevelSelectionKeydown(input);
+  }
+}
+
+document.addEventListener('keyup', (event) => {
   const key = mapKeyToDirection(event.key);
   if (currentScreen === 'game') {
     handleGameKeyup(key);
   }
 });
+
+// Check for gamepad connection
+window.addEventListener('gamepadconnected', (e) => {
+  gamepadIndex = e.gamepad.index;
+  console.log(`Manette connectée : ${e.gamepad.id}`);
+});
+
+// Check for gamepad disconnection
+window.addEventListener('gamepaddisconnected', (e) => {
+  if (e.gamepad.index === gamepadIndex) {
+    gamepadIndex = null;
+    console.log('Manette déconnectée');
+  }
+});
+
+function handleGamepadInput() {
+  const gamepads = navigator.getGamepads();
+  if (!gamepads) {
+    return;
+  }
+
+  const gamepad = gamepads[0]; // Utiliser la première manette connectée
+  if (gamepad) {
+    if (gamepad.buttons[12].pressed) handleInput('up');
+    if (gamepad.buttons[13].pressed) handleInput('down');
+    if (gamepad.buttons[14].pressed) handleInput('left');
+    if (gamepad.buttons[15].pressed) handleInput('right');
+    if (gamepad.buttons[0].pressed) handleInput('action'); // Bouton A
+  }
+}
 
 // Show selected tile in editor when hovering
 canvas.addEventListener('mousemove', (e) => {

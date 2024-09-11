@@ -75,7 +75,7 @@ function drawColorSelector(colors, selectedColorIndex, x, y) {
 }
 
 // Handle key events
-function handleCharacterSelectionKeydown(key, e) {
+function handleCharacterSelectionKeydown(key) {
   const optionLength = selectionOptions[selectionStageList[selectionStageIndex]].length;
   const updateIndex = (direction) => {
     if (selectionStageIndex === 0) {

@@ -18,6 +18,7 @@ function animate(timestamp) {
 
   refreshCanvas();
   lastFrameTime = timestamp;
+  handleGamepadInput();
 
   requestAnimationFrame(animate);
 }
