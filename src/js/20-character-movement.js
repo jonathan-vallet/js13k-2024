@@ -1,6 +1,6 @@
 // Handle keyboard input for character movement
 function handleGameKeydown(key) {
-  if (key && !keyStack.includes(key)) {
+  if (key && !keyStack.includes(key) && ['up', 'down', 'left', 'right'].includes(key)) {
     keyStack.push(key);
   }
 }
@@ -14,11 +14,11 @@ function handleGameKeyup(key) {
   }
 
   // R to reset the level
-  if (key === 'r') {
+  if (key === 'reset') {
     resetLevel();
   }
   // E to undo the last action
-  if (key === 'e') {
+  if (key === 'undo') {
     undoLastAction();
   }
 
@@ -42,9 +42,17 @@ function mapKeyToDirection(key) {
     case 'ArrowRight':
     case 'd':
       return 'right';
-    case ' ':
     case 'Enter':
       return 'action';
+    case ' ': // for steam controller
+    case 'Control': // for steam controller
+    case 'e':
+      return 'undo';
+    case 'Alt':
+    case 'r':
+      return 'reset';
+    case 'Escape':
+      return 'menu';
     default:
       return key;
   }

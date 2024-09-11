@@ -1,11 +1,7 @@
 document.addEventListener('keydown', (e) => {
+  console.log('Key pressed:', e.key);
   const key = mapKeyToDirection(e.key);
   handleInput(key);
-
-  // Escape key to go back to menu
-  if (e.key === 'Escape') {
-    switchMode('menu');
-  }
 });
 
 function handleInput(input) {
@@ -21,6 +17,9 @@ function handleInput(input) {
   if (currentScreen === 'levelSelector') {
     handleLevelSelectionKeydown(input);
   }
+  if (input === 'menu') {
+    switchMode('menu');
+  }
 }
 
 document.addEventListener('keyup', (event) => {
@@ -33,14 +32,12 @@ document.addEventListener('keyup', (event) => {
 // Check for gamepad connection
 window.addEventListener('gamepadconnected', (e) => {
   gamepadIndex = e.gamepad.index;
-  console.log(`Manette connectée : ${e.gamepad.id}`);
 });
 
 // Check for gamepad disconnection
 window.addEventListener('gamepaddisconnected', (e) => {
   if (e.gamepad.index === gamepadIndex) {
     gamepadIndex = null;
-    console.log('Manette déconnectée');
   }
 });
 
@@ -57,6 +54,11 @@ function handleGamepadInput() {
     if (gamepad.buttons[14].pressed) handleInput('left');
     if (gamepad.buttons[15].pressed) handleInput('right');
     if (gamepad.buttons[0].pressed) handleInput('action'); // Bouton A
+    if (gamepad.buttons[1].pressed) handleInput('undo'); // Bouton B
+    if (gamepad.buttons[5].pressed) handleInput('undo');
+    if (gamepad.buttons[2].pressed) handleInput('reset'); // Bouton X
+    if (gamepad.buttons[4].pressed) handleInput('reset');
+    if (gamepad.buttons[9].pressed) handleInput('menu');
   }
 }
 
