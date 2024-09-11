@@ -42,6 +42,9 @@ function mapKeyToDirection(key) {
     case 'ArrowRight':
     case 'd':
       return 'right';
+    case ' ':
+    case 'Enter':
+      return 'action';
     default:
       return key;
   }

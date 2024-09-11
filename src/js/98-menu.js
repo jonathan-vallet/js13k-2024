@@ -13,7 +13,7 @@ function canContinue() {
 function drawBackground() {
   let backgroundImage = new Image();
   backgroundImage.src =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAACgAgMAAABWEiUVAAAACVBMVEUBOZocAGYAkMzM6PIZAAAARklEQVQY02MIJROKAnEgEAvCaDB2BeIQIHaBY0YkWgCIGcCYBYgd4DQtQAMQcwBxBxgrALESGK8A4i4gXgXGi4BYC4jJhgDoJyriwWJx+QAAAABJRU5ErkJggg==';
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAACgAgMAAABWEiUVAAAACVBMVEVelt05U8Gc2PyB3HZ+AAAARklEQVQY02MIJROKAnEgEAvCaDB2BeIQIHaBY0YkWgCIGcCYBYgd4DQtQAMQcwBxBxgrALESGK8A4i4gXgXGi4BYC4jJhgDoJyriwWJx+QAAAABJRU5ErkJggg==';
 
   if (backgroundImage.height) {
     // Calcule l'échelle pour que l'image prenne 100% de la hauteur du canvas
@@ -40,9 +40,9 @@ function drawBackground() {
 function drawStartScreen() {
   drawBackground();
 
-  const menuStartX = 50; // X-coordinate for menu start
-  const menuStartY = 70; // Y-coordinate for menu start
-  const menuSpacing = 15; // Space between menu items
+  const menuStartX = 30; // X-coordinate for menu start
+  const menuStartY = 30; // Y-coordinate for menu start
+  const menuSpacing = 12; // Space between menu items
 
   menuOptions.forEach((option, index) => {
     const yPosition = menuStartY + index * menuSpacing;
@@ -55,7 +55,8 @@ function drawStartScreen() {
       y: yPosition,
       hspacing: 2,
       text: option.text,
-      color: isHighlighted ? '#ff0' : option.isDisabled ? '#999' : '#000',
+      color: isHighlighted ? COLOR_SELECTED : option.isDisabled ? '#999' : COLOR_TEXT,
+      scale: 1.5,
     });
   });
 }
@@ -98,11 +99,11 @@ function handleMenuKeydown(key, e) {
       currentMenuIndex = (currentMenuIndex + 1) % menuOptions.length;
       if (menuOptions[currentMenuIndex].isDisabled) currentMenuIndex = (currentMenuIndex + 1) % menuOptions.length;
       break;
-  }
-  if (e.key === 'Enter') {
-    const selectedOption = menuOptions[currentMenuIndex];
-    if (!selectedOption.isDisabled) {
-      handleMenuAction(selectedOption.action);
-    }
+    case 'action':
+      const selectedOption = menuOptions[currentMenuIndex];
+      if (!selectedOption.isDisabled) {
+        handleMenuAction(selectedOption.action);
+      }
+      break;
   }
 }

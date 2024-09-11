@@ -14,14 +14,16 @@ let characterData = getLocalStorage('characterData') || {
 
 const COLOR_SETS = {
   blueGreen: ['#024d53', '#599dbc', '#72d1c7', '#a9ffe6'],
-  crate: ['#000', '#893a25', '#f89e61', '#c16c43'],
-  green: ['#000', '#527f67', '#a2ce69', '#d6f8e1'],
+  crate: ['#011721', '#893a25', '#f89e61', '#c16c43'],
+  green: ['#011721', '#527f67', '#a2ce69', '#d6f8e1'],
   sand: ['#e5d09e', '#cab168'],
-  bronze: ['#000', '#811c07', '#ca6137', '#ffb59c'],
-  silver: ['#000', '#014a5d', '#7ddbff', '#d0ffea'],
-  gold: ['#000', '#5e3718', '#d8aa3b', '#fdffaa'],
+  bronze: ['#011721', '#811c07', '#ca6137', '#ffb59c'],
+  silver: ['#011721', '#014a5d', '#7ddbff', '#d0ffea'],
+  gold: ['#011721', '#5e3718', '#d8aa3b', '#fdffaa'],
   purple: ['#341b2e', '#6a5979', '#937cb2', '#afbeff'],
 };
+const COLOR_SELECTED = '#f5ff40';
+const COLOR_TEXT = '#011721';
 
 // Character customization options
 const skinColors = ['#f9ece6', '#f0d3c5', '#e3b38d', '#bc8d57', '#a96c4f', '#704733'];

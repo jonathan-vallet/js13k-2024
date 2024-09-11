@@ -21,7 +21,6 @@ function resetLevel() {
 }
 
 function endLevel() {
-  console.log('Level completed!, reset keystack');
   keyStack = [];
   let completedLevelList = getLocalStorage('completedLevelList') || [];
   if (!completedLevelList.includes(currentLevel)) {

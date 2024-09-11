@@ -61,10 +61,10 @@ function writeTextLine(opt) {
         const pixelIndex = y * letterWidth + x;
         if (letter[pixelIndex] === '1') {
           opt.ctx.rect(
-            (opt.x + (x + letterX + opt.hspacing * i)) * zoomFactor,
-            (opt.y + y) * zoomFactor,
-            zoomFactor,
-            zoomFactor,
+            (opt.x + (x + letterX + opt.hspacing * i)) * zoomFactor * opt.scale,
+            (opt.y + y) * zoomFactor * opt.scale,
+            zoomFactor * opt.scale,
+            zoomFactor * opt.scale,
           );
         }
       }
@@ -85,23 +85,26 @@ function writeText(options) {
     vspacing: 0,
     hspacing: 1,
     color: '#fff',
+    scale: 1,
   };
   const opt = { ctx: ctx, ...defaultOptions, ...options }; // Merge with defaults
   const lines = opt.text.split('\n');
-  const letterSize = 5 * zoomFactor;
+
+  const letterSize = 5 * zoomFactor * opt.scale;
 
   // Begin drawing
   opt.ctx.beginPath();
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const x = opt.x;
-    const y = opt.y + (letterSize + opt.vspacing * zoomFactor) * i;
+    const y = opt.y + (letterSize + opt.vspacing * zoomFactor * opt.scale) * i;
     writeTextLine({
       ctx: opt.ctx,
       x,
       y,
       text: line,
       hspacing: opt.hspacing,
+      scale: opt.scale,
     });
   }
 

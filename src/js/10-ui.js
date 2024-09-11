@@ -6,7 +6,7 @@ function refreshUI() {
  * Draw the UI (steps, keys, controls) on the UI canvas
  */
 function drawUI() {
-  uiCtx.fillStyle = '#333';
+  uiCtx.fillStyle = COLOR_TEXT;
   uiCtx.fillRect(0, 0, uiCanvas.width, uiCanvas.height);
 
   let soundTileName = isSoundActive ? 'sound-on' : 'sound-off';
@@ -14,6 +14,7 @@ function drawUI() {
   const soundColors = TILE_DATA[soundTileName].colors;
   drawTile(soundTile, soundColors, 18.8, 0.1, { context: uiCtx });
   let title = '';
+  let scale = 1.5;
   if (currentScreen === 'menu') {
     title = '13 STEPS TO ESCAPE';
   }
@@ -22,9 +23,11 @@ function drawUI() {
   }
   if (currentScreen === 'game') {
     title = 'STEPS';
+    scale = 1;
   }
   if (currentScreen === 'editor') {
     title = 'TILE:';
+    scale = 1;
   }
   if (currentScreen === 'levelSelector') {
     title = 'LEVEL SELECTION';
@@ -33,8 +36,9 @@ function drawUI() {
   writeText({
     ctx: uiCtx,
     x: 10,
-    y: 6,
+    y: scale === 1 ? 6 : 3.33,
     text: title,
+    scale,
   });
 
   if (currentScreen === 'editor') {
@@ -59,10 +63,11 @@ function drawUI() {
     // Draw steps remaining
     writeText({
       ctx: uiCtx,
-      x: 40 + shakeX,
-      y: 6 + shakeY,
+      x: 25 + shakeX,
+      y: 3 + shakeY,
       text: `${13 - stepsPerformed}`,
       color: getStepColor(stepsPerformed),
+      scale: 1.5,
     });
 
     // Draw the key icon and count

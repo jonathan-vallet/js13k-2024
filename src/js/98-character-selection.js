@@ -20,11 +20,12 @@ function drawCharacterSelectionScreen() {
 
   writeText({
     ctx: ctx,
-    x: 50,
-    y: 70,
+    x: 30,
+    y: 45,
     hspacing: 2,
     text: titles[selectionStageList[selectionStageIndex]],
-    color: '#000',
+    color: COLOR_TEXT,
+    scale: 1.5,
   });
 
   if (selectionStageIndex === 0) {
@@ -33,10 +34,11 @@ function drawCharacterSelectionScreen() {
       writeText({
         ctx: ctx,
         x: 50,
-        y: 85 + index * 15,
+        y: 70 + index * 15,
         hspacing: 2,
         text: option.toUpperCase(),
-        color: index === currentMenuIndex ? '#ff0' : '#000',
+        color: index === currentMenuIndex ? COLOR_SELECTED : COLOR_TEXT,
+        scale: 1.2,
       });
     });
   } else {
@@ -45,14 +47,14 @@ function drawCharacterSelectionScreen() {
       selectionOptions[selectionStageList[selectionStageIndex]],
       characterData[selectionStageList[selectionStageIndex]],
       50,
-      85,
+      90,
     );
   }
 
   // Draw character at 3x scale
   setCharacterDirection(ORIENTATION_DOWN);
   characterScale = 3;
-  characterX = 13;
+  characterX = 14;
   characterY = 5;
   drawCharacter();
 }
@@ -66,7 +68,7 @@ function drawColorSelector(colors, selectedColorIndex, x, y) {
     ctx.fill();
     if (index === selectedColorIndex) {
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#ff0';
+      ctx.strokeStyle = COLOR_SELECTED;
       ctx.stroke();
     }
   });
@@ -94,7 +96,7 @@ function handleCharacterSelectionKeydown(key, e) {
     updateIndex(key === 'left' ? -1 : 1);
   }
 
-  if (e.key === 'Enter') {
+  if (key === 'action') {
     ++selectionStageIndex;
     currentMenuIndex = 0;
     if (selectionStageIndex >= selectionStageList.length) {

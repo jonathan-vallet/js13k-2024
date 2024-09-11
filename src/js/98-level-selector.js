@@ -38,7 +38,7 @@ function drawLevelSelectorScreen() {
       x: 125,
       y: 105,
       text: 'CONGRATULATIONS!',
-      color: '#ff0',
+      color: COLOR_SELECTED,
       size: 20,
     });
     writeText({
@@ -46,7 +46,7 @@ function drawLevelSelectorScreen() {
       x: 80,
       y: 130,
       text: 'YOU ESCAPED ALL LEVELS WITHIN 13 STEPS!',
-      color: '#ff0',
+      color: COLOR_SELECTED,
       size: 20,
     });
 
@@ -71,7 +71,7 @@ function drawLevelPreview(levelIndex, x, y, size, isHighlighted) {
   // Draw a border around the preview if highlighted
   if (isHighlighted) {
     ctx.lineWidth = 2;
-    ctx.strokeStyle = '#ff0';
+    ctx.strokeStyle = COLOR_SELECTED;
     ctx.strokeRect(x * zoomFactor, y * zoomFactor, size * zoomFactor, (size / 2) * zoomFactor);
   }
 
@@ -81,7 +81,7 @@ function drawLevelPreview(levelIndex, x, y, size, isHighlighted) {
     x: x + size / 2 - 5,
     y: y + size / 4,
     text: `L${levelIndex}`,
-    color: isHighlighted ? '#ff0' : '#000',
+    color: isHighlighted ? COLOR_SELECTED : COLOR_TEXT,
   });
 
   // If level is completed, draw a star tile bottom right
@@ -105,7 +105,7 @@ function drawLevelMiniature(levelIndex, previewCtx, size) {
   previewCtx.restore();
 }
 
-function handleLevelSelectionKeydown(key, e) {
+function handleLevelSelectionKeydown(key) {
   switch (key) {
     case 'up':
       if (levelSelectionIndex >= levelsPerRow) levelSelectionIndex -= levelsPerRow;
@@ -119,7 +119,7 @@ function handleLevelSelectionKeydown(key, e) {
     case 'right':
       if (levelSelectionIndex < totalLevelNumber) levelSelectionIndex++;
       break;
-    case 'Enter':
+    case 'action':
       loadLevel(levelSelectionIndex); // Load the selected level
       break;
   }
