@@ -15,6 +15,10 @@ const gamepadButtonMapping = {
 
 // Check for gamepad connection
 window.addEventListener('gamepadconnected', (e) => {
+  // Check if the gamepad is a standard gamepad
+  if (e.gamepad.mapping !== 'standard') {
+    return;
+  }
   gamepadIndex = e.gamepad.index;
 });
 
@@ -31,7 +35,7 @@ function handleGamepadInput() {
     return;
   }
 
-  const gamepad = gamepads[0]; // Utiliser la première manette connectée
+  const gamepad = gamepads[gamepadIndex]; // Get the gamepad
   if (gamepad) {
     for (let i = 0; i < gamepad.buttons.length; i++) {
       // Ignore buttons that are not mapped
