@@ -1,4 +1,5 @@
 let gamepadButtonState = Array(16).fill(false); // Save the state of the buttons to avoid multiple inputs
+let gamepadIndex = null; // Save the index of the gamepad
 const gamepadButtonMapping = {
   12: 'up', // D-Pad Up
   13: 'down', // D-Pad Down
