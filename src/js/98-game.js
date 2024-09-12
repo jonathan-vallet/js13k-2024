@@ -69,23 +69,29 @@ function loadGame() {
   uiCtx.imageSmoothingEnabled = false;
   backgroundCtx.imageSmoothingEnabled = false;
   setZoomFactor();
+  preloadSFX();
+  initMusic();
+
   // Checks if url has a level parameter, if so, play that level if it's valid
   const urlParams = new URLSearchParams(window.location.search);
   const levelParam = urlParams.get('level');
+  let customLevel = null;
   if (levelParam) {
-    let customLevel = decodeLevel(levelParam);
+    customLevel = decodeLevel(levelParam);
     if (customLevel) {
       levels.push(customLevel);
-      currentLevel = levels.length - 1;
-      switchMode('game');
+      ++totalLevelNumber;
     }
+  }
+
+  initLevelPreviews();
+
+  if (customLevel) {
+    startLevel(levels.length - 1);
+    switchMode('game');
   } else {
     switchMode(currentScreen);
   }
-
-  preloadSFX();
-  initMusic();
-  initLevelPreviews();
 
   requestAnimationFrame(animate);
 }

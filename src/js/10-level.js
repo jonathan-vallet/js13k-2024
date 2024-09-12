@@ -27,8 +27,9 @@ function endLevel() {
     completedLevelList.push(currentLevel);
     setLocalStorage('completedLevelList', JSON.stringify(completedLevelList));
   }
-  setLocalStorage('currentLevel', currentLevel + 1);
-  levelSelectionIndex = currentLevel + 1;
+  let nextLevel = (currentLevel + 1) % totalLevelNumber; // If the current level is the last one, go back to the first one
+  setLocalStorage('currentLevel', nextLevel);
+  levelSelectionIndex = nextLevel;
   switchMode('levelSelector');
 }
 

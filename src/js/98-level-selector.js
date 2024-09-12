@@ -32,22 +32,28 @@ function drawLevelSelectorScreen() {
   }
 
   // if all levels are completed, display a message
-  if (getLocalStorage('completedLevelList')?.length === totalLevelNumber) {
+  if (getLocalStorage('completedLevelList')?.length >= totalLevelNumber) {
     writeText({
       ctx: ctx,
-      x: 125,
-      y: 105,
+      x: 75,
+      y: 65,
       text: 'CONGRATULATIONS!',
       color: COLOR_SELECTED,
-      size: 20,
+      scale: 1.5,
     });
     writeText({
       ctx: ctx,
       x: 80,
-      y: 130,
+      y: 132,
       text: 'YOU ESCAPED ALL LEVELS WITHIN 13 STEPS!',
       color: COLOR_SELECTED,
-      size: 20,
+    });
+    writeText({
+      ctx: ctx,
+      x: 55,
+      y: 145,
+      text: 'CREATE AND SHARE YOUR OWN LEVELS USING LEVEL EDITOR',
+      color: COLOR_SELECTED,
     });
 
     drawTile(TILE_DATA['star'].tiles[0], TILE_DATA['star'].colors, 2, 7, { scale: 2 });

@@ -178,6 +178,52 @@ let soundList = {
     endPattern: 0, // End pattern
     numChannels: 1, // Number of channels
   },
+  respawn: {
+    songData: [
+      {
+        // Instrument 0
+        i: [
+          3, // OSC1_WAVEFORM
+          162, // OSC1_VOL
+          128, // OSC1_SEMI
+          93, // OSC1_XENV
+          1, // OSC2_WAVEFORM
+          95, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          64, // OSC2_XENV
+          48, // NOISE_VOL
+          8, // ENV_ATTACK
+          8, // ENV_SUSTAIN
+          87, // ENV_RELEASE
+          0, // ENV_EXP_DECAY
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          79, // LFO_AMT
+          8, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          3, // FX_FILTER
+          127, // FX_FREQ
+          154, // FX_RESONANCE
+          2, // FX_DIST
+          32, // FX_DRIVE
+          40, // FX_PAN_AMT
+          5, // FX_PAN_FREQ
+          65, // FX_DELAY_AMT
+          2, // FX_DELAY_TIME
+        ],
+        // Patterns
+        p: [1],
+        // Columns
+        c: [{ n: [156, 135], f: [] }],
+      },
+    ],
+    rowLen: 11025, // In sample lengths
+    patternLen: 32, // Rows per pattern
+    endPattern: 0, // End pattern
+    numChannels: 1, // Number of channels
+  },
 };
 
 let audioElements = {};

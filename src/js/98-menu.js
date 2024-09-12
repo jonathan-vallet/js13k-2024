@@ -74,6 +74,10 @@ function handleMenuAction(action) {
     case 'newGame':
       setTimeout(() => {
         currentMenuIndex = 0;
+        // Reset all local storage
+        setLocalStorage('completedLevelList', []);
+        setLocalStorage('currentLevel', null);
+        setLocalStorage('characterData', null);
         switchMode('characterSelection');
       }, 0);
       break;
