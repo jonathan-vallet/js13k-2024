@@ -1,6 +1,9 @@
 let $ = (selector) => document.querySelector(selector);
 let setLocalStorage = (key, value) => localStorage.setItem(key, value);
-let getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
+let getLocalStorage = (key, defaultValue = null) => {
+  const value = localStorage.getItem(key);
+  return value ? JSON.parse(value) : defaultValue;
+};
 
 let min = Math.min;
 let max = Math.max;
