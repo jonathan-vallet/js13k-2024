@@ -1,12 +1,12 @@
-document.addEventListener('keydown', (e) => {
+function handleKeyDown(e) {
   const key = mapKeyToDirection(e.key);
   handleInput(key);
-});
+}
 
-document.addEventListener('keyup', (event) => {
-  const key = mapKeyToDirection(event.key);
+function handleKeyUp(e) {
+  const key = mapKeyToDirection(e.key);
   handleRelease(key);
-});
+}
 
 function handleInput(input) {
   if (currentScreen === 'game') {

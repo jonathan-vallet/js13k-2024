@@ -33,6 +33,15 @@ window.addEventListener('resize', () => {
 function switchMode(mode) {
   document.body.classList.remove(currentScreen);
   document.body.classList.add(mode);
+
+  // Reset key events to avoid input while switching screens
+  document.removeEventListener('keydown', handleKeyDown);
+  document.removeEventListener('keyup', handleKeyUp);
+  setTimeout(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+  }, 300);
+
   currentScreen = mode;
   if (currentScreen === 'game') {
     initGame();
