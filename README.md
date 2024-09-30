@@ -32,3 +32,7 @@ Once done, go to https://lifthrasiir.github.io/roadroller/ and paste &lt;script&
 Then run `npx gulp zip-only` to create a zip under 13kb
 
 Your game.zip file will be generated in `/dist` and `/zip` folder.
+
+## Post mortem
+
+You can read the most mortem on the [POST_MORTEM.md](POST_MORTEM.md) file
